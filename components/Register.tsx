@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import CheckBox from "@react-native-community/checkbox";
 import { StyleSheet } from "react-native";
 import { Register } from "../app/(auth)/auth";
 

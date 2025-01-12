@@ -14,6 +14,7 @@ import Home from "@/components/Home";
 import { auth } from "@/app/(auth)/firebaseConfig";
 import { TailwindProvider } from "tailwind-rn";
 import utilities from "@/app/tailwind.json";
+import OnboardingScreen from "@/components/OnboardingScreen";
 
 const TailwindProviderFix = TailwindProvider as any;
 
@@ -71,6 +72,7 @@ export default function RootLayout() {
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
+          <Stack.Screen name="Onboarding" component={OnboardingScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Home" component={Home} />

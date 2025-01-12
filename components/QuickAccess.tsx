@@ -17,7 +17,7 @@ const QuickAccess = () => (
 
 const styles = StyleSheet.create({
   quickAccess: {
-    marginTop: 20,
+    marginTop: 2,
   },
   quickAccessTitle: {
     fontSize: 18,

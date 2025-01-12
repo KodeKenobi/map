@@ -4,10 +4,12 @@ import { useTailwind } from "tailwind-rn";
 export default function ButtonComponent({
   title,
   color,
+  textColor,
   onPress,
 }: {
   title: string;
   color: string;
+  textColor?: string;
   onPress: () => void;
 }) {
   const tailwind = useTailwind();
@@ -20,7 +22,7 @@ export default function ButtonComponent({
       <Text
         style={{
           textAlign: "center",
-          color: "#FFFFFF",
+          color: textColor || "#FFFFFF",
           fontSize: 16,
           fontWeight: "bold",
         }}

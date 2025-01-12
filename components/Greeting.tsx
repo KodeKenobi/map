@@ -1,65 +1,68 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTailwind } from "tailwind-rn";
 
 const Greeting = ({
   userName,
-  onLogout,
+  notificationCount,
 }: {
   userName: string;
-  onLogout: () => void;
-}) => (
-  <View>
-    <View style={styles.greetingContainer}>
+  notificationCount: number;
+}) => {
+  const tailwind = useTailwind();
+
+  return (
+    <View
+      style={tailwind("flex-row items-center justify-between p-4 bg-white")}
+    >
+      {/* Profile Image */}
       <Image
-        source={require("../assets/images/profile.svg")}
-        style={styles.profileImage}
+        source={require("../assets/images/logo.png")}
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: 20,
+          borderWidth: 2,
+          borderColor: "gray",
+        }}
       />
-      <View style={styles.textContainer}>
-        <Text style={styles.greeting}>Good Morning, {userName || "User"}</Text>
-        <Text style={styles.subGreeting}>Let's make today great</Text>
+      {/* Greeting Text */}
+      <View style={tailwind("flex-1 pl-4")}>
+        <Text style={tailwind("text-lg font-bold text-black")}>
+          Good Morning, {userName || "User"}
+        </Text>
+        <Text style={tailwind("text-sm text-gray-500")}>
+          Let's make today great
+        </Text>
       </View>
-      <View style={styles.iconContainer}>
-        <Ionicons name="notifications-outline" size={26} color="green" />
-        <TouchableOpacity onPress={onLogout} style={styles.logoutButton}>
-          <Ionicons name="log-out-outline" size={24} color="green" />
-        </TouchableOpacity>
+      {/* Notification Icon */}
+      <View style={tailwind("relative")}>
+        <Ionicons name="notifications-outline" size={26} color="black" />
+        <View
+          style={{
+            position: "absolute",
+            right: 0,
+            top: -5,
+            backgroundColor: "red",
+            borderRadius: 10,
+            paddingHorizontal: 6,
+            paddingVertical: 2,
+          }}
+        >
+          <Text
+            style={{
+              color: "white",
+              fontSize: 12,
+              fontWeight: "bold",
+            }}
+          >
+            {notificationCount}
+          </Text>
+        </View>
       </View>
     </View>
-  </View>
-);
-
-const styles = StyleSheet.create({
-  greetingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  textContainer: {
-    flex: 1,
-    justifyContent: "flex-start",
-  },
-  greeting: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  subGreeting: {
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  iconContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  logoutButton: {
-    marginLeft: 10, // Space between notification and logout icon
-  },
-});
+  );
+};
 
 export default Greeting;

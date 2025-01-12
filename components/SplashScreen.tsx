@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { View, Image, StyleSheet } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
+import { useTailwind } from "tailwind-rn";
 
 export default function SplashScreenComponent({
   onFinish,
@@ -19,9 +20,14 @@ export default function SplashScreenComponent({
     hideSplashScreen();
   }, [onFinish]);
 
+  const tailwind = useTailwind();
+
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/images/logo.png")} />
+      <Image
+        source={require("../assets/images/logo.png")}
+        style={{ width: 296, height: 146 }}
+      />
     </View>
   );
 }

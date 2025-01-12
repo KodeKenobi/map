@@ -1,6 +1,6 @@
 // components/CheckboxComponent.tsx
 import React from "react";
-import { View } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import Checkbox from "expo-checkbox";
 import AppText from "./AppText";
@@ -27,7 +27,7 @@ const CheckboxComponent: React.FC<CheckboxComponentProps> = ({
         <View key={index} style={tailwind("flex-row items-center mb-4")}>
           <View
             style={tailwind(
-              `flex-row items-center bg-gray-200 p-2 rounded-md ${
+              `flex-row items-center bg-gray-200 p-2 rounded-md w-full ${
                 item.checked ? "bg-w3-gold-1" : ""
               }`
             )}
@@ -38,9 +38,15 @@ const CheckboxComponent: React.FC<CheckboxComponentProps> = ({
               onValueChange={() => onToggle(index)}
               color={item.checked ? "green" : "black"}
             />
-            <AppText style={tailwind("text-base flex-1 ml-2")}>
-              {item.label}
-            </AppText>
+            <TouchableOpacity
+              onPress={() => onToggle(index)}
+              activeOpacity={0.7}
+              style={tailwind("flex-1")}
+            >
+              <AppText style={tailwind("text-base text-gray-600")}>
+                {item.label}
+              </AppText>
+            </TouchableOpacity>
           </View>
         </View>
       ))}

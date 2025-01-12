@@ -6,20 +6,19 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  Platform,
 } from "react-native";
 import { StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import AppText from "./AppText";
 import { Login } from "@/app/(auth)/auth";
 import { Ionicons } from "@expo/vector-icons";
-// import auth from "@react-native-firebase/auth";
+import { useTailwind } from "tailwind-rn";
 // import {
 //   GoogleSignin,
 //   GoogleSigninButton,
 // } from "@react-native-google-signin/google-signin";
 
 export default function LoginScreen({ navigation }: { navigation: any }) {
+  const tailwind = useTailwind();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -53,10 +52,20 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        <Image source={require("../assets/images/logo.png")} />
+      <View style={tailwind("mb-4 mt-14 items-center")}>
+        <Image
+          source={require("../assets/images/logo.png")}
+          style={{ width: 296, height: 146 }}
+        />
       </View>
-      <Text style={styles.title}>Welcome back</Text>
+
+      <AppText
+        style={tailwind(
+          "text-2xl font-bold mb-6 mt-6 text-gray-800 text-center"
+        )}
+      >
+        Welcome back
+      </AppText>
       <TextInput
         style={styles.input}
         placeholder="email"
@@ -71,7 +80,10 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         value={password}
         onChangeText={setPassword}
       ></TextInput>
-      <TouchableOpacity style={styles.forgotPassword}>
+      <TouchableOpacity
+        style={styles.forgotPassword}
+        onPress={() => navigation.navigate("ForgotPassword")}
+      >
         <Text>Forgot password?</Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -165,28 +177,13 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           justifyContent: "center",
         }}
       >
-        <Text
-          style={{
-            color: "#000",
-            textAlign: "center",
-            fontSize: 16,
-            fontWeight: "bold",
-          }}
-        >
+        <AppText style={tailwind("text-base text-gray-800")}>
           Don't have an account?{" "}
-        </Text>
+        </AppText>
         <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-          <Text
-            style={{
-              color: "#000",
-              textAlign: "center",
-              fontSize: 16,
-              fontWeight: "bold",
-              textDecorationLine: "underline",
-            }}
-          >
+          <AppText style={tailwind("text-base text-gray-800 font-semibold")}>
             Sign up
-          </Text>
+          </AppText>
         </TouchableOpacity>
       </View>
     </View>
@@ -198,12 +195,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
   },
   input: {
     height: 50,

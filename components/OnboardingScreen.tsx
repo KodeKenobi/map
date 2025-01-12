@@ -49,10 +49,10 @@ export default function OnboardingScreen({ navigation }: { navigation: any }) {
           style={{ width: 222, height: 222 }}
         />
       </View>
-      <AppText style={tailwind("text-2xl font-bold mb-2 mt-2")}>
+      <AppText style={tailwind("text-2xl font-bold mb-2 mt-2 text-gray-800")}>
         Personalise Your Journey
       </AppText>
-      <AppText style={tailwind("text-center mt-2 mb-4")}>
+      <AppText style={tailwind("text-center mt-2 mb-4 text-gray-800")}>
         Choose your focus areas to tailor your experience. You can select one or
         more areas to explore
       </AppText>

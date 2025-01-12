@@ -59,14 +59,14 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
       <Text style={styles.title}>Welcome back</Text>
       <TextInput
         style={styles.input}
-        placeholder="rendanin@ymail.com"
+        placeholder="email"
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
       />
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder="password"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
@@ -124,7 +124,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           Login with Facebook
         </Text>
       </TouchableOpacity>
-      {/* <TouchableOpacity
+      <TouchableOpacity
         style={{
           backgroundColor: "#fff",
           width: "100%",
@@ -152,21 +152,17 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         >
           Login with Google
         </Text>
-        <GoogleSigninButton
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
-          onPress={GoogleSignIn}
-        />
-      </TouchableOpacity> */}
+      </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Register")}
+      <View
         style={{
           width: "100%",
           alignSelf: "center",
           padding: 15,
           marginTop: 20,
           marginBottom: 20,
+          flexDirection: "row",
+          justifyContent: "center",
         }}
       >
         <Text
@@ -177,9 +173,22 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
             fontWeight: "bold",
           }}
         >
-          Don't have an account? Sign up
+          Don't have an account?{" "}
         </Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+          <Text
+            style={{
+              color: "#000",
+              textAlign: "center",
+              fontSize: 16,
+              fontWeight: "bold",
+              textDecorationLine: "underline",
+            }}
+          >
+            Sign up
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

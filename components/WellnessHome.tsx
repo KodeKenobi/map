@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { useNavigation, NavigationProp } from "@react-navigation/native";
@@ -12,6 +12,7 @@ import { useTailwind } from "tailwind-rn";
 import HorizontalCardScroll from "./HorizontalCardScroll";
 import HorizontalQuickAccessCardScroll from "@/HorizontalQuickAccessCardScroll";
 import AppText from "./AppText";
+import SearchComponent from "@/components/SearchComponent";
 
 const cards = [
   {
@@ -52,7 +53,7 @@ const quickAccessCards = [
   },
 ];
 
-const Home = () => {
+const WellnessHome = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const [firstName, setFirstName] = useState<string | null>(null);
   const tailwind = useTailwind();
@@ -90,31 +91,18 @@ const Home = () => {
         <Greeting
           userName={firstName ? `${firstName}` : ""}
           notificationCount={8}
-        />{" "}
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <HorizontalCardScroll cards={cards} />
-        </ScrollView>
-        <View style={[tailwind("mt-0 ml-4")]}>
-          <AppText style={tailwind("text-lg font-bold")}>Quick Access</AppText>
-        </View>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <HorizontalQuickAccessCardScroll
-            quickAccessCards={quickAccessCards}
-          />
-        </ScrollView>
-        <View style={tailwind("mt-0 ml-4")}>
-          <View style={[tailwind("mb-4")]}>
-            <AppText style={tailwind("text-lg font-bold")}>
-              Personalised Recommendations
-            </AppText>
+        />
+                <View >
+          <SearchComponent/>
           </View>
-          <RecommendationsCard
-            iconUrl={require("../assets/images/wellness-seminar.png")}
-            title="IV Drip for Boosting Immunity >"
-            backgroundColor="rgba(115, 69, 182, 0.16)"
-            iconBackgroundColor="black"
-          />
-        </View>
+<View style={tailwind("mb-4 mt-8 flex items-center justify-center")}>
+  <Image
+    source={require("../assets/images/wellness-body.png")}
+    style={{ width: 512, height: 512, resizeMode: 'contain' }}
+  />
+</View>
+
+
       </ScrollView>
       <BottomNav navigation={navigation} />
     </View>
@@ -131,4 +119,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+export default WellnessHome;

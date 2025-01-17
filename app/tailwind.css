@@ -1146,6 +1146,18 @@
   background-color: #228564;
 }
 
+.bg-gray-100 {
+  background-color: #fff;
+}
+
+.bg-gray-200 {
+  background-color: #f9f9f9;
+}
+
+.bg-gray-300 {
+  background-color: #f9f9f9;
+}
+
 // Additional border utilities
 .border-8 {
   border-width: 8px;
@@ -1153,6 +1165,10 @@
 
 .border-dashed {
   border-style: dashed;
+}
+
+.border-gray-100 {
+  border-color: #f9f9f9;
 }
 
 // Additional flex utilities

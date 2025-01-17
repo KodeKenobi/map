@@ -23,36 +23,32 @@ const HomeCardComponent: React.FC<HomeCardProps> = ({
   return (
     <View
       style={[
-        tailwind("p-3 bg-gray-100 rounded-lg mr-4 mb-6"),
+        tailwind("p-3 rounded-lg mr-4 mb-6 border-2"),
         {
           backgroundColor: backgroundColor || "#FCFCFC",
-          width: 180, // Smaller width for multiple cards
+          width: 180,
+          borderColor: "#E5E7EB",
+          borderWidth: 4,
         },
       ]}
     >
-      {/* Card Image */}
       <Image
         source={imageUrl}
         style={tailwind("w-full h-24 rounded-lg mb-3")}
         resizeMode="cover"
       />
-
-      {/* Card Content */}
       <View style={tailwind("space-y-1")}>
-        {/* Title */}
         <AppText
-          style={tailwind("text-sm font-bold text-black leading-5 mb-2")}
+          style={tailwind("text-md font-bold text-black  mb-2")}
+          numberOfLines={1}
+          ellipsizeMode="tail"
         >
           {title}
         </AppText>
-
-        {/* Date */}
-        <AppText style={tailwind("text-xs font-semibold text-gray-700 mb-2")}>
+        <AppText style={tailwind("text-sm font-semibold text-gray-700 mb-2")}>
           {date}
         </AppText>
-
-        {/* Registration Text */}
-        <AppText style={tailwind("text-xs font-extrabold text-purple-600")}>
+        <AppText style={tailwind("text-md font-extrabold ")}>
           {registrationText}
         </AppText>
       </View>

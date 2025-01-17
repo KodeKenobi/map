@@ -6,18 +6,17 @@ import ButtonComponent from "./ButtonComponent";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 import CheckboxComponent from "./CheckboxComponent";
 
-export default function OnboardingScreen({ navigation }: { navigation: any }) {
+export default function WellnessOnboarding({
+  navigation,
+}: {
+  navigation: any;
+}) {
   const tailwind = useTailwind();
   const [items, setItems] = useState([
     { label: "Wellness: Heal, rejuvenate, and thrive", checked: true },
-    {
-      label: "Wisdom: Unlock your potential with coaching and mindfulness.",
-      checked: false,
-    },
-    {
-      label: "Wealth: Take bold steps toward financial independence.",
-      checked: false,
-    },
+    { label: "Nutrition: Eat well for a better life", checked: false },
+    { label: "Fitness: Stay active and healthy", checked: false },
+    { label: "Mental Health: Focus on your well-being", checked: false },
   ]);
 
   const handleToggle = (index: number) => {
@@ -46,22 +45,22 @@ export default function OnboardingScreen({ navigation }: { navigation: any }) {
         </TouchableOpacity>
         <View style={tailwind("mb-4 mt-8")}>
           <Image
-            source={require("../assets/images/woman-checklist 1.png")}
-            style={{ width: 222, height: 222 }}
+            source={require("../assets/images/wellness-onboarding-image.png")}
+            style={{ width: 300, height: 300 }}
           />
         </View>
         <AppText style={tailwind("text-2xl font-bold mb-2 mt-2 text-gray-800")}>
-          Personalise Your Journey
+          Personalize Your Wellness Journey
         </AppText>
         <AppText style={tailwind("text-center mt-2 mb-4 text-gray-800")}>
-          Choose your focus areas to tailor your experience. You can select one
-          or more areas to explore
+          Choose your focus areas to tailor your wellness experience. You can
+          select one or more areas to explore.
         </AppText>
-        <CheckboxComponent items={items} onToggle={handleToggle} />
+        <CheckboxComponent items={items} onToggle={handleToggle} checkedBackgroundColor="bg-w3-green-grad-1" checkboxBackgroundColor="#228564" />
         <ButtonComponent
           title="Continue"
-          color="bg-w3-purple"
-          onPress={() => navigation.navigate("Login")}
+          color="bg-w3-green"
+          onPress={() => navigation.navigate("WellnessHome")}
         />
         <TouchableOpacity
           style={{
@@ -78,6 +77,7 @@ export default function OnboardingScreen({ navigation }: { navigation: any }) {
             alignItems: "center",
             justifyContent: "center",
           }}
+          onPress={() => navigation.navigate("WellnessHome")} // Option to skip
         >
           <Text
             style={{
@@ -88,7 +88,7 @@ export default function OnboardingScreen({ navigation }: { navigation: any }) {
               marginLeft: 10,
             }}
           >
-            Skip Personalisation
+            Skip Personalization
           </Text>
         </TouchableOpacity>
       </View>

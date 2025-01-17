@@ -1,37 +1,14 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+// import React from "react";
+// import { View, Text, StyleSheet } from "react-native";
 
-const Recommendations = () => (
-  <View style={styles.recommendations}>
-    <Text style={styles.recommendationsTitle}>
-      Personalised Recommendations
-    </Text>
-    <View style={styles.recommendationCard}>
-      <Text style={styles.recommendationText}>Top pick</Text>
-      <Text style={styles.recommendationText}>
-        IV Drip for Boosting Immunity
-      </Text>
-    </View>
-  </View>
-);
+// const Recommendations = () => (
+//   <View className="flex-1">
+//     <Text className="text-2xl font-bold">Personalised Recommendations</Text>
+//     <View className="bg-gray-200 p-4 rounded-md mt-2">
+//       <Text className="text-center">Top pick</Text>
+//       <Text className="text-center">IV Drip for Boosting Immunity</Text>
+//     </View>
+//   </View>
+// );
 
-const styles = StyleSheet.create({
-  recommendations: {
-    marginTop: 20,
-  },
-  recommendationsTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  recommendationCard: {
-    backgroundColor: "#ffe0b2",
-    padding: 16,
-    borderRadius: 8,
-    marginTop: 10,
-  },
-  recommendationText: {
-    fontSize: 16,
-  },
-});
-
-export default Recommendations;
+// export default Recommendations;

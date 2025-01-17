@@ -13,11 +13,17 @@ interface CheckboxItem {
 interface CheckboxComponentProps {
   items: CheckboxItem[];
   onToggle: (index: number) => void;
+  checkedBackgroundColor?: string;
+  checkboxBackgroundColor?: string;
+  fontColor?: string;
 }
 
 const CheckboxComponent: React.FC<CheckboxComponentProps> = ({
   items,
   onToggle,
+  checkedBackgroundColor = "bg-w3-gold",
+  checkboxBackgroundColor= "bg-w3-green",
+  fontColor = "#000",
 }) => {
   const tailwind = useTailwind();
 
@@ -27,23 +33,23 @@ const CheckboxComponent: React.FC<CheckboxComponentProps> = ({
         <View key={index} style={tailwind("flex-row items-center mb-4")}>
           <View
             style={tailwind(
-              `flex-row items-center bg-gray-200 p-2 rounded-md w-full ${
-                item.checked ? "bg-w3-gold-1" : ""
+              `flex-row items-center bg-gray-200 p-4 rounded-md w-full ${
+                item.checked ? checkedBackgroundColor : ""
               }`
             )}
           >
             <Checkbox
-              style={[tailwind("mr-2"), { width: 24, height: 24 }]}
+              style={[tailwind("mr-20"), { width: 24, height: 24 }]}
               value={item.checked}
               onValueChange={() => onToggle(index)}
-              color={item.checked ? "green" : "black"}
+              color={item.checked ? checkboxBackgroundColor : ""}
             />
             <TouchableOpacity
               onPress={() => onToggle(index)}
               activeOpacity={0.7}
               style={tailwind("flex-1")}
             >
-              <AppText style={tailwind("text-base text-gray-600")}>
+              <AppText style={tailwind("text-base text-gray-600 px-2")}>
                 {item.label}
               </AppText>
             </TouchableOpacity>

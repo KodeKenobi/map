@@ -68,14 +68,14 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
       </AppText>
       <TextInput
         style={styles.input}
-        placeholder="email"
+        placeholder="Email"
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
       />
       <TextInput
         style={styles.input}
-        placeholder="password"
+        placeholder="Password"
         secureTextEntry
         value={password}
         onChangeText={setPassword}

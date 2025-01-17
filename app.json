@@ -37,7 +37,7 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/SFPRODISPLAYREGULAR.OTF"]
+          "fonts": ["./assets/fonts/regular.ttf"]
         }
       ]
     ],

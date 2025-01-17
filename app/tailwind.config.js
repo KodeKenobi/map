@@ -6,6 +6,9 @@ module.exports = {
     "App.tsx",
     "./assets/fonts/regular.ttf",
     "_layout.tsx",
+    "./app/**/*.{html,tsx}",
+    "index.tsx",
+    "layout.tsx",
   ],
   theme: {
     extend: {
@@ -15,16 +18,9 @@ module.exports = {
         "wellness-purple": "#7345B6",
         "green-40": "#699E58",
         "green-20": "#699E58",
-        "border-grey-2": "#C0C0C0",
-        "grey-text-2": "#B1B1B1",
-        "grey-hover": "#C0C0C0",
-        white: "#FFFFFF",
-        "w3-purple": "#7345B6",
-        "w3-gold-1": "#F9CF67",
-        "w3-green-grad-1": "#76B8A2",
-        "w3-text": "#141414",
-        "w3-green-primary": "#228565",
-        "w3-green-grad-2": "#76B8A2",
+        "border-gray-100": "#F9F9F9",
+        "border-gray-200": "#E5E7EB",
+        "": "#6B46C1",
       },
       fontFamily: {
         sans: ["regular"],
@@ -35,6 +31,15 @@ module.exports = {
       },
       margin: {
         tab: "3.5rem",
+      },
+      lineHeight: {
+        5: "1.25rem",
+      },
+      fontSize: {
+        xs: "0.75rem",
+      },
+      fontWeight: {
+        extrabold: "800",
       },
     },
   },

@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import HomeCardComponent from "./HomeCardComponent";
 import { useTailwind } from "tailwind-rn";
 
@@ -22,17 +22,19 @@ const HorizontalCardScroll: React.FC<HorizontalCardScrollProps> = ({
   return (
     <ScrollView horizontal style={{ padding: 10 }}>
       {cards.map((card, index) => (
-        <HomeCardComponent
-          key={index}
-          imageUrl={card.imageUrl}
-          title={card.title}
-          date={card.date}
-          registrationText={card.registrationText}
-          backgroundColor={
-            card.backgroundColor ||
-            (tailwind("bg-w3-purple-opacity").backgroundColor as string)
-          }
-        />
+        <View style={tailwind("mr-24")}>
+          <HomeCardComponent
+            key={index}
+            imageUrl={card.imageUrl}
+            title={card.title}
+            date={card.date}
+            registrationText={card.registrationText}
+            backgroundColor={
+              card.backgroundColor ||
+              (tailwind("bg-w3-purple-opacity").backgroundColor as string)
+            }
+          />
+        </View>
       ))}
     </ScrollView>
   );

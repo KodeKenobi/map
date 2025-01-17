@@ -16,6 +16,10 @@ import { TailwindProvider } from "tailwind-rn";
 import utilities from "@/app/tailwind.json";
 import OnboardingScreen from "@/components/OnboardingScreen";
 import ForgotPassword from "@/components/ForgotPassword";
+import ProfileComponent from "@/components/ProfileComponent";
+import WellnessWelcomeScreen from "@/components/WellnessWelcomeScreen";
+import WellnessOnboardingComponent from "@/components/WellnessOnboardingComponent";
+import WellnessHome from "@/components/WellnessHome";
 
 const TailwindProviderFix = TailwindProvider as any;
 
@@ -78,6 +82,19 @@ export default function RootLayout() {
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+          <Stack.Screen name="Profile" component={ProfileComponent} />
+          <Stack.Screen
+            name="WellnessWelcome"
+            component={WellnessWelcomeScreen}
+          />
+          <Stack.Screen
+            name="WellnessOnboarding"
+            component={WellnessOnboardingComponent}
+          />
+                    <Stack.Screen
+            name="WellnessHome"
+            component={WellnessHome}
+          />
         </Stack.Navigator>
       </TailwindProviderFix>
     </ThemeProvider>

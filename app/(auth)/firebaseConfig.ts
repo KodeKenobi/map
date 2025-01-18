@@ -3,26 +3,26 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getAnalytics, isSupported } from "firebase/analytics";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  FIREBASE_API_KEY,
-  FIREBASE_AUTH_DOMAIN,
-  FIREBASE_DATABASE_URL,
-  FIREBASE_PROJECT_ID,
-  FIREBASE_STORAGE_BUCKET,
-  FIREBASE_MESSAGING_SENDER_ID,
-  FIREBASE_APP_ID,
-  FIREBASE_MEASUREMENT_ID,
-} from "@env";
+// import {
+//   FIREBASE_API_KEY,
+//   FIREBASE_AUTH_DOMAIN,
+//   FIREBASE_DATABASE_URL,
+//   FIREBASE_PROJECT_ID,
+//   FIREBASE_STORAGE_BUCKET,
+//   FIREBASE_MESSAGING_SENDER_ID,
+//   FIREBASE_APP_ID,
+//   FIREBASE_MEASUREMENT_ID,
+// } from "@env";
 
 const firebaseConfig = {
-  apiKey: FIREBASE_API_KEY,
-  authDomain: FIREBASE_AUTH_DOMAIN,
-  databaseURL: FIREBASE_DATABASE_URL,
-  projectId: FIREBASE_PROJECT_ID,
-  storageBucket: FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
-  appId: FIREBASE_APP_ID,
-  measurementId: FIREBASE_MEASUREMENT_ID,
+  apiKey: "AIzaSyC_N1k2JZCJu6xnqGqZayLvE5LNKDF3oKI",
+  authDomain: "wellness-67f28.firebaseapp.com",
+  databaseURL: "https://wellness-67f28-default-rtdb.firebaseio.com",
+  projectId: "wellness-67f28",
+  storageBucket: "wellness-67f28.appspot.com",
+  messagingSenderId: "1018888888888",
+  appId: "1:1018888888888:web:1234567890",
+  measurementId: "G-measurement-id",
 };
 
 const app = initializeApp(firebaseConfig);

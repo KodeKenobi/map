@@ -7,7 +7,7 @@ node_modules/
 .expo/
 dist/
 web-build/
-expo-env.d.ts
+expo-env.d.ts/
 
 /android
 /ios
@@ -41,3 +41,6 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+package-lock.json
+.package-lock.json

@@ -4,7 +4,7 @@ import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import * as Font from "expo-font";
 import SplashScreenComponent from "@/components/SplashScreen";
 import WelcomeScreen from "@/components/WelcomeScreen";
-// import { useColorScheme } from "@/components/useColorScheme";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import "../styles/tailwind.css";
 import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "@/components/LoginScreen";
@@ -26,7 +26,7 @@ const TailwindProviderFix = TailwindProvider as any;
 const Stack = createStackNavigator();
 
 export default function RootLayout() {
-  // const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme();
   const [isSplashFinished, setSplashFinished] = useState(false);
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [initialRoute, setInitialRoute] = useState("Welcome");
@@ -64,29 +64,36 @@ export default function RootLayout() {
   }
 
   return (
-    <TailwindProviderFix utilities={utilities}>
-      <StatusBar hidden={false} backgroundColor={"white"} translucent={true} />
-      <Stack.Navigator
-        initialRouteName={initialRoute}
-        screenOptions={{ headerShown: false }}
-      >
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        <Stack.Screen name="Profile" component={ProfileComponent} />
-        <Stack.Screen
-          name="WellnessWelcome"
-          component={WellnessWelcomeScreen}
+    <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
+      <TailwindProviderFix utilities={utilities}>
+        <StatusBar
+          hidden={false}
+          backgroundColor={"white"}
+          barStyle={colorScheme === "dark" ? "dark-content" : "light-content"}
+          translucent={true}
         />
-        <Stack.Screen
-          name="WellnessOnboarding"
-          component={WellnessOnboardingComponent}
-        />
-        <Stack.Screen name="WellnessHome" component={WellnessHome} />
-      </Stack.Navigator>
-    </TailwindProviderFix>
+        <Stack.Navigator
+          initialRouteName={initialRoute}
+          screenOptions={{ headerShown: false }}
+        >
+          <Stack.Screen name="Welcome" component={WelcomeScreen} />
+          <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+          <Stack.Screen name="Profile" component={ProfileComponent} />
+          <Stack.Screen
+            name="WellnessWelcome"
+            component={WellnessWelcomeScreen}
+          />
+          <Stack.Screen
+            name="WellnessOnboarding"
+            component={WellnessOnboardingComponent}
+          />
+          <Stack.Screen name="WellnessHome" component={WellnessHome} />
+        </Stack.Navigator>
+      </TailwindProviderFix>
+    </ThemeProvider>
   );
 }

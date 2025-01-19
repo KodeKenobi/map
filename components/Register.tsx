@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TextInput, Text, TouchableOpacity } from "react-native";
+import { View, TextInput, TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
 import { Register } from "../app/(auth)/auth";
 import { Ionicons } from "@expo/vector-icons";

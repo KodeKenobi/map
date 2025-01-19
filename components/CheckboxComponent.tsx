@@ -22,7 +22,7 @@ const CheckboxComponent: React.FC<CheckboxComponentProps> = ({
   items,
   onToggle,
   checkedBackgroundColor = "bg-w3-gold",
-  checkboxBackgroundColor= "bg-w3-green",
+  checkboxBackgroundColor = "bg-w3-green",
   fontColor = "#000",
 }) => {
   const tailwind = useTailwind();
@@ -49,7 +49,10 @@ const CheckboxComponent: React.FC<CheckboxComponentProps> = ({
               activeOpacity={0.7}
               style={tailwind("flex-1")}
             >
-              <AppText style={tailwind("text-base text-gray-600 px-2")}>
+              <AppText
+                style={tailwind("text-base text-gray-600 px-2 font-semibold")}
+                fontColor={fontColor}
+              >
                 {item.label}
               </AppText>
             </TouchableOpacity>

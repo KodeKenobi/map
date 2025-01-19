@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Image, TouchableOpacity, Text } from "react-native";
+import React, { useRef, useEffect } from "react";
+import { View, Image, Animated } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
@@ -7,8 +7,23 @@ import ButtonComponent from "./ButtonComponent";
 export default function WelcomeScreen({ navigation }: { navigation: any }) {
   const tailwind = useTailwind();
 
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
+
   return (
-    <View style={tailwind("flex-1 justify-start items-center p-5")}>
+    <Animated.View
+      style={[
+        tailwind("flex-1 justify-start items-center p-5"),
+        { opacity: fadeAnim },
+      ]}
+    >
       <View style={tailwind("mb-4 mt-14")}>
         <Image
           source={require("../assets/images/happy-african-woman.png")}
@@ -33,6 +48,6 @@ export default function WelcomeScreen({ navigation }: { navigation: any }) {
           onPress={() => navigation.navigate("Onboarding")}
         />
       </View>
-    </View>
+    </Animated.View>
   );
 }

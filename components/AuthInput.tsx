@@ -1,5 +1,6 @@
 import React from "react";
-import { View, TextInput, Text, StyleSheet } from "react-native";
+import { View, TextInput, StyleSheet } from "react-native";
+import AppText from "./AppText";
 
 type AuthInputProps = {
   label: string;
@@ -18,7 +19,7 @@ export default function AuthInput({
 }: AuthInputProps) {
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      <AppText style={styles.label}>{label}</AppText>
       <TextInput
         style={styles.input}
         value={value}

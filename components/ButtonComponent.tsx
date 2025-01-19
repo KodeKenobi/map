@@ -1,5 +1,6 @@
-import { TouchableOpacity, Text } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { useTailwind } from "tailwind-rn";
+import AppText from "./AppText";
 
 export default function ButtonComponent({
   title,
@@ -19,7 +20,7 @@ export default function ButtonComponent({
       onPress={onPress}
       style={[tailwind(`w-full self-center p-4 rounded-full ${color}`)]}
     >
-      <Text
+      <AppText
         style={{
           textAlign: "center",
           color: textColor || "#FFFFFF",
@@ -28,7 +29,7 @@ export default function ButtonComponent({
         }}
       >
         {title}
-      </Text>
+      </AppText>
     </TouchableOpacity>
   );
 }

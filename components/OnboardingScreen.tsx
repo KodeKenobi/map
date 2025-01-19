@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Image, TouchableOpacity, Text, ScrollView } from "react-native";
+import { View, Image, TouchableOpacity, ScrollView } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
@@ -9,7 +9,7 @@ import CheckboxComponent from "./CheckboxComponent";
 export default function OnboardingScreen({ navigation }: { navigation: any }) {
   const tailwind = useTailwind();
   const [items, setItems] = useState([
-    { label: "Wellness: Heal, rejuvenate, and thrive", checked: true },
+    { label: "Wellness: Heal, rejuvenate, and thrive", checked: false },
     {
       label: "Wisdom: Unlock your potential with coaching and mindfulness.",
       checked: false,
@@ -38,13 +38,15 @@ export default function OnboardingScreen({ navigation }: { navigation: any }) {
   return (
     <ScrollView>
       <View style={tailwind("flex-1 justify-start items-center p-5")}>
-        <TouchableOpacity
-          style={tailwind("absolute left-4 top-4")}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
-        <View style={tailwind("mb-4 mt-8")}>
+        <View style={tailwind("absolute mt-12 top-4 left-4")}>
+          <TouchableOpacity
+            style={tailwind("absolute left-2 top-2 p-2")}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
+        </View>
+        <View style={tailwind("mb-4 mt-16")}>
           <Image
             source={require("../assets/images/woman-checklist 1.png")}
             style={{ width: 222, height: 222 }}
@@ -57,7 +59,12 @@ export default function OnboardingScreen({ navigation }: { navigation: any }) {
           Choose your focus areas to tailor your experience. You can select one
           or more areas to explore
         </AppText>
-        <CheckboxComponent items={items} onToggle={handleToggle} />
+        <CheckboxComponent
+          items={items}
+          onToggle={handleToggle}
+          checkboxBackgroundColor="#7345B6"
+          fontColor="#000"
+        />
         <ButtonComponent
           title="Continue"
           color="bg-w3-purple"
@@ -79,7 +86,7 @@ export default function OnboardingScreen({ navigation }: { navigation: any }) {
             justifyContent: "center",
           }}
         >
-          <Text
+          <AppText
             style={{
               color: "#000",
               textAlign: "center",
@@ -89,7 +96,7 @@ export default function OnboardingScreen({ navigation }: { navigation: any }) {
             }}
           >
             Skip Personalisation
-          </Text>
+          </AppText>
         </TouchableOpacity>
       </View>
     </ScrollView>

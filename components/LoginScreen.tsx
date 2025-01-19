@@ -1,17 +1,11 @@
-import React, { useState } from "react";
-import {
-  View,
-  TextInput,
-  Button,
-  Text,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, TextInput, TouchableOpacity, Image } from "react-native";
 import { StyleSheet } from "react-native";
 import AppText from "./AppText";
 import { Login } from "@/app/(auth)/auth";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
+import Toast from "react-native-toast-message";
 // import {
 //   GoogleSignin,
 //   GoogleSigninButton,
@@ -21,6 +15,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
   const tailwind = useTailwind();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   // const GoogleSignIn = () => {
   //   const signIn = async () => {
@@ -43,150 +38,175 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
   const handleLogin = async () => {
     try {
       await Login(email, password);
-      alert("Login successful");
+      Toast.show({
+        text1: "Login successful",
+        position: "bottom",
+        visibilityTime: 3000,
+        autoHide: true,
+        type: "success",
+      });
       navigation.navigate("Home");
     } catch (error) {
       alert((error as Error).message);
     }
   };
 
+  useEffect(() => {
+    // No need to set ref here
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <View style={tailwind("mb-4 mt-14 items-center")}>
-        <Image
-          source={require("../assets/images/logo.png")}
-          style={{ width: 296, height: 146 }}
-        />
-      </View>
+    <>
+      <View style={styles.container}>
+        <View style={tailwind("mb-4 mt-14 items-center")}>
+          <Image
+            source={require("../assets/images/logo.png")}
+            style={{ width: 296, height: 146 }}
+          />
+        </View>
 
-      <AppText
-        style={tailwind(
-          "text-2xl font-bold mb-6 mt-6 text-gray-800 text-center"
-        )}
-      >
-        Welcome back
-      </AppText>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      ></TextInput>
-      <TouchableOpacity
-        style={styles.forgotPassword}
-        onPress={() => navigation.navigate("ForgotPassword")}
-      >
-        <Text>Forgot password?</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={handleLogin}
-        style={{
-          backgroundColor: "#F9CF67",
-          width: "100%",
-          alignSelf: "center",
-          padding: 15,
-          borderRadius: 40,
-        }}
-      >
-        <Text
-          style={{
-            color: "#000",
-            textAlign: "center",
-            fontSize: 16,
-            fontWeight: "bold",
-          }}
+        <AppText
+          style={tailwind(
+            "text-2xl font-bold mb-6 mt-6 text-gray-800 text-center"
+          )}
         >
-          Login
-        </Text>
-      </TouchableOpacity>
-
-      <Text style={styles.orText}>or</Text>
-
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Login")}
-        style={{
-          backgroundColor: "#7345B6",
-          width: "100%",
-          alignSelf: "center",
-          padding: 15,
-          borderRadius: 40,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Ionicons name="logo-facebook" size={24} color="white" />
-        <Text
-          style={{
-            color: "#fff",
-            textAlign: "center",
-            fontSize: 16,
-            fontWeight: "bold",
-            marginLeft: 10,
-          }}
-        >
-          Login with Facebook
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{
-          backgroundColor: "#fff",
-          width: "100%",
-          alignSelf: "center",
-          padding: 15,
-          borderRadius: 40,
-          marginTop: 20,
-          borderColor: "#7345B6",
-          borderWidth: 1,
-          marginBottom: 20,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Ionicons name="logo-google" size={24} color="#DB4437" />
-        <Text
-          style={{
-            color: "#000",
-            textAlign: "center",
-            fontSize: 16,
-            fontWeight: "bold",
-            marginLeft: 10,
-          }}
-        >
-          Login with Google
-        </Text>
-      </TouchableOpacity>
-
-      <View
-        style={{
-          width: "100%",
-          alignSelf: "center",
-          padding: 15,
-          marginTop: 20,
-          marginBottom: 20,
-          flexDirection: "row",
-          justifyContent: "center",
-        }}
-      >
-        <AppText style={tailwind("text-base text-gray-800")}>
-          Don't have an account?{" "}
+          Welcome back
         </AppText>
-        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-          <AppText style={tailwind("text-base text-gray-800 font-semibold")}>
-            Sign up
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <View style={{ position: "relative" }}>
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            secureTextEntry={!isPasswordVisible}
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TouchableOpacity
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            style={{ position: "absolute", right: 10, top: 15 }}
+          >
+            <MaterialIcons
+              name={isPasswordVisible ? "visibility" : "visibility-off"}
+              size={24}
+              color="gray"
+            />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+          style={styles.forgotPassword}
+          onPress={() => navigation.navigate("ForgotPassword")}
+        >
+          <AppText>Forgot password?</AppText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleLogin}
+          style={{
+            backgroundColor: "#F9CF67",
+            width: "100%",
+            alignSelf: "center",
+            padding: 15,
+            borderRadius: 40,
+          }}
+        >
+          <AppText
+            style={{
+              color: "#000",
+              textAlign: "center",
+              fontSize: 16,
+              fontWeight: "bold",
+            }}
+          >
+            Login
           </AppText>
         </TouchableOpacity>
+
+        <AppText style={styles.orText}>or</AppText>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Login")}
+          style={{
+            backgroundColor: "#7345B6",
+            width: "100%",
+            alignSelf: "center",
+            padding: 15,
+            borderRadius: 40,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Ionicons name="logo-facebook" size={24} color="white" />
+          <AppText
+            style={{
+              color: "#fff",
+              textAlign: "center",
+              fontSize: 16,
+              fontWeight: "bold",
+              marginLeft: 10,
+            }}
+          >
+            Login with Facebook
+          </AppText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#fff",
+            width: "100%",
+            alignSelf: "center",
+            padding: 15,
+            borderRadius: 40,
+            marginTop: 20,
+            borderColor: "#7345B6",
+            borderWidth: 1,
+            marginBottom: 20,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Ionicons name="logo-google" size={24} color="#DB4437" />
+          <AppText
+            style={{
+              color: "#000",
+              textAlign: "center",
+              fontSize: 16,
+              fontWeight: "bold",
+              marginLeft: 10,
+            }}
+          >
+            Login with Google
+          </AppText>
+        </TouchableOpacity>
+
+        <View
+          style={{
+            width: "100%",
+            alignSelf: "center",
+            padding: 15,
+            marginTop: 20,
+            marginBottom: 20,
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+        >
+          <AppText style={tailwind("text-base text-gray-800")}>
+            Don't have an account?{" "}
+          </AppText>
+          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+            <AppText style={tailwind("text-base text-gray-800 font-semibold")}>
+              Sign up
+            </AppText>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+      <Toast />
+    </>
   );
 }
 

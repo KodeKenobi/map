@@ -6,10 +6,11 @@ interface AppTextProps {
   style?: TextStyle;
   numberOfLines?: number;
   ellipsizeMode?: "head" | "middle" | "tail";
+  fontColor?: string;
 }
 
-const AppText: React.FC<AppTextProps> = ({ children, style }) => {
-  return <Text style={style}>{children}</Text>;
+const AppText: React.FC<AppTextProps> = ({ children, style, fontColor }) => {
+  return <Text style={[style, { color: fontColor }]}>{children}</Text>;
 };
 
 export default AppText;

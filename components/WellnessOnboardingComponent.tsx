@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Image, TouchableOpacity, Text, ScrollView } from "react-native";
+import { View, Image, TouchableOpacity, ScrollView } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
@@ -37,13 +37,15 @@ export default function WellnessOnboarding({
   return (
     <ScrollView>
       <View style={tailwind("flex-1 justify-start items-center p-5")}>
-        <TouchableOpacity
-          style={tailwind("absolute left-4 top-4")}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
-        <View style={tailwind("mb-4 mt-8")}>
+        <View style={tailwind("absolute mt-12 top-4 left-4")}>
+          <TouchableOpacity
+            style={tailwind("absolute left-2 top-2 p-2")}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
+        </View>
+        <View style={tailwind("mb-4 mt-16")}>
           <Image
             source={require("../assets/images/wellness-onboarding-image.png")}
             style={{ width: 300, height: 300 }}
@@ -56,7 +58,12 @@ export default function WellnessOnboarding({
           Choose your focus areas to tailor your wellness experience. You can
           select one or more areas to explore.
         </AppText>
-        <CheckboxComponent items={items} onToggle={handleToggle} checkedBackgroundColor="bg-w3-green-grad-1" checkboxBackgroundColor="#228564" />
+        <CheckboxComponent
+          items={items}
+          onToggle={handleToggle}
+          checkedBackgroundColor="bg-w3-green-grad-1"
+          checkboxBackgroundColor="#228564"
+        />
         <ButtonComponent
           title="Continue"
           color="bg-w3-green"
@@ -79,7 +86,7 @@ export default function WellnessOnboarding({
           }}
           onPress={() => navigation.navigate("WellnessHome")} // Option to skip
         >
-          <Text
+          <AppText
             style={{
               color: "#000",
               textAlign: "center",
@@ -89,7 +96,7 @@ export default function WellnessOnboarding({
             }}
           >
             Skip Personalization
-          </Text>
+          </AppText>
         </TouchableOpacity>
       </View>
     </ScrollView>

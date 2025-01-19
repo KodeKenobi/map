@@ -1,10 +1,32 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, TouchableOpacity, StyleSheet, Image } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Octicons from "@expo/vector-icons/Octicons";
+import AppText from "./AppText";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 const BottomNav = ({ navigation }: { navigation: any }) => {
   const [activeTab, setActiveTab] = useState("Home");
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const currentRoute =
+        navigation.getState().routes[navigation.getState().index].name;
+      console.log("Current Route:", currentRoute); // Debugging line
+      setActiveTab(currentRoute);
+    }, [navigation])
+  );
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("state", () => {
+      const currentRoute =
+        navigation.getState().routes[navigation.getState().index].name;
+      console.log("State Change - Current Route:", currentRoute); // Debugging line
+      setActiveTab(currentRoute);
+    });
+
+    return unsubscribe; // Cleanup the listener on unmount
+  }, [navigation]);
 
   return (
     <View style={styles.bottomNav}>
@@ -25,7 +47,7 @@ const BottomNav = ({ navigation }: { navigation: any }) => {
           color="black"
           style={{ marginTop: 12 }}
         />
-        <Text style={styles.navText}>Home</Text>
+        <AppText style={styles.navText}>Home</AppText>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
@@ -47,7 +69,7 @@ const BottomNav = ({ navigation }: { navigation: any }) => {
           }}
           source={require("../assets/images/wellness-nav-icon.png")}
         />
-        <Text style={styles.navText}>Wellness</Text>
+        <AppText style={styles.navText}>Wellness</AppText>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
@@ -69,7 +91,7 @@ const BottomNav = ({ navigation }: { navigation: any }) => {
           }}
           source={require("../assets/images/wisdom-nav-icon.png")}
         />
-        <Text style={styles.navText}>Wisdom</Text>
+        <AppText style={styles.navText}>Wisdom</AppText>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
@@ -91,7 +113,7 @@ const BottomNav = ({ navigation }: { navigation: any }) => {
           }}
           source={require("../assets/images/wealth-nav-icon.png")}
         />
-        <Text style={styles.navText}>Wealth</Text>
+        <AppText style={styles.navText}>Wealth</AppText>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
@@ -110,7 +132,7 @@ const BottomNav = ({ navigation }: { navigation: any }) => {
           color="#555"
           style={{ marginTop: 12 }}
         />
-        <Text style={styles.navText}>Profile</Text>
+        <AppText style={styles.navText}>Profile</AppText>
       </TouchableOpacity>
     </View>
   );

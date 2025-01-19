@@ -1,5 +1,6 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { TouchableOpacity, StyleSheet } from "react-native";
+import AppText from "./AppText";
 
 type AuthButtonProps = {
   title: string;
@@ -9,7 +10,7 @@ type AuthButtonProps = {
 export default function AuthButton({ title, onPress }: AuthButtonProps) {
   return (
     <TouchableOpacity style={styles.button} onPress={onPress}>
-      <Text style={styles.buttonText}>{title}</Text>
+      <AppText style={styles.buttonText}>{title}</AppText>
     </TouchableOpacity>
   );
 }

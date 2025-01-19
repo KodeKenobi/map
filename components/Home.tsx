@@ -84,13 +84,13 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
+      <Greeting
+        userName={firstName ? `${firstName}` : ""}
+        notificationCount={8}
+      />{" "}
       <ScrollView
         contentContainerStyle={[styles.scrollContainer, { paddingTop: 0 }]}
       >
-        <Greeting
-          userName={firstName ? `${firstName}` : ""}
-          notificationCount={8}
-        />{" "}
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <HorizontalCardScroll cards={cards} />
         </ScrollView>

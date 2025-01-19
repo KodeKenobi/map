@@ -1,6 +1,6 @@
 import { auth } from "../app/(auth)/firebaseConfig";
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import AppText from "./AppText";
@@ -168,7 +168,10 @@ const ProfileComponent = () => {
             </AppText>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={tailwind("flex-row items-center mt-2")} onPress={handleLogout}>
+        <TouchableOpacity
+          style={tailwind("flex-row items-center mt-2")}
+          onPress={handleLogout}
+        >
           <View style={tailwind("bg-gray-200 rounded-full p-2")}>
             <Image
               source={require("../assets/images/logout-icon.png")}

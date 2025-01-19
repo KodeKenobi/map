@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Image, StyleSheet, Text } from "react-native";
+import { View, Image, StyleSheet } from "react-native";
 import { useTailwind } from "tailwind-rn";
+import AppText from "./AppText";
 
 interface QuickAccessProps {
   iconUrl: any;
@@ -36,9 +37,9 @@ const QuickAccessCardComponent: React.FC<QuickAccessProps> = ({
       </View>
 
       <View style={tailwind("flex-1")}>
-        <Text style={[tailwind("text-sm font-bold text-black "), styles.title]}>
+        <AppText style={tailwind("text-sm font-bold text-black ")}>
           {title}
-        </Text>
+        </AppText>
       </View>
     </View>
   );

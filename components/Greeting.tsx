@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, ActivityIndicator } from "react-native";
+import { View, Image, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
@@ -39,39 +39,40 @@ const Greeting = ({
 
   return (
     <View
-      style={tailwind("flex-row items-center justify-between p-4 bg-white")}
+      style={tailwind(
+        "flex-row items-center justify-between p-4 bg-white mt-8"
+      )}
     >
-        <View className="flex-row items-center justify-center">
+      <View className="flex-row items-center justify-center">
+        <View
+          style={{
+            borderWidth: 4,
+            borderColor: "#999",
+            borderRadius: 160,
+            overflow: "hidden",
+          }}
+        >
           <View
             style={{
-              borderWidth: 4,
-              borderColor: "#999",
-              borderRadius: 160,
-              overflow: "hidden",
+              padding: 6,
+              backgroundColor: "white",
+              borderRadius: 10,
             }}
           >
-            <View
+            <Image
+              source={require("../assets/images/logo.png")}
               style={{
-                padding: 10,
-                backgroundColor: "white",
-                borderRadius: 160,
+                width: 40,
+                height: 40,
+                borderRadius: 10,
+                borderColor: "rgba(153, 153, 153, 0.1)",
+                borderWidth: 0.2,
               }}
-            >
-              <Image
-                source={require("../assets/images/logo.png")}
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 50,
-                  borderColor: "rgba(153, 153, 153, 0.1)",
-                  borderWidth: 1,
-                }}
-                resizeMode="contain"
-              />
-            </View>
+              resizeMode="contain"
+            />
           </View>
         </View>
-
+      </View>
 
       {userName ? (
         <View style={tailwind("flex-1 pl-4")}>
@@ -102,7 +103,7 @@ const Greeting = ({
             paddingVertical: 2,
           }}
         >
-          <Text
+          <AppText
             style={{
               color: "white",
               fontSize: 12,
@@ -110,7 +111,7 @@ const Greeting = ({
             }}
           >
             {notificationCount}
-          </Text>
+          </AppText>
         </View>
       </View>
     </View>

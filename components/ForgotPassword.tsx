@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, TextInput, View, StyleSheet } from "react-native";
+import { TextInput, View, StyleSheet } from "react-native";
 import AppText from "./AppText";
 import { Ionicons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
@@ -70,23 +70,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
 });
-
-// class ForgotPassword extends Component {
-
-//   render() {
-//     return (
-//       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-//         <Text>Forgot Password Screen</Text>
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Enter your phone number"
-//           keyboardType="phone-pad"
-//           value={phoneNumber}
-//           onChangeText={setPhoneNumber}
-//         />
-//       </View>
-//     );
-//   }
-// }
 
 // export default ForgotPassword;

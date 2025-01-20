@@ -20,6 +20,7 @@ import ProfileComponent from "@/components/ProfileComponent";
 import WellnessWelcomeScreen from "@/components/WellnessWelcomeScreen";
 import WellnessOnboardingComponent from "@/components/WellnessOnboardingComponent";
 import WellnessHome from "@/components/WellnessHome";
+import Notifications from "@/components/Notifications";
 
 const TailwindProviderFix = TailwindProvider as any;
 
@@ -83,6 +84,7 @@ export default function RootLayout() {
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="Profile" component={ProfileComponent} />
+          <Stack.Screen name="Notifications" component={Notifications} />
           <Stack.Screen
             name="WellnessWelcome"
             component={WellnessWelcomeScreen}

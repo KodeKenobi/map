@@ -65,7 +65,7 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === "light" ? DefaultTheme : DefaultTheme}>
       <TailwindProviderFix utilities={utilities}>
         <StatusBar
           hidden={false}

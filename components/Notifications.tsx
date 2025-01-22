@@ -55,13 +55,13 @@ const Notifications = () => {
     return (
         <View style={tailwind("flex-1 p-4")}>
             {/* Back Button and Title */}
+            <TouchableOpacity
+                style={tailwind("absolute left-0  pt-15")}
+                onPress={() => navigation.goBack()}
+            >
+                <Ionicons name="arrow-back" size={24} color="#000" />
+            </TouchableOpacity>
             <View style={tailwind("relative mt-10 mb-4")}>
-                <TouchableOpacity
-                    style={tailwind("absolute left-0 p-1")}
-                    onPress={() => navigation.goBack()}
-                >
-                    <Ionicons name="arrow-back" size={24} color="#000" />
-                </TouchableOpacity>
                 <AppText style={tailwind("text-2xl font-bold text-gray-800 text-center")}>
                     Notifications
                 </AppText>

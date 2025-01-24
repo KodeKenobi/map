@@ -19,7 +19,7 @@ const HorizontalQuickAccessCardScroll: React.FC<
   const tailwind = useTailwind();
 
   return (
-    <ScrollView horizontal style={{ padding: 10 }}>
+    <ScrollView horizontal>
       {quickAccessCards.map((card, index) => (
         <QuickAccessCardComponent
           key={index}

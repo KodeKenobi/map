@@ -28,16 +28,16 @@ const QuickAccessCardComponent: React.FC<QuickAccessProps> = ({
     >
       <View
         style={[
-          tailwind("justify-center items-center mr-3"),
+          tailwind("justify-center items-center"),
           styles.iconContainer,
-          { backgroundColor: iconBackgroundColor || "#E0E0E0" },
+          { backgroundColor: iconBackgroundColor || "#fff" },
         ]}
       >
         <Image source={iconUrl} style={styles.icon} resizeMode="contain" />
       </View>
 
-      <View style={tailwind("flex-1")}>
-        <AppText style={tailwind("text-sm font-bold text-black ")}>
+      <View style={[tailwind("justify-center items-center"), styles.title]}>
+        <AppText style={tailwind("text-sm font-bold text-black")}>
           {title}
         </AppText>
       </View>
@@ -51,16 +51,19 @@ const styles = StyleSheet.create({
     height: 100,
   },
   iconContainer: {
-    width: 60,
-    height: 60,
+    width: 56,
+    height: 56,
     borderRadius: 30,
   },
   icon: {
-    width: 36,
-    height: 36,
+    width: 32,
+    height: 32,
   },
   title: {
     flexWrap: "wrap",
+    marginRight: 8,
+    fontSize: 16,
+    fontWeight: "bold",
     marginLeft: 10,
   },
 });

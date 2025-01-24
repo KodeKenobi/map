@@ -5,6 +5,9 @@ import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 import CheckboxComponent from "./CheckboxComponent";
+import { auth } from "../app/(auth)/firebaseConfig";
+import { setDoc, doc } from "firebase/firestore";
+import { db } from "../app/(auth)/firebaseConfig";
 
 export default function WellnessOnboarding({
   navigation,
@@ -32,6 +35,21 @@ export default function WellnessOnboarding({
       checked: i === index ? newCheckedState : item.checked,
     }));
     setItems(updatedItems);
+  };
+
+  const handleCompleteOnboarding = () => {
+    const user = auth.currentUser;
+    if (user) {
+      setDoc(
+        doc(db, "users", user.uid),
+        {
+          hasCompletedWellnessOnboarding: true,
+        },
+        { merge: true }
+      );
+    }
+    console.log("Navigating to Home");
+    navigation.navigate("WellnessWelcome");
   };
 
   return (
@@ -67,7 +85,8 @@ export default function WellnessOnboarding({
         <ButtonComponent
           title="Continue"
           color="bg-w3-green"
-          onPress={() => navigation.navigate("WellnessHome")}
+          textColor="#fff"
+          onPress={handleCompleteOnboarding}
         />
         <TouchableOpacity
           style={{

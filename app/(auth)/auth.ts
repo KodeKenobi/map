@@ -8,13 +8,19 @@ import { auth } from "./firebaseConfig";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
-export const Register = async (
-  email: string,
-  password: string,
-  firstName: string,
-  lastName: string,
-  phoneNumber: string
-) => {
+export const Register = async ({
+  email,
+  password,
+  firstName,
+  lastName,
+  phoneNumber,
+}: {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+}) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -71,3 +77,5 @@ export const getUserData = async (uid: string) => {
     throw error;
   }
 };
+
+export default { Register, Login, Logout, getUserData };

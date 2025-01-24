@@ -14,16 +14,20 @@ export default function ForgotPassword() {
 
   const handleResetPassword = () => {
     console.log("Reset Password");
+    navigation.navigate("OTPCode" as never);
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={tailwind("absolute left-4 top-4")}
-        onPress={() => navigation.goBack()}
-      >
-        <Ionicons name="arrow-back" size={24} color="#000" />
-      </TouchableOpacity>
+      <View style={tailwind("absolute mt-12 top-4 left-4")}>
+        <TouchableOpacity
+          style={tailwind("absolute left-2 top-2 p-2")}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="arrow-back" size={24} color="#000" />
+        </TouchableOpacity>
+      </View>
+
       <AppText
         style={tailwind(
           "text-2xl font-bold mb-2 mt-2 text-gray-800 text-center"

@@ -45,6 +45,7 @@ export default function WelcomeScreen({ navigation }: { navigation: any }) {
         <ButtonComponent
           title="Get Started"
           color="bg-w3-purple"
+          textColor="#ffffff"
           onPress={() => navigation.navigate("Onboarding")}
         />
       </View>

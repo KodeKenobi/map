@@ -23,7 +23,7 @@ const HomeCardComponent: React.FC<HomeCardProps> = ({
   return (
     <View
       style={[
-        tailwind("p-3 rounded-lg mr-4 mb-6 border-2"),
+        tailwind("p-3 rounded-lg mr-4 mb-2border-2"),
         {
           backgroundColor: backgroundColor || "#FCFCFC",
           width: 180,

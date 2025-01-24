@@ -10,7 +10,9 @@ interface AppTextProps {
 }
 
 const AppText: React.FC<AppTextProps> = ({ children, style, fontColor }) => {
-  return <Text style={[style, { color: fontColor }]}>{children}</Text>;
+  return (
+    <Text style={[style, { color: fontColor || "#000000" }]}>{children}</Text>
+  );
 };
 
 export default AppText;

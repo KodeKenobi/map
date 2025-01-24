@@ -104,7 +104,7 @@ const Greeting = ({
             position: "absolute",
             right: 0,
             top: -5,
-            backgroundColor: "red",
+            backgroundColor: "#228565",
             borderRadius: 10,
             paddingHorizontal: 6,
             paddingVertical: 2,
@@ -116,6 +116,7 @@ const Greeting = ({
               fontSize: 12,
               fontWeight: "bold",
             }}
+            fontColor="white"
           >
             {notificationCount}
           </AppText>

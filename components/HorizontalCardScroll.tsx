@@ -20,7 +20,7 @@ const HorizontalCardScroll: React.FC<HorizontalCardScrollProps> = ({
   const tailwind = useTailwind();
 
   return (
-    <ScrollView horizontal style={{ padding: 10 }}>
+    <ScrollView horizontal>
       {cards.map((card, index) => (
         <View style={tailwind("mr-24")}>
           <HomeCardComponent

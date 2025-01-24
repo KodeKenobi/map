@@ -5,6 +5,10 @@ import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 import CheckboxComponent from "./CheckboxComponent";
+import { auth } from "@/app/(auth)/firebaseConfig";
+import { setDoc } from "firebase/firestore";
+import { db } from "@/app/(auth)/firebaseConfig";
+import { doc } from "firebase/firestore";
 
 export default function OnboardingScreen({ navigation }: { navigation: any }) {
   const tailwind = useTailwind();
@@ -33,6 +37,21 @@ export default function OnboardingScreen({ navigation }: { navigation: any }) {
       checked: i === index ? newCheckedState : item.checked,
     }));
     setItems(updatedItems);
+  };
+
+  const handleCompleteOnboarding = () => {
+    const user = auth.currentUser;
+    if (user) {
+      setDoc(
+        doc(db, "users", user.uid),
+        {
+          hasCompletedHomeOnboarding: true,
+        },
+        { merge: true }
+      );
+    }
+    console.log("Navigating to Home");
+    navigation.navigate("Home");
   };
 
   return (
@@ -68,7 +87,8 @@ export default function OnboardingScreen({ navigation }: { navigation: any }) {
         <ButtonComponent
           title="Continue"
           color="bg-w3-purple"
-          onPress={() => navigation.navigate("Login")}
+          textColor="#fff"
+          onPress={handleCompleteOnboarding}
         />
         <TouchableOpacity
           style={{

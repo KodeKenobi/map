@@ -34,6 +34,7 @@ export default function WellnessWelcomeScreen({
         <ButtonComponent
           title="Get Started"
           color="bg-w3-green"
+          textColor="#fff"
           onPress={() => navigation.navigate("WellnessOnboarding")}
         />
       </View>

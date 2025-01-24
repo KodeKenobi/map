@@ -21,6 +21,8 @@ import WellnessWelcomeScreen from "@/components/WellnessWelcomeScreen";
 import WellnessOnboardingComponent from "@/components/WellnessOnboardingComponent";
 import WellnessHome from "@/components/WellnessHome";
 import Notifications from "@/components/Notifications";
+import OTPCodeComponent from "@/components/OTPCodeComponent";
+import ResetPasswordComponent from "@/components/ResetPasswordComponent";
 
 const TailwindProviderFix = TailwindProvider as any;
 
@@ -94,6 +96,11 @@ export default function RootLayout() {
             component={WellnessOnboardingComponent}
           />
           <Stack.Screen name="WellnessHome" component={WellnessHome} />
+          <Stack.Screen name="OTPCode" component={OTPCodeComponent} />
+          <Stack.Screen
+            name="ResetPassword"
+            component={ResetPasswordComponent}
+          />
         </Stack.Navigator>
       </TailwindProviderFix>
     </ThemeProvider>

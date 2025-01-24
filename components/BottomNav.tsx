@@ -53,10 +53,10 @@ const BottomNav = ({ navigation }: { navigation: any }) => {
         style={[
           styles.navItem,
           { marginBottom: 0 },
-          activeTab === "Wellness" && styles.activeNavItem,
+          activeTab === "WellnessHome" && styles.activeNavItem,
         ]}
         onPress={() => {
-          setActiveTab("Wellness");
+          setActiveTab("WellnessHome");
           navigation.navigate("WellnessWelcome");
         }}
       >

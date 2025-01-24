@@ -55,6 +55,7 @@ const quickAccessCards = [
 const Home = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const [firstName, setFirstName] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const tailwind = useTailwind();
 
   useEffect(() => {
@@ -64,10 +65,21 @@ const Home = () => {
         if (data) {
           setFirstName(data.firstName);
         }
+        setLoading(false);
       });
-      console.log(user);
+    } else {
+      setLoading(false);
+      navigation.navigate("Login");
     }
-  }, []);
+  }, [navigation]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <AppText>Loading...</AppText>
+      </View>
+    );
+  }
 
   const handleLogout = () => {
     auth
@@ -88,32 +100,37 @@ const Home = () => {
         userName={firstName ? `${firstName}` : ""}
         notificationCount={8}
       />{" "}
-      <ScrollView
-        contentContainerStyle={[styles.scrollContainer, { paddingTop: 0 }]}
-      >
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <HorizontalCardScroll cards={cards} />
-        </ScrollView>
-        <View style={[tailwind("mt-0 ml-4")]}>
+      <ScrollView contentContainerStyle={[styles.scrollContainer]}>
+        <View style={tailwind("p-2")}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <HorizontalCardScroll cards={cards} />
+          </ScrollView>
+        </View>
+        <View style={tailwind("mt-4 mb-2 p-2")}>
           <AppText style={tailwind("text-lg font-bold")}>Quick Access</AppText>
         </View>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <HorizontalQuickAccessCardScroll
-            quickAccessCards={quickAccessCards}
-          />
-        </ScrollView>
-        <View style={tailwind("mt-0 ml-4")}>
-          <View style={[tailwind("mb-4")]}>
-            <AppText style={tailwind("text-lg font-bold")}>
-              Personalised Recommendations
-            </AppText>
-          </View>
-          <RecommendationsCard
-            iconUrl={require("../assets/images/wellness-seminar.png")}
-            title="IV Drip for Boosting Immunity >"
-            backgroundColor="rgba(115, 69, 182, 0.16)"
-            iconBackgroundColor="black"
-          />
+        <View style={tailwind("p-2")}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <HorizontalQuickAccessCardScroll
+              quickAccessCards={quickAccessCards}
+            />
+          </ScrollView>
+        </View>
+        <View style={tailwind("mt-4 mb-2 p-2")}>
+          <AppText style={tailwind("text-lg font-bold")}>
+            {" "}
+            Personalised Recommendations
+          </AppText>
+        </View>
+        <View style={tailwind("p-2")}>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <RecommendationsCard
+              iconUrl={require("../assets/images/wellness-seminar.png")}
+              title="IV Drip for Boosting Immunity >"
+              backgroundColor="rgba(115, 69, 182, 0.16)"
+              iconBackgroundColor="black"
+            />
+          </ScrollView>
         </View>
       </ScrollView>
       <BottomNav navigation={navigation} />
@@ -128,6 +145,12 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 12,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
 });
 

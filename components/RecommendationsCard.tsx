@@ -24,6 +24,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({
         tailwind("p-4 rounded-lg mr-4 mb-6 flex-row items-center"),
         styles.card,
         { backgroundColor: backgroundColor || "#FCFCFC" },
+        { padding: 10 },
       ]}
     >
       <View
@@ -36,8 +37,8 @@ const Recommendations: React.FC<RecommendationsProps> = ({
         <Image source={iconUrl} style={styles.icon} resizeMode="cover" />
       </View>
 
-      <View style={tailwind("flex-1")}>
-        <AppText style={tailwind("text-sm font-bold text-black ")}>
+      <View style={[tailwind("justify-center items-center"), styles.title]}>
+        <AppText style={tailwind("text-sm font-bold text-black")}>
           {title}
         </AppText>
       </View>

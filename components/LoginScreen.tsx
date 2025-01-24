@@ -6,6 +6,7 @@ import { Login } from "@/app/(auth)/auth";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
 import Toast from "react-native-toast-message";
+import ButtonComponent from "./ButtonComponent";
 // import {
 //   GoogleSignin,
 //   GoogleSigninButton,
@@ -51,9 +52,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
     }
   };
 
-  useEffect(() => {
-    // No need to set ref here
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -104,27 +103,13 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         >
           <AppText>Forgot password?</AppText>
         </TouchableOpacity>
-        <TouchableOpacity
+
+        <ButtonComponent
+          title="Login"
+          color="bg-w3-gold"
+          textColor="#000"
           onPress={handleLogin}
-          style={{
-            backgroundColor: "#F9CF67",
-            width: "100%",
-            alignSelf: "center",
-            padding: 15,
-            borderRadius: 40,
-          }}
-        >
-          <AppText
-            style={{
-              color: "#000",
-              textAlign: "center",
-              fontSize: 16,
-              fontWeight: "bold",
-            }}
-          >
-            Login
-          </AppText>
-        </TouchableOpacity>
+        />
 
         <AppText style={styles.orText}>or</AppText>
 
@@ -144,12 +129,12 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           <Ionicons name="logo-facebook" size={24} color="white" />
           <AppText
             style={{
-              color: "#fff",
               textAlign: "center",
               fontSize: 16,
               fontWeight: "bold",
               marginLeft: 10,
             }}
+            fontColor="#fff"
           >
             Login with Facebook
           </AppText>

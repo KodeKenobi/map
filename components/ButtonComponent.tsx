@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 
@@ -7,29 +7,41 @@ export default function ButtonComponent({
   color,
   textColor,
   onPress,
+  icon,
 }: {
   title: string;
   color: string;
   textColor?: string;
   onPress: () => void;
+  icon?: React.ReactNode;
 }) {
   const tailwind = useTailwind();
 
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[tailwind(`w-full self-center p-4 rounded-full ${color}`)]}
+      style={[
+        tailwind(
+          `w-full p-4 rounded-full ${color} items-center justify-center`
+        ),
+      ]}
     >
-      <AppText
-        style={{
-          textAlign: "center",
-          color: textColor || "#FFFFFF",
-          fontSize: 16,
-          fontWeight: "bold",
-        }}
-      >
-        {title}
-      </AppText>
+      <View style={tailwind("flex-row items-center justify-center w-full")}>
+        {icon}
+        <View style={tailwind("flex-1")}>
+          <AppText
+            style={{
+              textAlign: "center",
+              fontSize: 16,
+              fontWeight: "bold",
+              marginLeft: icon ? 5 : 0,
+            }}
+            fontColor={textColor}
+          >
+            {title}
+          </AppText>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 }

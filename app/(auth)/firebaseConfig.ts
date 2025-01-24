@@ -2,17 +2,6 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getAnalytics, isSupported } from "firebase/analytics";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-// import {
-//   FIREBASE_API_KEY,
-//   FIREBASE_AUTH_DOMAIN,
-//   FIREBASE_DATABASE_URL,
-//   FIREBASE_PROJECT_ID,
-//   FIREBASE_STORAGE_BUCKET,
-//   FIREBASE_MESSAGING_SENDER_ID,
-//   FIREBASE_APP_ID,
-//   FIREBASE_MEASUREMENT_ID,
-// } from "@env";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC_N1k2JZCJu6xnqGqZayLvE5LNKDF3oKI",
@@ -37,3 +26,4 @@ isSupported().then((supported) => {
 });
 
 export { auth, db, analytics };
+export default firebaseConfig;

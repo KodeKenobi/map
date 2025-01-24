@@ -6,11 +6,8 @@ import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { auth } from "../app/(auth)/firebaseConfig";
 import { getUserData } from "../app/(auth)/auth";
 import Greeting from "./Greeting";
-import RecommendationsCard from "./RecommendationsCard";
 import BottomNav from "./BottomNav";
 import { useTailwind } from "tailwind-rn";
-import HorizontalCardScroll from "./HorizontalCardScroll";
-import HorizontalQuickAccessCardScroll from "./HorizontalQuickAccessCardScroll";
 import AppText from "./AppText";
 import SearchComponent from "./SearchComponent";
 
@@ -57,6 +54,7 @@ const WellnessHome = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const [firstName, setFirstName] = useState<string | null>(null);
   const tailwind = useTailwind();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -64,11 +62,29 @@ const WellnessHome = () => {
       getUserData(user.uid).then((data) => {
         if (data) {
           setFirstName(data.firstName);
+          if (!data.hasCompletedWellnessOnboarding) {
+            navigation.navigate("WellnessWelcome");
+          }
         }
+        setLoading(false);
       });
-      console.log(user);
+    } else {
+      setLoading(false);
+      navigation.navigate("Login");
     }
-  }, []);
+  }, [navigation]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <View style={styles.loadingBarsContainer}>
+          <View style={styles.loadingBar} />
+          <View style={styles.loadingBar} />
+          <View style={styles.loadingBar} />
+        </View>
+      </View>
+    );
+  }
 
   const handleLogout = () => {
     auth
@@ -114,6 +130,28 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 12,
+  },
+  loadingBarsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "80%",
+  },
+  loadingBar: {
+    height: 4,
+    width: "30%",
+    backgroundColor: "#ccc",
+    borderRadius: 2,
+    overflow: "hidden",
+  },
+  loadingBarActive: {
+    backgroundColor: "#000",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
 });
 

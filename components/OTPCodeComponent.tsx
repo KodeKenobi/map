@@ -1,52 +1,78 @@
 import React, { useState } from "react";
-import { View, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  TextInput,
+  View,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+} from "react-native";
 import AppText from "./AppText";
+import { Ionicons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
-import ButtonComponent from "./ButtonComponent";
+import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import Ionicons from "@expo/vector-icons/build/Ionicons";
+import ButtonComponent from "./ButtonComponent";
 
 export default function OTPCodeComponent() {
-  const [otp, setOtp] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const navigation = useNavigation();
   const tailwind = useTailwind();
 
-  const handleSubmit = () => {
+  const handleOTPCode = () => {
     navigation.navigate("ResetPassword" as never);
   };
 
   return (
-    <View style={styles.container}>
-      <View style={tailwind("absolute mt-12 top-4 left-4")}>
-        <TouchableOpacity
-          style={tailwind("absolute left-2 top-2 p-2")}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
+    <SafeAreaView style={tailwind("flex-1")}>
+      <ScrollView>
+        <View style={tailwind("flex-1 justify-center items-center mt-14")}>
+          <View
+            style={tailwind("flex-row items-center w-full p-4 justify-between")}
+          >
+            <View style={tailwind("bg-gray-200 rounded-full p-2")}>
+              <TouchableOpacity
+                style={tailwind("flex items-center justify-center")}
+                onPress={() => {
+                  if (navigation.canGoBack()) {
+                    navigation.goBack();
+                  } else {
+                    alert("No previous screen to go back to.");
+                  }
+                }}
+              >
+                <Ionicons name="arrow-back" size={24} color="#000" />
+              </TouchableOpacity>
+            </View>
+            <AppText style={tailwind("text-xl font-bold text-center")}>
+              OTP Code
+            </AppText>
+            <View style={tailwind("w-10")} />
+          </View>
+        </View>
+        <View style={tailwind("mb-4 p-4 mt-8")}>
+          <AppText style={tailwind("text-center mb-8 ")}>
+            We have sent a the OTP code via email to your email address. Please
+            enter the code below to continue.
+          </AppText>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your phone number"
+            keyboardType="phone-pad"
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+          />
+        </View>
+      </ScrollView>
+
+      <View style={tailwind("p-4")}>
+        <ButtonComponent
+          title="Submit"
+          color="bg-w3-gold-1"
+          textColor="#000"
+          onPress={handleOTPCode}
+        />
       </View>
-      <AppText
-        style={tailwind("text-2xl font-bold mb-4 text-gray-800 text-center")}
-      >
-        Enter OTP
-      </AppText>
-      <AppText style={tailwind("text-center mb-4 text-gray-600")}>
-        Please enter the OTP sent to your registered phone number or email.
-      </AppText>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter OTP"
-        keyboardType="numeric"
-        value={otp}
-        onChangeText={setOtp}
-      />
-      <ButtonComponent
-        title="Submit"
-        color="bg-w3-gold-1"
-        textColor="#000"
-        onPress={handleSubmit}
-      />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -59,7 +85,7 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     borderColor: "#ccc",
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: 5,
     marginBottom: 15,
     paddingHorizontal: 10,

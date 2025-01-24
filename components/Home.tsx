@@ -64,6 +64,9 @@ const Home = () => {
       getUserData(user.uid).then((data) => {
         if (data) {
           setFirstName(data.firstName);
+          if (!data.hasCompletedHomeOnboarding) {
+            navigation.navigate("Home");
+          }
         }
         setLoading(false);
       });
@@ -76,7 +79,11 @@ const Home = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <AppText>Loading...</AppText>
+        <View style={styles.loadingBarsContainer}>
+          <View style={styles.loadingBar} />
+          <View style={styles.loadingBar} />
+          <View style={styles.loadingBar} />
+        </View>
       </View>
     );
   }
@@ -151,6 +158,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
+  },
+  loadingBarsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "80%",
+  },
+  loadingBar: {
+    height: 4,
+    width: "30%",
+    backgroundColor: "#ccc",
+    borderRadius: 2,
+    overflow: "hidden",
+  },
+  loadingBarActive: {
+    backgroundColor: "#000",
   },
 });
 

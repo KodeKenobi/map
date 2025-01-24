@@ -8,6 +8,7 @@ import CheckboxComponent from "./CheckboxComponent";
 import { auth } from "../app/(auth)/firebaseConfig";
 import { setDoc, doc } from "firebase/firestore";
 import { db } from "../app/(auth)/firebaseConfig";
+import { getUserData } from "@/app/(auth)/auth";
 
 export default function WellnessOnboarding({
   navigation,
@@ -40,16 +41,31 @@ export default function WellnessOnboarding({
   const handleCompleteOnboarding = () => {
     const user = auth.currentUser;
     if (user) {
+      const selectedItems = items.filter((item) => item.checked);
       setDoc(
         doc(db, "users", user.uid),
         {
           hasCompletedWellnessOnboarding: true,
+          selectedWellnessOnboardingOptions:
+            selectedItems.length > 0 ? selectedItems : null,
         },
         { merge: true }
       );
     }
     console.log("Navigating to Home");
-    navigation.navigate("WellnessWelcome");
+    navigation.navigate("WellnessHome");
+  };
+
+  const navigateToWellness = async () => {
+    const user = auth.currentUser;
+    if (user) {
+      const data = await getUserData(user.uid);
+      if (data && !data.hasWellnessOnboarding) {
+        navigation.navigate("WellnessWelcome");
+      } else {
+        navigation.navigate("WellnessHome");
+      }
+    }
   };
 
   return (
@@ -69,10 +85,10 @@ export default function WellnessOnboarding({
             style={{ width: 300, height: 300 }}
           />
         </View>
-        <AppText style={tailwind("text-2xl font-bold mb-2 mt-2 text-gray-800")}>
+        <AppText style={tailwind("text-2xl font-bold mb-2 mt-2 ")}>
           Personalize Your Wellness Journey
         </AppText>
-        <AppText style={tailwind("text-center mt-2 mb-4 text-gray-800")}>
+        <AppText style={tailwind("text-center mt-2 mb-4 ")}>
           Choose your focus areas to tailor your wellness experience. You can
           select one or more areas to explore.
         </AppText>

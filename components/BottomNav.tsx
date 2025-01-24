@@ -57,7 +57,7 @@ const BottomNav = ({ navigation }: { navigation: any }) => {
         ]}
         onPress={() => {
           setActiveTab("WellnessHome");
-          navigation.navigate("WellnessWelcome");
+          navigation.navigate("WellnessHome");
         }}
       >
         <Image

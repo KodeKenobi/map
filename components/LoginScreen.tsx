@@ -7,6 +7,8 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
 import Toast from "react-native-toast-message";
 import ButtonComponent from "./ButtonComponent";
+import { auth } from "@/app/(auth)/firebaseConfig";
+import { getUserData } from "@/app/(auth)/auth";
 // import {
 //   GoogleSignin,
 //   GoogleSigninButton,
@@ -46,7 +48,16 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         autoHide: true,
         type: "success",
       });
-      navigation.navigate("Home");
+
+      const user = auth.currentUser;
+      if (user) {
+        const data = await getUserData(user.uid);
+        if (!data || !data.hasCompletedHomeOnboarding) {
+          navigation.navigate("Welcome");
+        } else {
+          navigation.navigate("Home");
+        }
+      }
     } catch (error) {
       alert((error as Error).message);
     }
@@ -64,11 +75,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           />
         </View>
 
-        <AppText
-          style={tailwind(
-            "text-2xl font-bold mb-6 mt-6 text-gray-800 text-center"
-          )}
-        >
+        <AppText style={tailwind("text-2xl font-bold mb-6 mt-6  text-center")}>
           Welcome back
         </AppText>
         <TextInput
@@ -101,7 +108,9 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           style={styles.forgotPassword}
           onPress={() => navigation.navigate("ForgotPassword")}
         >
-          <AppText>Forgot password?</AppText>
+          <AppText style={tailwind("text-md font-semibold")}>
+            Forgot password?
+          </AppText>
         </TouchableOpacity>
 
         <ButtonComponent
@@ -180,11 +189,11 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
             justifyContent: "center",
           }}
         >
-          <AppText style={tailwind("text-base text-gray-800")}>
+          <AppText style={tailwind("text-base ")}>
             Don't have an account?{" "}
           </AppText>
           <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-            <AppText style={tailwind("text-base text-gray-800 font-semibold")}>
+            <AppText style={tailwind("text-base  font-semibold")}>
               Sign up
             </AppText>
           </TouchableOpacity>

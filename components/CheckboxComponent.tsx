@@ -39,10 +39,17 @@ const CheckboxComponent: React.FC<CheckboxComponentProps> = ({
             )}
           >
             <Checkbox
-              style={[tailwind("mr-20"), { width: 24, height: 24 }]}
+              style={[
+                tailwind("mr-20"),
+                {
+                  width: 24,
+                  height: 24,
+                  borderColor: item.checked ? checkboxBackgroundColor : "gray",
+                },
+              ]}
               value={item.checked}
               onValueChange={() => onToggle(index)}
-              color={item.checked ? checkboxBackgroundColor : ""}
+              color={item.checked ? checkboxBackgroundColor : "gray"}
             />
             <TouchableOpacity
               onPress={() => onToggle(index)}

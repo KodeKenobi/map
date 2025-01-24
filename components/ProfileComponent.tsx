@@ -1,6 +1,12 @@
 import { auth } from "../app/(auth)/firebaseConfig";
 import React, { useEffect, useState } from "react";
-import { View, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+} from "react-native";
 import { useTailwind } from "tailwind-rn";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import AppText from "./AppText";
@@ -28,7 +34,7 @@ const ProfileComponent = () => {
       .signOut()
       .then(() => {
         console.log("User logged out");
-        navigation.navigate("Login"); // Navigate to the login screen
+        navigation.navigate("Login");
       })
       .catch((error) => {
         console.error("Logout error:", error);
@@ -37,155 +43,168 @@ const ProfileComponent = () => {
   };
 
   return (
-    <View style={tailwind("flex-1 p-4")}>
-      <TouchableOpacity
-        style={tailwind("absolute left-4 top-4")}
-        onPress={() => navigation.goBack()}
-      >
-        <Ionicons name="arrow-back" size={24} color="#000" />
-      </TouchableOpacity>
-      <AppText
-        style={tailwind(
-          "text-2xl font-bold mb-2 mt-16 text-gray-800 text-center"
-        )}
-      >
-        Profile
-      </AppText>
-      <View style={tailwind("mt-8 items-center")}>
-        <View className="flex-row items-center justify-center">
+    <SafeAreaView style={tailwind("flex-1")}>
+      <ScrollView>
+        <View style={tailwind("flex-1 justify-center items-center mt-14")}>
           <View
-            style={{
-              borderWidth: 4,
-              borderColor: "#999",
-              borderRadius: 160,
-              overflow: "hidden",
-            }}
+            style={tailwind("flex-row items-center w-full p-4 justify-between")}
           >
-            <View
-              style={{
-                padding: 10,
-                backgroundColor: "white",
-                borderRadius: 160,
-              }}
-            >
-              <Image
-                source={require("../assets/images/logo.png")}
-                style={{
-                  width: 120,
-                  height: 120,
-                  borderRadius: 120,
-                  borderColor: "rgba(153, 153, 153, 0.1)",
-                  borderWidth: 1,
+            <View style={tailwind("bg-gray-200 rounded-full p-2")}>
+              <TouchableOpacity
+                style={tailwind("flex items-center justify-center")}
+                onPress={() => {
+                  if (navigation.canGoBack()) {
+                    navigation.goBack();
+                  } else {
+                    alert("No previous screen to go back to.");
+                  }
                 }}
-                resizeMode="contain"
-              />
+              >
+                <Ionicons name="arrow-back" size={24} color="#000" />
+              </TouchableOpacity>
             </View>
+            <AppText style={tailwind("text-xl font-bold text-center")}>
+              Profile
+            </AppText>
+            <View style={tailwind("w-10")} />
           </View>
         </View>
-        <AppText style={tailwind("text-2xl font-bold mt-6 text-center")}>
-          {userName || "User"}
-        </AppText>
-      </View>
+        <View style={tailwind("items-center mt-6")}>
+          <View className="flex-row items-center justify-center">
+            <View
+              style={{
+                borderWidth: 4,
+                borderColor: "#999",
+                borderRadius: 160,
+                overflow: "hidden",
+              }}
+            >
+              <View
+                style={{
+                  padding: 10,
+                  backgroundColor: "white",
+                  borderRadius: 160,
+                }}
+              >
+                <Image
+                  source={require("../assets/images/logo.png")}
+                  style={{
+                    width: 120,
+                    height: 120,
+                    borderRadius: 120,
+                    borderColor: "gray",
+                    borderWidth: 0.01,
+                  }}
+                  resizeMode="contain"
+                />
+              </View>
+            </View>
+          </View>
+          <AppText style={tailwind("text-2xl font-bold mt-6 text-center")}>
+            {userName || "User"}
+          </AppText>
+        </View>
 
-      <View style={tailwind("mt-8 items-start")}>
-        <TouchableOpacity
-          style={tailwind("flex-row items-center justify-start")}
-        >
-          <View style={tailwind("bg-gray-200 rounded-full p-2")}>
-            <Image
-              source={require("../assets/images/history-icon.png")}
-              style={tailwind("w-6 h-6")}
-            />
-          </View>
-          <View style={tailwind("flex-1")}>
-            <AppText style={tailwind("text-lg font-semibold px-8")}>
-              History
-            </AppText>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={tailwind("flex-row items-center mt-2")}>
-          <View style={tailwind("bg-gray-200 rounded-full p-2")}>
-            <Image
-              source={require("../assets/images/personal-details.png")}
-              style={tailwind("w-6 h-6")}
-            />
-          </View>
-          <View style={tailwind("flex-1")}>
-            <AppText style={tailwind("text-lg font-semibold px-8")}>
-              Personal Details
-            </AppText>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={tailwind("flex-row items-center mt-2")}>
-          <View style={tailwind("bg-gray-200 rounded-full p-2")}>
-            <Image
-              source={require("../assets/images/location-icon.png")}
-              style={tailwind("w-6 h-6")}
-            />
-          </View>
-          <View style={tailwind("flex-1")}>
-            <AppText style={tailwind("text-lg font-semibold px-8")}>
-              Location
-            </AppText>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={tailwind("flex-row items-center mt-2")}>
-          <View style={tailwind("bg-gray-200 rounded-full p-2")}>
-            <Image
-              source={require("../assets/images/payment-method-icon.png")}
-              style={tailwind("w-6 h-6")}
-            />
-          </View>
-          <View style={tailwind("flex-1")}>
-            <AppText style={tailwind("text-lg font-semibold px-8")}>
-              Payment Method
-            </AppText>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={tailwind("flex-row items-center mt-2")}>
-          <View style={tailwind("bg-gray-200 rounded-full p-2")}>
-            <Image
-              source={require("../assets/images/settings-icon.png")}
-              style={tailwind("w-6 h-6")}
-            />
-          </View>
-          <View style={tailwind("flex-1")}>
-            <AppText style={tailwind("text-lg font-semibold px-8")}>
-              Settings
-            </AppText>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={tailwind("flex-row items-center mt-2")}>
-          <View style={tailwind("bg-gray-200 rounded-full p-2")}>
-            <Image
-              source={require("../assets/images/help-icon.png")}
-              style={tailwind("w-6 h-6")}
-            />
-          </View>
-          <View style={tailwind("flex-1")}>
-            <AppText style={tailwind("text-lg font-semibold px-8")}>
-              Help
-            </AppText>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={tailwind("flex-row items-center mt-2")}
-          onPress={handleLogout}
-        >
-          <View style={tailwind("bg-gray-200 rounded-full p-2")}>
-            <Image
-              source={require("../assets/images/logout-icon.png")}
-              style={tailwind("w-6 h-6")}
-            />
-          </View>
-          <View style={tailwind("flex-1")}>
-            <AppText style={tailwind("text-lg font-semibold px-8")}>
-              Logout
-            </AppText>
-          </View>
-        </TouchableOpacity>
-      </View>
-    </View>
+        <View style={tailwind("mt-8 items-start p-4")}>
+          <TouchableOpacity
+            style={tailwind("flex-row items-center justify-start")}
+          >
+            <View style={tailwind("bg-gray-200 rounded-full p-2")}>
+              <Image
+                source={require("../assets/images/history-icon.png")}
+                style={tailwind("w-6 h-6")}
+              />
+            </View>
+            <View style={tailwind("flex-1")}>
+              <AppText style={tailwind("text-lg font-semibold px-8")}>
+                History
+              </AppText>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={tailwind("flex-row items-center mt-2")}>
+            <View style={tailwind("bg-gray-200 rounded-full p-2")}>
+              <Image
+                source={require("../assets/images/personal-details.png")}
+                style={tailwind("w-6 h-6")}
+              />
+            </View>
+            <View style={tailwind("flex-1")}>
+              <AppText style={tailwind("text-lg font-semibold px-8")}>
+                Personal Details
+              </AppText>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={tailwind("flex-row items-center mt-2")}>
+            <View style={tailwind("bg-gray-200 rounded-full p-2")}>
+              <Image
+                source={require("../assets/images/location-icon.png")}
+                style={tailwind("w-6 h-6")}
+              />
+            </View>
+            <View style={tailwind("flex-1")}>
+              <AppText style={tailwind("text-lg font-semibold px-8")}>
+                Location
+              </AppText>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={tailwind("flex-row items-center mt-2")}>
+            <View style={tailwind("bg-gray-200 rounded-full p-2")}>
+              <Image
+                source={require("../assets/images/payment-method-icon.png")}
+                style={tailwind("w-6 h-6")}
+              />
+            </View>
+            <View style={tailwind("flex-1")}>
+              <AppText style={tailwind("text-lg font-semibold px-8")}>
+                Payment Method
+              </AppText>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={tailwind("flex-row items-center mt-2")}>
+            <View style={tailwind("bg-gray-200 rounded-full p-2")}>
+              <Image
+                source={require("../assets/images/settings-icon.png")}
+                style={tailwind("w-6 h-6")}
+              />
+            </View>
+            <View style={tailwind("flex-1")}>
+              <AppText style={tailwind("text-lg font-semibold px-8")}>
+                Settings
+              </AppText>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={tailwind("flex-row items-center mt-2")}>
+            <View style={tailwind("bg-gray-200 rounded-full p-2")}>
+              <Image
+                source={require("../assets/images/help-icon.png")}
+                style={tailwind("w-6 h-6")}
+              />
+            </View>
+            <View style={tailwind("flex-1")}>
+              <AppText style={tailwind("text-lg font-semibold px-8")}>
+                Help
+              </AppText>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={tailwind("flex-row items-center mt-2")}
+            onPress={handleLogout}
+          >
+            <View style={tailwind("bg-gray-200 rounded-full p-2")}>
+              <Image
+                source={require("../assets/images/logout-icon.png")}
+                style={tailwind("w-6 h-6")}
+              />
+            </View>
+            <View style={tailwind("flex-1")}>
+              <AppText style={tailwind("text-lg font-semibold px-8")}>
+                Logout
+              </AppText>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

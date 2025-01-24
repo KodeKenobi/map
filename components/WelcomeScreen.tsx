@@ -31,12 +31,10 @@ export default function WelcomeScreen({ navigation }: { navigation: any }) {
         />
       </View>
 
-      <AppText style={tailwind("text-2xl font-bold mb-4 mt-12 text-gray-800")}>
+      <AppText style={tailwind("text-2xl font-bold mb-4 mt-12 ")}>
         Welcome to MAP-W3
       </AppText>
-      <AppText
-        style={tailwind("text-base text-center mb-4 mt-8 text-gray-800")}
-      >
+      <AppText style={tailwind("text-base text-center mb-4 mt-8 ")}>
         Discover a platform designed to ignite the potency of women. Through
         holistic wellness, mindful coaching, and economic empowerment, we're
         here to help you live a fulfilling, purposeful life.

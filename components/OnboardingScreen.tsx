@@ -41,6 +41,7 @@ export default function OnboardingScreen({ navigation }: { navigation: any }) {
 
   const handleCompleteOnboarding = () => {
     const user = auth.currentUser;
+    console.log("Current User:", user);
     if (user) {
       setDoc(
         doc(db, "users", user.uid),
@@ -48,7 +49,15 @@ export default function OnboardingScreen({ navigation }: { navigation: any }) {
           hasCompletedHomeOnboarding: true,
         },
         { merge: true }
-      );
+      )
+        .then(() => {
+          console.log("Successfully updated hasCompletedHomeOnboarding");
+        })
+        .catch((error) => {
+          console.error("Error updating document:", error);
+        });
+    } else {
+      console.log("No user is logged in.");
     }
     console.log("Navigating to Home");
     navigation.navigate("Home");

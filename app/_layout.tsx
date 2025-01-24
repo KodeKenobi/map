@@ -20,6 +20,7 @@ import ProfileComponent from "@/components/ProfileComponent";
 import WellnessWelcomeScreen from "@/components/WellnessWelcomeScreen";
 import WellnessOnboardingComponent from "@/components/WellnessOnboardingComponent";
 import WellnessHome from "@/components/WellnessHome";
+import Notifications from "@/components/Notifications";
 import OTPCodeComponent from "@/components/OTPCodeComponent";
 import ResetPasswordComponent from "@/components/ResetPasswordComponent";
 
@@ -54,7 +55,7 @@ export default function RootLayout() {
       if (user) {
         setInitialRoute("Home");
       } else {
-        setInitialRoute("Welcome");
+        setInitialRoute("Login");
       }
     });
 
@@ -66,7 +67,9 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider
+      value={colorScheme === "light" ? DefaultTheme : DefaultTheme}
+    >
       <TailwindProviderFix utilities={utilities}>
         <StatusBar
           hidden={false}
@@ -85,6 +88,7 @@ export default function RootLayout() {
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="Profile" component={ProfileComponent} />
+          <Stack.Screen name="Notifications" component={Notifications} />
           <Stack.Screen
             name="WellnessWelcome"
             component={WellnessWelcomeScreen}

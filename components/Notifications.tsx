@@ -82,7 +82,7 @@ const Notifications = () => {
                         key={notification.id}
                         style={tailwind(
                             `flex-row items-center p-4 mb-6 rounded-lg h-20 ${
-                                notification.read ? "bg-gray-200" : "bg-w3-green-grad-1"
+                                notification.read ? "bg-gray-200" : "bg-w3-purple-opacity"
                             }`
                         )}
                     >

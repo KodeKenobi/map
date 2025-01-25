@@ -173,7 +173,7 @@ const Notifications = () => {
 
         {/* See All Button */}
         <TouchableOpacity
-          style={tailwind("mt-4")}
+          style={tailwind("mt-4 mb-8")}
           onPress={() => navigation.navigate("AllNotifications")}
         >
           <AppText

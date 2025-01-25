@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {View, Image, ActivityIndicator, TouchableOpacity} from "react-native";
+import { View, Image, ActivityIndicator, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import { auth } from "@/app/(auth)/firebaseConfig";
 import { getUserData } from "@/app/(auth)/auth";
-import {NavigationProp, useNavigation} from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 const Greeting = ({
   notificationCount,
@@ -31,8 +31,7 @@ const Greeting = ({
   let greetingMessage = "Good Morning";
   const navigation = useNavigation<NavigationProp<any>>();
 
-
-    if (currentHour >= 5 && currentHour < 12) {
+  if (currentHour >= 5 && currentHour < 12) {
     greetingMessage = "Good Morning";
   } else if (currentHour >= 12 && currentHour < 17) {
     greetingMessage = "Good Afternoon";
@@ -93,11 +92,11 @@ const Greeting = ({
           style={tailwind("flex-1 pl-4")}
         />
       )}
-        {/* Notification Icon */}
-        <TouchableOpacity
-            style={tailwind("relative")}
-            onPress={() => navigation.navigate("Notifications")} // Navigate to Notifications page
-        >
+      {/* Notification Icon */}
+      <TouchableOpacity
+        style={tailwind("relative")}
+        onPress={() => navigation.navigate("Notifications")} // Navigate to Notifications page
+      >
         <Ionicons name="notifications-outline" size={26} color="black" />
         <View
           style={{
@@ -121,7 +120,7 @@ const Greeting = ({
             {notificationCount}
           </AppText>
         </View>
-        </TouchableOpacity>
+      </TouchableOpacity>
     </View>
   );
 };

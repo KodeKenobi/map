@@ -29,6 +29,7 @@ export default function tailwindConfig() {
         },
         spacing: {
           tab: "3.5rem",
+          22: "5.5rem",
         },
         margin: {
           tab: "3.5rem",

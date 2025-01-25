@@ -9,13 +9,13 @@ const SearchBar = () => {
   return (
     <View
       style={tailwind(
-        "flex-row items-center bg-gray-200 rounded-full px-4 py-2 w-full mt-4"
+        "flex-row items-center bg-gray-200 rounded-full px-4 py-2 w-full"
       )}
     >
       {/* Search Icon */}
       <Ionicons name="search" size={20} color="gray" />
 
-      {/* Text Input */}
+      {/* AppText Input */}
       <TextInput
         placeholder="Search"
         placeholderTextColor="gray"

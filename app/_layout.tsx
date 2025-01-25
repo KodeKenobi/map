@@ -23,6 +23,7 @@ import WellnessHome from "@/components/WellnessHome";
 import Notifications from "@/components/Notifications";
 import OTPCodeComponent from "@/components/OTPCodeComponent";
 import ResetPasswordComponent from "@/components/ResetPasswordComponent";
+import ConsultScreen from "@/components/ConsultScreen";
 
 const TailwindProviderFix = TailwindProvider as any;
 
@@ -103,6 +104,7 @@ export default function RootLayout() {
             name="ResetPassword"
             component={ResetPasswordComponent}
           />
+          <Stack.Screen name="Consult" component={ConsultScreen} />
         </Stack.Navigator>
       </TailwindProviderFix>
     </ThemeProvider>

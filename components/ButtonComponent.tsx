@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View, StyleProp, ViewStyle } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 
@@ -8,12 +8,14 @@ export default function ButtonComponent({
   textColor,
   onPress,
   icon,
+  style,
 }: {
   title: string;
   color: string;
   textColor?: string;
   onPress: () => void;
   icon?: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
 }) {
   const tailwind = useTailwind();
 
@@ -24,6 +26,7 @@ export default function ButtonComponent({
         tailwind(
           `w-full p-4 rounded-full ${color} items-center justify-center`
         ),
+        style,
       ]}
     >
       <View style={tailwind("flex-row items-center justify-center w-full")}>

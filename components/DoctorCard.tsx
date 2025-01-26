@@ -1,10 +1,13 @@
-import React from "react";
-import { View, Image, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, Image, TouchableOpacity, Modal } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
+import { useNavigation } from "@react-navigation/native";
 
 const DoctorCard = () => {
   const tailwind = useTailwind();
+  const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View
@@ -13,10 +16,30 @@ const DoctorCard = () => {
       )}
     >
       <View style={tailwind("flex-row justify-between items-start ")}>
-        <Image
-          source={require("../assets/images/doctor.png")}
-          style={tailwind("w-32 h-32 rounded-md")}
-        />
+        <View style={tailwind("relative")}>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <Image
+              source={require("../assets/images/doctor.png")}
+              style={{
+                ...tailwind("w-32 h-32 rounded-md"),
+                borderTopRightRadius: 12,
+              }}
+            />
+          </TouchableOpacity>
+          <View
+            style={{
+              position: "absolute",
+              top: -2,
+              right: -4,
+              width: 24,
+              height: 24,
+              backgroundColor: "green",
+              borderRadius: 12,
+              borderColor: "white",
+              borderWidth: 2,
+            }}
+          />
+        </View>
         <View style={tailwind("flex-1 ml-24")}>
           <AppText style={tailwind("text-lg font-bold")}>Dr. S. Ndou</AppText>
           <AppText style={tailwind("text-w3-green text-md")}>
@@ -47,6 +70,9 @@ const DoctorCard = () => {
         </View>
         <TouchableOpacity
           style={tailwind("bg-green-500 rounded-full px-8 py-2")}
+          onPress={() => {
+            navigation.navigate("DoctorProfile" as never);
+          }}
         >
           <AppText
             style={tailwind("text-white text-center text-md font-semibold")}
@@ -55,6 +81,32 @@ const DoctorCard = () => {
           </AppText>
         </TouchableOpacity>
       </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <TouchableOpacity
+          style={tailwind(
+            "flex-1 justify-center items-center bg-black bg-opacity-50"
+          )}
+          onPress={() => setModalVisible(false)}
+        >
+          <View style={tailwind("relative w-3/4 h-3/4")}>
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={tailwind("absolute top-4 right-4 z-10")}
+            ></TouchableOpacity>
+            <Image
+              source={require("../assets/images/doctor.png")}
+              style={tailwind("w-full h-full rounded-md")}
+              resizeMode="contain"
+            />
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };

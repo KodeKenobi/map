@@ -10,8 +10,9 @@ import AppText from "./AppText";
 import { Ionicons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
 import { TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import ButtonComponent from "./ButtonComponent";
+import BackButton from "./BackButton";
 
 export default function ForgotPassword() {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -29,20 +30,7 @@ export default function ForgotPassword() {
           <View
             style={tailwind("flex-row items-center w-full p-4 justify-between")}
           >
-            <View style={tailwind("bg-gray-200 rounded-full p-2")}>
-              <TouchableOpacity
-                style={tailwind("flex items-center justify-center")}
-                onPress={() => {
-                  if (navigation.canGoBack()) {
-                    navigation.goBack();
-                  } else {
-                    alert("No previous screen to go back to.");
-                  }
-                }}
-              >
-                <Ionicons name="arrow-back" size={24} color="#000" />
-              </TouchableOpacity>
-            </View>
+            <BackButton navigation={navigation as NavigationProp<any>} />
             <AppText style={tailwind("text-xl font-bold text-center")}>
               Forgot Password
             </AppText>

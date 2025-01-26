@@ -14,7 +14,7 @@ const ConsultScreen = () => {
   return (
     <SafeAreaView style={tailwind("flex-1")}>
       <ScrollView>
-        <View style={tailwind("flex-1 justify-center items-center mt-14")}>
+        <View style={tailwind("flex-1 justify-center items-center mt-10")}>
           <View
             style={tailwind("flex-row items-center w-full p-4 justify-between")}
           >

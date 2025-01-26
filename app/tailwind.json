@@ -306,6 +306,22 @@
       "height": 24
     }
   },
+  "h-7": {
+    "style": {
+      "height": 28
+    }
+  },
+  "h-8": {
+    "style": {
+      "height": 32
+    }
+  },
+  "h-9": {
+    "style": {
+      "height": 36
+    }
+  },
+
   "h-[100px]": {
     "style": {
       "height": 100
@@ -366,6 +382,31 @@
       "width": "20%"
     }
   },
+  "w-1/6": {
+    "style": {
+      "width": "16.666667%"
+    }
+  },
+  "w-1/7": {
+    "style": {
+      "width": "14.285714%"
+    }
+  },
+  "w-1/8": {
+    "style": {
+      "width": "12.5%"
+    }
+  },
+  "w-1/9": {
+    "style": {
+      "width": "11.111111%"
+    }
+  },
+  "w-1/10": {
+    "style": {
+      "width": "10%"
+    }
+  },
   "w-11/12": {
     "style": {
       "width": "91.666667%"
@@ -376,6 +417,11 @@
       "width": 48
     }
   },
+  "w-13": {
+    "style": {
+      "width": 52
+    }
+  },
   "w-14": {
     "style": {
       "width": 56
@@ -384,6 +430,21 @@
   "w-16": {
     "style": {
       "width": 64
+    }
+  },
+  "w-15": {
+    "style": {
+      "width": 60
+    }
+  },
+  "w-17": {
+    "style": {
+      "width": 68
+    }
+  },
+  "w-18": {
+    "style": {
+      "width": 72
     }
   },
   "w-2/5": {
@@ -409,6 +470,11 @@
   "w-3/5": {
     "style": {
       "width": "60%"
+    }
+  },
+  "w-30": {
+    "style": {
+      "width": 120
     }
   },
   "w-32": {
@@ -444,6 +510,46 @@
   "w-full": {
     "style": {
       "width": "100%"
+    }
+  },
+  "w-1": {
+    "style": {
+      "width": 4
+    }
+  },
+  "w-2": {
+    "style": {
+      "width": 8
+    }
+  },
+  "w-3": {
+    "style": {
+      "width": 12
+    }
+  },
+  "w-4": {
+    "style": {
+      "width": 16
+    }
+  },
+  "w-5": {
+    "style": {
+      "width": 20
+    }
+  },
+  "w-7": {
+    "style": {
+      "width": 28
+    }
+  },
+  "w-8": {
+    "style": {
+      "width": 32
+    }
+  },
+  "w-9": {
+    "style": {
+      "width": 36
     }
   },
   "w-10": {
@@ -1958,6 +2064,21 @@
   "mr-24": {
     "style": {
       "marginRight": 20
+    }
+  },
+  "shadow": {
+    "style": {
+      "boxShadow": "0 1px 3px rgba(0, 0, 0, 0.1)"
+    }
+  },
+  "text-yellow-500": {
+    "style": {
+      "color": "#FBBF24"
+    }
+  },
+  "right-[-100px]": {
+    "style": {
+      "right": "-100px"
     }
   }
 }

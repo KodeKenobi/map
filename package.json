@@ -8,7 +8,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "tailwind": "npx tailwindcss -i input.css -o ./dist/output.css --watch"
   },
   "jest": {
     "preset": "jest-expo"
@@ -39,7 +40,8 @@
     "react-native-toast-message": "^2.2.1",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
-    "tailwind-rn": "^4.2.0"
+    "tailwind-rn": "^4.2.0",
+    "tailwindcss": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

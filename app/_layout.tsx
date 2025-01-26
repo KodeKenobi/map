@@ -24,6 +24,9 @@ import Notifications from "@/components/Notifications";
 import OTPCodeComponent from "@/components/OTPCodeComponent";
 import ResetPasswordComponent from "@/components/ResetPasswordComponent";
 import ConsultScreen from "@/components/ConsultScreen";
+import DoctorProfileScreen from "@/components/DoctorProfileScreen";
+import PaymentSuccessScreen from "@/components/PaymentSuccessScreen";
+import PaymentScreen from "@/components/PaymentScreen";
 
 const TailwindProviderFix = TailwindProvider as any;
 
@@ -105,6 +108,12 @@ export default function RootLayout() {
             component={ResetPasswordComponent}
           />
           <Stack.Screen name="Consult" component={ConsultScreen} />
+          <Stack.Screen name="DoctorProfile" component={DoctorProfileScreen} />
+          <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+          <Stack.Screen
+            name="PaymentSuccessScreen"
+            component={PaymentSuccessScreen}
+          />
         </Stack.Navigator>
       </TailwindProviderFix>
     </ThemeProvider>

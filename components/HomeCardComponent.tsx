@@ -23,7 +23,7 @@ const HomeCardComponent: React.FC<HomeCardProps> = ({
   return (
     <View
       style={[
-        tailwind("p-3 rounded-lg mr-4 mb-2border-2"),
+        tailwind("p-3 rounded-lg mr-4 mb-2 border-2"),
         {
           backgroundColor: backgroundColor || "#FCFCFC",
           width: 180,
@@ -43,12 +43,15 @@ const HomeCardComponent: React.FC<HomeCardProps> = ({
           numberOfLines={1}
           ellipsizeMode="tail"
         >
+          {""}
           {title}
         </AppText>
         <AppText style={tailwind("text-sm font-semibold text-gray-700 mb-2")}>
+          {""}
           {date}
         </AppText>
         <AppText style={tailwind("text-md font-extrabold ")}>
+          {""}
           {registrationText}
         </AppText>
       </View>

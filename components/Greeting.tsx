@@ -15,6 +15,18 @@ const Greeting = ({
 }) => {
   const tailwind = useTailwind();
   const [userName, setUserName] = useState<string | null>(null);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    const errorCondition = false;
+    if (errorCondition) {
+      setHasError(true);
+    }
+  }, []);
+
+  if (hasError) {
+    return null;
+  }
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -66,9 +78,6 @@ const Greeting = ({
               style={{
                 width: 40,
                 height: 40,
-                borderRadius: 10,
-                borderColor: "rgba(153, 153, 153, 0.1)",
-                borderWidth: 0.2,
               }}
               resizeMode="contain"
             />
@@ -81,9 +90,7 @@ const Greeting = ({
           <AppText style={tailwind("text-lg font-bold text-black")}>
             {greetingMessage}, {userName}
           </AppText>
-          <AppText style={tailwind("text-sm text-gray-500")}>
-            Let's make today great
-          </AppText>
+          <AppText style={tailwind("text-lg")}> Let's make today great</AppText>
         </View>
       ) : (
         <ActivityIndicator
@@ -92,10 +99,9 @@ const Greeting = ({
           style={tailwind("flex-1 pl-4")}
         />
       )}
-      {/* Notification Icon */}
       <TouchableOpacity
         style={tailwind("relative")}
-        onPress={() => navigation.navigate("Notifications")} // Navigate to Notifications page
+        onPress={() => navigation.navigate("Notifications")}
       >
         <Ionicons name="notifications-outline" size={26} color="black" />
         <View

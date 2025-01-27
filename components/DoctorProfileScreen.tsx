@@ -12,7 +12,6 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import BackButton from "./BackButton";
 import AppText from "./AppText";
 import DoctorProfileCard from "./DoctorProfileCard";
-import Referrals from "./Referrals";
 import ButtonComponent from "./ButtonComponent";
 
 const DoctorProfileScreen = () => {

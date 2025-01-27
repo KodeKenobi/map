@@ -87,10 +87,12 @@ const Greeting = ({
 
       {userName ? (
         <View style={tailwind("flex-1 pl-4")}>
-          <AppText style={tailwind("text-lg font-bold text-black")}>
+          <AppText style={tailwind("text-lg font-bold text-gray-600")}>
             {greetingMessage}, {userName}
           </AppText>
-          <AppText style={tailwind("text-lg")}> Let's make today great</AppText>
+          <AppText style={tailwind("text-md text-gray-600")}>
+            Let's make today great
+          </AppText>
         </View>
       ) : (
         <ActivityIndicator

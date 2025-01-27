@@ -28,13 +28,19 @@ const DoctorProfileCard = () => {
               Dr. S. Ndou
             </AppText>
             <View style={tailwind("flex-row ml-2")}>
-              <TouchableOpacity style={tailwind("rounded-full p-2")}>
+              <TouchableOpacity
+                style={tailwind("rounded-full p-2")}
+                onPress={() => navigation.navigate("Message" as never)}
+              >
                 <Image
                   source={require("../assets/images/messaging-icon.png")}
                   style={tailwind("w-10 h-10")}
                 />
               </TouchableOpacity>
-              <TouchableOpacity style={tailwind("rounded-full p-2 ml-2")}>
+              <TouchableOpacity
+                style={tailwind("rounded-full p-2 ml-2")}
+                onPress={() => navigation.navigate("CallScreen" as never)}
+              >
                 <Image
                   source={require("../assets/images/call-icon.png")}
                   style={tailwind("w-10 h-10")}

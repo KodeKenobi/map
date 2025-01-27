@@ -27,6 +27,8 @@ import ConsultScreen from "@/components/ConsultScreen";
 import DoctorProfileScreen from "@/components/DoctorProfileScreen";
 import PaymentSuccessScreen from "@/components/PaymentSuccessScreen";
 import PaymentScreen from "@/components/PaymentScreen";
+import MessageComponent from "@/components/MessageComponent";
+import CallScreen from "@/components/CallScreen";
 
 const TailwindProviderFix = TailwindProvider as any;
 
@@ -114,6 +116,8 @@ export default function RootLayout() {
             name="PaymentSuccessScreen"
             component={PaymentSuccessScreen}
           />
+          <Stack.Screen name="Message" component={MessageComponent} />
+          <Stack.Screen name="CallScreen" component={CallScreen} />
         </Stack.Navigator>
       </TailwindProviderFix>
     </ThemeProvider>

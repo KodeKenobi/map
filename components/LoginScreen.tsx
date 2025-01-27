@@ -75,7 +75,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           />
         </View>
 
-        <AppText style={tailwind("text-2xl font-bold mb-6 mt-6  text-center")}>
+        <AppText style={tailwind("text-2xl font-bold mb-6 mt-6 text-center")}>
           Welcome back
         </AppText>
         <TextInput

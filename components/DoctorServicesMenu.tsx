@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, ScrollView, Image } from "react-native";
+import { View, TouchableOpacity, ScrollView, Image, Text } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import { useState } from "react";
@@ -57,7 +57,7 @@ export default function DoctorServicesMenu() {
               source={pill.image}
             />
             <AppText style={tailwind("text-white font-semibold mr-24")}>
-              {pill.title}
+              <Text>{pill.title}</Text>
             </AppText>
           </View>
         </TouchableOpacity>

@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  Animated,
+  TouchableOpacity,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { auth } from "../app/(auth)/firebaseConfig";
@@ -8,13 +15,13 @@ import Greeting from "./Greeting";
 import BottomNav from "./BottomNav";
 import { useTailwind } from "tailwind-rn";
 import SearchComponent from "./SearchComponent";
-import PillNavMenu from "./ServicesNavMenu";
 import ServicesNavMenu from "./ServicesNavMenu";
 
 const WellnessHome = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const [firstName, setFirstName] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [scale] = useState(new Animated.Value(1));
   const tailwind = useTailwind();
 
   useEffect(() => {
@@ -38,21 +45,22 @@ const WellnessHome = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <View style={styles.loadingBarsContainer}>
-          <View style={styles.loadingBar} />
-          <View style={styles.loadingBar} />
-          <View style={styles.loadingBar} />
-        </View>
+        <Animated.Image
+          source={require("../assets/images/faviconBig.png")}
+          style={[styles.faviconBig, { transform: [{ scale }] }]}
+        />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Greeting
-        userName={firstName ? `${firstName}` : ""}
-        notificationCount={8}
-      />{" "}
+      <View style={tailwind("mt-10")}>
+        <Greeting
+          userName={firstName ? `${firstName}` : ""}
+          notificationCount={8}
+        />{" "}
+      </View>
       <ScrollView contentContainerStyle={[styles.scrollContainer]}>
         <View>
           <SearchComponent />
@@ -62,12 +70,14 @@ const WellnessHome = () => {
           <ServicesNavMenu />
         </View>
 
-        <View style={tailwind("mb-4 mt-8 flex items-center justify-center")}>
-          <Image
-            source={require("../assets/images/wellness-body.png")}
-            style={{ width: 512, height: 512, resizeMode: "contain" }}
-          />
-        </View>
+        <TouchableOpacity onPress={() => navigation.navigate("Consult")}>
+          <View style={tailwind("mb-4 mt-8 flex items-center justify-center")}>
+            <Image
+              source={require("../assets/images/wellness-body.png")}
+              style={{ width: 512, height: 512, resizeMode: "contain" }}
+            />
+          </View>
+        </TouchableOpacity>
       </ScrollView>
       <BottomNav navigation={navigation} />
     </View>
@@ -103,6 +113,11 @@ const styles = StyleSheet.create({
   },
   loadingBarActive: {
     backgroundColor: "#000",
+  },
+  faviconBig: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
   },
 });
 

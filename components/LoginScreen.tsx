@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, TextInput, TouchableOpacity, Image } from "react-native";
+import { View, TextInput, TouchableOpacity, Image, Text } from "react-native";
 import { StyleSheet } from "react-native";
 import AppText from "./AppText";
 import { Login } from "@/app/(auth)/auth";
@@ -76,7 +76,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         </View>
 
         <AppText style={tailwind("text-2xl font-bold mb-6 mt-6 text-center")}>
-          Welcome back
+          <Text>Welcome</Text>
         </AppText>
         <TextInput
           style={styles.input}
@@ -109,7 +109,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           onPress={() => navigation.navigate("ForgotPassword")}
         >
           <AppText style={tailwind("text-md font-semibold")}>
-            Forgot password?
+            <Text>Forgot password?</Text>
           </AppText>
         </TouchableOpacity>
 
@@ -120,7 +120,9 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           onPress={handleLogin}
         />
 
-        <AppText style={styles.orText}>or</AppText>
+        <AppText style={styles.orText}>
+          <Text>or</Text>
+        </AppText>
 
         <TouchableOpacity
           onPress={() => navigation.navigate("Login")}
@@ -190,11 +192,11 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           }}
         >
           <AppText style={tailwind("text-base ")}>
-            Don't have an account?{" "}
+            <Text>Don't have an account? </Text>
           </AppText>
           <TouchableOpacity onPress={() => navigation.navigate("Register")}>
             <AppText style={tailwind("text-base  font-semibold")}>
-              Sign up
+              <Text>Sign up</Text>
             </AppText>
           </TouchableOpacity>
         </View>

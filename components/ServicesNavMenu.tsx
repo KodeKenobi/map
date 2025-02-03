@@ -4,7 +4,11 @@ import AppText from "./AppText";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-export default function ServicesNavMenu() {
+export default function ServicesNavMenu({
+  backgroundColor,
+}: {
+  backgroundColor?: string;
+}) {
   const tailwind = useTailwind();
   const navigation = useNavigation();
   const [selectedPill, setSelectedPill] = useState<string | null>(null);
@@ -15,6 +19,7 @@ export default function ServicesNavMenu() {
       title: "Consult",
       icon: "checkmark-circle",
       image: require("../assets/images/consult-nav.png"),
+      backgroundColor: "rgba(74, 244, 170, 0.16)",
     },
     {
       id: "2",
@@ -53,7 +58,11 @@ export default function ServicesNavMenu() {
           <View
             style={tailwind(
               `flex-row items-center rounded-full p-2 mr-22 ${
-                selectedPill === pill.id ? "bg-green-500" : "bg-gray-200"
+                selectedPill === pill.id
+                  ? "bg-gray-500"
+                  : pill.title === "Consult"
+                  ? "bg-green-500"
+                  : backgroundColor || "bg-gray-200"
               }`
             )}
           >

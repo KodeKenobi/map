@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   SafeAreaView,
+  Text,
 } from "react-native";
 import AppText from "./AppText";
 import { Ionicons } from "@expo/vector-icons";
@@ -31,15 +32,17 @@ export default function ForgotPassword() {
             style={tailwind("flex-row items-center w-full p-4 justify-between")}
           >
             <BackButton navigation={navigation as NavigationProp<any>} />
-            <AppText style={tailwind("text-xl font-bold text-center")}>
+            <Text style={tailwind("text-xl font-bold text-center")}>
               Forgot Password
-            </AppText>
+            </Text>
             <View style={tailwind("w-10")} />
           </View>
         </View>
         <View style={tailwind("mb-4 p-4 mt-8")}>
           <AppText style={tailwind("text-center mb-8 text-md")}>
-            Please enter your phone number below to reset your password.
+            <Text>
+              Please enter your phone number below to reset your password.
+            </Text>
           </AppText>
           <TextInput
             style={styles.input}

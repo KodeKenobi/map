@@ -8,17 +8,17 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import "../styles/tailwind.css";
 import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "@/components/LoginScreen";
-import { StatusBar } from "react-native";
+import { StatusBar, LogBox } from "react-native";
 import RegisterScreen from "@/components/Register";
 import Home from "@/components/Home";
 import { auth } from "@/app/(auth)/firebaseConfig";
 import { TailwindProvider } from "tailwind-rn";
 import utilities from "@/app/tailwind.json";
-import OnboardingScreen from "@/components/OnboardingScreen";
+import OnboardingScreen from "@/components/HomeOnboarding";
 import ForgotPassword from "@/components/ForgotPassword";
 import ProfileComponent from "@/components/ProfileComponent";
 import WellnessWelcomeScreen from "@/components/WellnessWelcomeScreen";
-import WellnessOnboardingComponent from "@/components/WellnessOnboardingComponent";
+import WellnessOnboardingComponent from "@/components/WellnessOnboarding";
 import WellnessHome from "@/components/WellnessHome";
 import Notifications from "@/components/Notifications";
 import OTPCodeComponent from "@/components/OTPCodeComponent";
@@ -29,6 +29,17 @@ import PaymentSuccessScreen from "@/components/PaymentSuccessScreen";
 import PaymentScreen from "@/components/PaymentScreen";
 import MessageComponent from "@/components/MessageComponent";
 import CallScreen from "@/components/CallScreen";
+import WisdomWelcomeScreen from "@/components/WisdomWelcome";
+import WisdomHome from "@/components/WisdomHome";
+import WisdomOnboardingScreen from "@/components/WisdomOnboarding";
+import CoachingScreen from "@/components/CoachingScreen";
+import WealthHome from "@/components/WealthHome";
+import WealthWelcomeScreen from "@/components/WeathWelcome";
+import WealthOnboardingScreen from "@/components/WealthOnboarding";
+LogBox.ignoreLogs([
+  "Text strings must be rendered within a <Text> component",
+  "",
+]);
 
 const TailwindProviderFix = TailwindProvider as any;
 
@@ -118,6 +129,19 @@ export default function RootLayout() {
           />
           <Stack.Screen name="Message" component={MessageComponent} />
           <Stack.Screen name="CallScreen" component={CallScreen} />
+          <Stack.Screen name="WisdomWelcome" component={WisdomWelcomeScreen} />
+          <Stack.Screen name="WisdomHome" component={WisdomHome} />
+          <Stack.Screen
+            name="WisdomOnboarding"
+            component={WisdomOnboardingScreen}
+          />
+          <Stack.Screen name="Coaching" component={CoachingScreen} />
+          <Stack.Screen name="WealthWelcome" component={WealthWelcomeScreen} />
+          <Stack.Screen name="Wealth" component={WealthHome} />
+          <Stack.Screen
+            name="WealthOnboarding"
+            component={WealthOnboardingScreen}
+          />
         </Stack.Navigator>
       </TailwindProviderFix>
     </ThemeProvider>

@@ -11,6 +11,7 @@ interface HorizontalCardScrollProps {
     date: string;
     registrationText: string;
     backgroundColor?: string;
+    textColor?: string;
   }[];
 }
 
@@ -18,21 +19,19 @@ const HorizontalCardScroll: React.FC<HorizontalCardScrollProps> = ({
   cards,
 }) => {
   const tailwind = useTailwind();
+  const cardHeight = 320;
 
   return (
-    <ScrollView horizontal>
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
       {cards.map((card, index) => (
-        <View style={tailwind("mr-24")}>
+        <View key={index} style={[tailwind("mr-24"), { height: cardHeight }]}>
           <HomeCardComponent
-            key={index}
             imageUrl={card.imageUrl}
             title={card.title}
             date={card.date}
             registrationText={card.registrationText}
-            backgroundColor={
-              card.backgroundColor ||
-              (tailwind("bg-w3-purple-opacity").backgroundColor as string)
-            }
+            backgroundColor={card.backgroundColor}
+            textColor={card.textColor}
           />
         </View>
       ))}

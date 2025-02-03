@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { View, Image, ActivityIndicator, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  ActivityIndicator,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
-import AppText from "./AppText";
 import { auth } from "@/app/(auth)/firebaseConfig";
 import { getUserData } from "@/app/(auth)/auth";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { Skeleton } from "@rneui/themed";
+import { LinearGradient } from "expo-linear-gradient";
 
 const Greeting = ({
   notificationCount,
@@ -16,6 +23,7 @@ const Greeting = ({
   const tailwind = useTailwind();
   const [userName, setUserName] = useState<string | null>(null);
   const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const errorCondition = false;
@@ -35,7 +43,10 @@ const Greeting = ({
         if (data) {
           setUserName(data.firstName);
         }
+        setIsLoading(false);
       });
+    } else {
+      setIsLoading(false);
     }
   }, []);
 
@@ -53,54 +64,65 @@ const Greeting = ({
 
   return (
     <View
-      style={tailwind(
-        "flex-row items-center justify-between p-4 bg-white mt-8"
-      )}
+      style={tailwind("flex-row items-center justify-between p-4 bg-white")}
     >
-      <View className="flex-row items-center justify-center">
-        <View
-          style={{
-            borderWidth: 4,
-            borderColor: "#999",
-            borderRadius: 160,
-            overflow: "hidden",
-          }}
-        >
+      {isLoading ? (
+        <View style={tailwind("flex-row items-center flex-1")}>
+          <Skeleton
+            LinearGradientComponent={LinearGradient}
+            animation="wave"
+            circle
+            width={40}
+            height={40}
+            style={tailwind("mr-24")}
+          />
+          <Skeleton
+            LinearGradientComponent={LinearGradient}
+            animation="wave"
+            width={280}
+            height={40}
+          />
+        </View>
+      ) : (
+        <View style={tailwind("flex-row items-center justify-center")}>
           <View
             style={{
-              padding: 6,
-              backgroundColor: "white",
-              borderRadius: 10,
+              borderWidth: 2,
+              borderColor: "#999",
+              borderRadius: 160,
+              overflow: "hidden",
             }}
           >
-            <Image
-              source={require("../assets/images/logo.png")}
+            <View
               style={{
-                width: 40,
-                height: 40,
+                padding: 6,
+                backgroundColor: "white",
+                borderRadius: 10,
               }}
-              resizeMode="contain"
-            />
+            >
+              <Image
+                source={require("../assets/images/logo.png")}
+                style={{
+                  width: 40,
+                  height: 40,
+                }}
+                resizeMode="contain"
+              />
+            </View>
           </View>
         </View>
-      </View>
+      )}
 
       {userName ? (
         <View style={tailwind("flex-1 pl-4")}>
-          <AppText style={tailwind("text-lg font-bold text-gray-600")}>
+          <Text style={tailwind("text-lg font-bold text-gray-600")}>
             {greetingMessage}, {userName}
-          </AppText>
-          <AppText style={tailwind("text-md text-gray-600")}>
+          </Text>
+          <Text style={tailwind("text-md text-gray-600")}>
             Let's make today great
-          </AppText>
+          </Text>
         </View>
-      ) : (
-        <ActivityIndicator
-          size="small"
-          color="gray"
-          style={tailwind("flex-1 pl-4")}
-        />
-      )}
+      ) : null}
       <TouchableOpacity
         style={tailwind("relative")}
         onPress={() => navigation.navigate("Notifications")}
@@ -117,16 +139,7 @@ const Greeting = ({
             paddingVertical: 2,
           }}
         >
-          <AppText
-            style={{
-              color: "white",
-              fontSize: 12,
-              fontWeight: "bold",
-            }}
-            fontColor="white"
-          >
-            {notificationCount}
-          </AppText>
+          <Text style={{ color: "white" }}>{notificationCount}</Text>
         </View>
       </TouchableOpacity>
     </View>

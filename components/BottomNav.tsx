@@ -12,7 +12,7 @@ const BottomNav = ({ navigation }: { navigation: any }) => {
     React.useCallback(() => {
       const currentRoute =
         navigation.getState().routes[navigation.getState().index].name;
-      console.log("Current Route:", currentRoute); // Debugging line
+      console.log("Current Route:", currentRoute);
       setActiveTab(currentRoute);
     }, [navigation])
   );
@@ -21,11 +21,11 @@ const BottomNav = ({ navigation }: { navigation: any }) => {
     const unsubscribe = navigation.addListener("state", () => {
       const currentRoute =
         navigation.getState().routes[navigation.getState().index].name;
-      console.log("State Change - Current Route:", currentRoute); // Debugging line
+      console.log("State Change - Current Route:", currentRoute);
       setActiveTab(currentRoute);
     });
 
-    return unsubscribe; // Cleanup the listener on unmount
+    return unsubscribe;
   }, [navigation]);
 
   return (
@@ -75,11 +75,11 @@ const BottomNav = ({ navigation }: { navigation: any }) => {
         style={[
           styles.navItem,
           { marginBottom: 0 },
-          activeTab === "Wisdom" && styles.activeNavItem,
+          activeTab === "WisdomHome" && styles.activeNavItem,
         ]}
         onPress={() => {
-          setActiveTab("Wisdom");
-          navigation.navigate("Wisdom");
+          setActiveTab("WisdomHome");
+          navigation.navigate("WisdomHome");
         }}
       >
         <Image

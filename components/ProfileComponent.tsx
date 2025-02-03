@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  Text,
 } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
@@ -64,7 +65,7 @@ const ProfileComponent = () => {
               </TouchableOpacity>
             </View>
             <AppText style={tailwind("text-xl font-bold text-center")}>
-              Profile
+              <Text>Profile</Text>
             </AppText>
             <View style={tailwind("w-10")} />
           </View>

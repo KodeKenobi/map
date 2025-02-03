@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity, Text } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import { useNavigation } from "@react-navigation/native";
@@ -24,9 +24,9 @@ const DoctorProfileCard = () => {
         </View>
         <View style={tailwind("flex-1 ml-24")}>
           <View style={tailwind("flex-row items-center")}>
-            <AppText style={tailwind("text-xl font-bold text-center")}>
-              Dr. S. Ndou
-            </AppText>
+            <Text style={tailwind("text-xl font-bold text-center")}>
+              <Text>Dr. S. Ndou</Text>
+            </Text>
             <View style={tailwind("flex-row ml-2")}>
               <TouchableOpacity
                 style={tailwind("rounded-full p-2")}
@@ -54,16 +54,16 @@ const DoctorProfileCard = () => {
               </TouchableOpacity>
             </View>
           </View>
-          <AppText style={tailwind("text-w3-green text-md")}>
-            General Practitioner
-          </AppText>
+          <Text style={tailwind("text-w3-green text-md")}>
+            <Text>General Practitioner</Text>
+          </Text>
           <View style={tailwind("flex-row justify-between mt-2")}>
-            <AppText style={tailwind("text-gray-500 text-md font-semibold")}>
-              Consultation Fee
-            </AppText>
-            <AppText style={tailwind("text-yellow-500 text-md font-semibold")}>
-              R720
-            </AppText>
+            <Text style={tailwind("text-gray-500 text-md font-semibold")}>
+              <Text>Consultation Fee</Text>
+            </Text>
+            <Text style={tailwind("text-yellow-500 text-md font-semibold")}>
+              <Text>R720</Text>
+            </Text>
           </View>
           <View
             style={tailwind(
@@ -78,12 +78,12 @@ const DoctorProfileCard = () => {
               />
             </View>
             <View style={tailwind("flex-1 ml-22")}>
-              <AppText style={tailwind("text-sm font-semibold")}>
-                Referral
-              </AppText>
-              <AppText style={tailwind("text-gray-500 text-sm mt-1")}>
-                We do referrals to specialists accordingly
-              </AppText>
+              <Text style={tailwind("text-sm font-semibold")}>
+                <Text>Referral</Text>
+              </Text>
+              <Text style={tailwind("text-gray-500 text-sm mt-1")}>
+                <Text>We do referrals to specialists accordingly</Text>
+              </Text>
             </View>
           </View>
         </View>

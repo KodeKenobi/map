@@ -29,7 +29,7 @@ const MessageComponent = ({ navigation }: { navigation: any }) => {
             <BackButton navigation={navigation as NavigationProp<any>} />
             <View style={tailwind("flex-row items-center")}>
               <AppText style={tailwind("text-xl font-bold text-center")}>
-                Dr. S. Ndou
+                <Text>Dr. S. Ndou</Text>
               </AppText>
             </View>
             <View style={tailwind("w-10")} />

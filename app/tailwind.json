@@ -457,6 +457,22 @@
       "width": 80
     }
   },
+  "w-22": {
+    "style": {
+      "width": 88
+    }
+  },
+  "w-24": {
+    "style": {
+      "width": 96
+    }
+  },
+  "w-26": {
+    "style": {
+      "width": 104
+    }
+  },
+
   "w-28": {
     "style": {
       "width": 112
@@ -480,6 +496,21 @@
   "w-32": {
     "style": {
       "width": 128
+    }
+  },
+  "w-34": {
+    "style": {
+      "width": 136
+    }
+  },
+  "w-36": {
+    "style": {
+      "width": 144
+    }
+  },
+  "w-38": {
+    "style": {
+      "width": 152
     }
   },
   "w-40": {
@@ -948,7 +979,12 @@
   },
   "bg-w3-gold": {
     "style": {
-      "backgroundColor": "#F9CF67"
+      "backgroundColor": "rgba(229, 165, 0, 1)"
+    }
+  },
+  "bg-w3-gold-opacity": {
+    "style": {
+      "backgroundColor": "rgba(229, 165, 0, 0.1)"
     }
   },
   "bg-w3-green": {
@@ -1807,8 +1843,8 @@
   },
   "bg-w3-purple-opacity": {
     "style": {
-      "--tw-bg-opacity": 0.16,
-      "backgroundColor": "rgba(115, 69, 182, var(--tw-bg-opacity))"
+      "--tw-bg-opacity": 0.9,
+      "backgroundColor": "#AB87D8"
     }
   },
   "bg-grey-active": {
@@ -2189,6 +2225,11 @@
   "right-[-100px]": {
     "style": {
       "right": "-100px"
+    }
+  },
+  "w3-green": {
+    "style": {
+      "color": "#fff"
     }
   }
 }

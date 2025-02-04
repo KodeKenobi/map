@@ -6,6 +6,8 @@ import {
   Text,
   Animated,
   TouchableOpacity,
+  Modal,
+  GestureResponderEvent,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
@@ -23,6 +25,8 @@ const WellnessHome = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [scale] = useState(new Animated.Value(1));
   const tailwind = useTailwind();
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [clickedPart, setClickedPart] = useState<string | null>(null);
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -41,6 +45,81 @@ const WellnessHome = () => {
       navigation.navigate("Login");
     }
   }, [navigation]);
+
+  const handleHeadClick = (event: GestureResponderEvent) => {
+    const { locationX, locationY } = event.nativeEvent;
+
+    console.log(`Clicked coordinates: X: ${locationX}, Y: ${locationY}`);
+
+    if (
+      locationX >= 200 &&
+      locationX <= 300 &&
+      locationY >= 0 &&
+      locationY <= 50
+    ) {
+      setClickedPart("head");
+    } else if (
+      locationX >= 200 &&
+      locationX <= 300 &&
+      locationY >= 50 &&
+      locationY <= 100
+    ) {
+      setClickedPart("neck");
+    } else if (
+      locationX >= 200 &&
+      locationX <= 300 &&
+      locationY >= 100 &&
+      locationY <= 175
+    ) {
+      setClickedPart("torso");
+    } else if (
+      locationX >= 200 &&
+      locationX <= 300 &&
+      locationY >= 175 &&
+      locationY <= 250
+    ) {
+      setClickedPart("stomach");
+    } else if (
+      locationX >= 200 &&
+      locationX <= 240 &&
+      locationY >= 200 &&
+      locationY <= 500
+    ) {
+      setClickedPart("leftLeg");
+    } else if (
+      locationX >= 250 &&
+      locationX <= 350 &&
+      locationY >= 250 &&
+      locationY <= 500
+    ) {
+      setClickedPart("rightLeg");
+    } else if (
+      locationX >= 60 &&
+      locationX <= 270 &&
+      locationY >= 50 &&
+      locationY <= 220
+    ) {
+      setClickedPart("leftArm");
+    } else if (
+      locationX >= 300 &&
+      locationX <= 400 &&
+      locationY >= 100 &&
+      locationY <= 300
+    ) {
+      setClickedPart("leftArm");
+    } else if (
+      locationX >= 300 &&
+      locationX <= 400 &&
+      locationY >= 100 &&
+      locationY <= 300
+    ) {
+      setClickedPart("rightArm");
+    } else {
+      setClickedPart("other");
+    }
+
+    setModalVisible(true);
+  };
 
   if (loading) {
     return (
@@ -70,7 +149,7 @@ const WellnessHome = () => {
           <ServicesNavMenu />
         </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate("Consult")}>
+        <TouchableOpacity onPress={handleHeadClick} activeOpacity={1}>
           <View style={tailwind("mb-4 mt-8 flex items-center justify-center")}>
             <Image
               source={require("../assets/images/wellness-body.png")}
@@ -80,6 +159,40 @@ const WellnessHome = () => {
         </TouchableOpacity>
       </ScrollView>
       <BottomNav navigation={navigation} />
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text>
+              {clickedPart === "head"
+                ? "Information about the head"
+                : clickedPart === "neck"
+                ? "Information about the neck"
+                : clickedPart === "leftArm"
+                ? "Information about the left arm"
+                : clickedPart === "rightArm"
+                ? "Information about the right arm"
+                : clickedPart === "stomach"
+                ? "Information about the stomach"
+                : clickedPart === "leftLeg"
+                ? "Information about the left leg"
+                : clickedPart === "rightLeg"
+                ? "Information about the right leg"
+                : clickedPart === "torso"
+                ? "Information about the torso"
+                : "Information about other parts"}
+            </Text>
+            <TouchableOpacity onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeButton}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -118,6 +231,26 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     marginBottom: 20,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 20,
+    width: "80%",
+    alignItems: "center",
+  },
+  closeButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: "#007bff",
+    borderRadius: 5,
+    color: "white",
   },
 });
 

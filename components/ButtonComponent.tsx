@@ -9,6 +9,9 @@ export default function ButtonComponent({
   onPress,
   icon,
   style,
+  borderColor,
+  borderWidth,
+  size = "medium",
 }: {
   title: string;
   color: string;
@@ -16,17 +19,30 @@ export default function ButtonComponent({
   onPress: () => void;
   icon?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  borderColor?: string;
+  borderWidth?: number;
+  size?: "small" | "medium" | "large";
 }) {
   const tailwind = useTailwind();
+
+  const sizeStyles = {
+    small: "p-2 text-sm",
+    medium: "p-4 text-base",
+    large: "p-6 text-lg",
+  };
 
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[
         tailwind(
-          `w-full p-4 rounded-full ${color} items-center justify-center`
+          `w-full rounded-full ${color} items-center justify-center ${sizeStyles[size]}`
         ),
         style,
+        {
+          borderColor: borderColor || "transparent",
+          borderWidth: borderWidth || 0,
+        },
       ]}
     >
       <View style={tailwind("flex-row items-center justify-center w-full")}>

@@ -36,6 +36,7 @@ import CoachingScreen from "@/components/CoachingScreen";
 import WealthHome from "@/components/WealthHome";
 import WealthWelcomeScreen from "@/components/WeathWelcome";
 import WealthOnboardingScreen from "@/components/WealthOnboarding";
+import BrandsComponent from "@/components/BrandsComponent";
 LogBox.ignoreLogs([
   "Text strings must be rendered within a <Text> component",
   "",
@@ -142,6 +143,7 @@ export default function RootLayout() {
             name="WealthOnboarding"
             component={WealthOnboardingScreen}
           />
+          <Stack.Screen name="Brands" component={BrandsComponent} />
         </Stack.Navigator>
       </TailwindProviderFix>
     </ThemeProvider>

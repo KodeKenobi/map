@@ -9,7 +9,10 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "tailwind": "npx tailwindcss -i input.css -o ./dist/output.css --watch"
+    "tailwind": "npx tailwindcss -i input.css -o ./dist/output.css --watch",
+    "build:tailwind": "tailwindcss --input input.css --output tailwind.css",
+    "dev:tailwind": "tailwindcss --input input.css --output tailwind.css --watch",
+    "create:tailwind": "create-tailwind-rn"
   },
   "jest": {
     "preset": "jest-expo"

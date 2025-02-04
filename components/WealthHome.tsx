@@ -7,12 +7,11 @@ import { getUserData } from "../app/(auth)/auth";
 import Greeting from "./Greeting";
 import BottomNav from "./BottomNav";
 import { useTailwind } from "tailwind-rn";
-import SearchComponent from "./SearchComponent";
-import ServicesNavMenu from "./ServicesNavMenu";
 import HorizontalCardScroll from "./HorizontalCardScroll";
-import CoachingPicksCards from "./CoachingPicksCards";
 import LogoNavScroll from "./LogoNavScroll";
 import WealthNavMenu from "./WealthNavMenu";
+import { Link } from "expo-router";
+import ButtonComponent from "./ButtonComponent";
 
 const WealthHome = () => {
   const navigation = useNavigation<NavigationProp<any>>();

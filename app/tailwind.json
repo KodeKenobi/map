@@ -979,7 +979,7 @@
   },
   "bg-w3-gold": {
     "style": {
-      "backgroundColor": "rgba(229, 165, 0, 1)"
+      "backgroundColor": "#fff"
     }
   },
   "bg-w3-gold-opacity": {
@@ -989,7 +989,7 @@
   },
   "bg-w3-green": {
     "style": {
-      "backgroundColor": "#228565"
+      "backgroundColor": "#fff"
     }
   },
   "p-0": {
@@ -2230,6 +2230,34 @@
   "w3-green": {
     "style": {
       "color": "#fff"
+    }
+  },
+  "kwani-logo": {
+    "style": {
+      "--tw-bg-opacity": 1,
+      "backgroundColor": "rgb(9, 49, 0 / var(--tw-bg-opacity))"
+    }
+  },
+  "text-w3-gold-4": {
+    "style": {
+      "--tw-text-opacity": 1,
+      "color": "rgb(183, 122, 3 / var(--tw-text-opacity))"
+    }
+  },
+  "border-w3-gold-4": {
+    "style": {
+      "--tw-border-opacity": 1,
+      "borderColor": "rgb(183, 122, 3 / var(--tw-border-opacity))"
+    }
+  },
+  "mt-[-80px]": {
+    "style": {
+      "marginTop": "-80px"
+    }
+  },
+  "mt-[-100px]": {
+    "style": {
+      "marginTop": "-100px"
     }
   }
 }

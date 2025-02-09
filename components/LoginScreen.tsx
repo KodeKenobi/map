@@ -1,46 +1,49 @@
 import React, { useState, useEffect } from "react";
-import { View, TextInput, TouchableOpacity, Image, Text } from "react-native";
-import { StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Text,
+  Alert,
+  StyleSheet,
+  AppState,
+} from "react-native";
 import AppText from "./AppText";
-import { Login } from "@/app/(auth)/auth";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
 import Toast from "react-native-toast-message";
 import ButtonComponent from "./ButtonComponent";
-import { auth } from "@/app/(auth)/firebaseConfig";
-import { getUserData } from "@/app/(auth)/auth";
-// import {
-//   GoogleSignin,
-//   GoogleSigninButton,
-// } from "@react-native-google-signin/google-signin";
+import { supabase } from "../lib/supabase";
+
+AppState.addEventListener("change", (state) => {
+  if (state === "active") {
+    supabase.auth.startAutoRefresh();
+  } else {
+    supabase.auth.stopAutoRefresh();
+  }
+});
 
 export default function LoginScreen({ navigation }: { navigation: any }) {
   const tailwind = useTailwind();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // const GoogleSignIn = () => {
-  //   const signIn = async () => {
-  //     GoogleSignin.configure({
-  //       scopes: [],
-  //       webClientId:
-  //         "541893526993-elf1nsemgjcghdt8ebqrh10jhsbpi238.apps.googleusercontent.com",
-  //       offlineAccess: true,
-  //     });
-  //     try {
-  //       await GoogleSignin.hasPlayServices();
-  //       const userInfo = await GoogleSignin.signIn();
-  //       console.log("userinfo", userInfo);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  // };
-
-  const handleLogin = async () => {
+  async function signInWithEmail() {
     try {
-      await Login(email, password);
+      setLoading(true);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (error) {
+        Alert.alert(error.message);
+        return;
+      }
+
       Toast.show({
         text1: "Login successful",
         position: "bottom",
@@ -49,19 +52,17 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         type: "success",
       });
 
-      const user = auth.currentUser;
-      if (user) {
-        const data = await getUserData(user.uid);
-        if (!data || !data.hasCompletedHomeOnboarding) {
-          navigation.navigate("Welcome");
-        } else {
-          navigation.navigate("Home");
-        }
-      }
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", data.user.id)
+        .single();
     } catch (error) {
-      alert((error as Error).message);
+      Alert.alert((error as Error).message);
+    } finally {
+      setLoading(false);
     }
-  };
+  }
 
   useEffect(() => {}, []);
 
@@ -114,10 +115,10 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         </TouchableOpacity>
 
         <ButtonComponent
-          title="Login"
-          color="bg-w3-gold"
+          title={loading ? "Loading..." : "Login"}
+          color="#F9CF67"
           textColor="#000"
-          onPress={handleLogin}
+          onPress={signInWithEmail}
         />
 
         <AppText style={styles.orText}>

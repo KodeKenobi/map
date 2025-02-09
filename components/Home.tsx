@@ -3,8 +3,6 @@ import { View, StyleSheet, LogBox, Text, Animated, Image } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { auth } from "../app/(auth)/firebaseConfig";
-import { getUserData } from "../app/(auth)/auth";
 import Greeting from "./Greeting";
 import RecommendationsCard from "./RecommendationsCard";
 import BottomNav from "./BottomNav";
@@ -12,9 +10,8 @@ import { useTailwind } from "tailwind-rn";
 import HorizontalCardScroll from "./HorizontalCardScroll";
 import HorizontalQuickAccessCardScroll from "./HorizontalQuickAccessCardScroll";
 import AppText from "./AppText";
-
-// Ignore the specific warning
-// LogBox.ignoreLogs(["Text strings must be rendered within a <Text> component"]);
+import { supabase } from "@/lib/supabase";
+import { getAllProfiles } from "@/lib/supabase";
 
 const cards = [
   {
@@ -66,21 +63,48 @@ const Home = () => {
   const [scale] = useState(new Animated.Value(1));
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (user) {
-      getUserData(user.uid).then((data) => {
-        if (data) {
-          setFirstName(data.firstName);
-          if (!data.hasCompletedHomeOnboarding) {
-            navigation.navigate("Home");
+    const getProfile = async () => {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+
+          if (profile) {
+            if (!profile.hascompletedhomeonboarding) {
+              navigation.navigate("Welcome");
+              return;
+            }
           }
+          if (profile) {
+            if (!profile.hascompletedprofileupdate) {
+              navigation.navigate("UpdateProfile");
+              return;
+            }
+          }
+
+          const allProfiles = await getAllProfiles();
+          console.log("All Profiles:", allProfiles);
+
+          setLoading(false);
+        } else {
+          setLoading(false);
+          navigation.navigate("Login");
         }
+      } catch (error) {
+        console.error("Error:", error);
         setLoading(false);
-      });
-    } else {
-      setLoading(false);
-      navigation.navigate("Login");
-    }
+        navigation.navigate("Login");
+      }
+    };
+
+    getProfile();
   }, [navigation]);
 
   useEffect(() => {
@@ -101,6 +125,10 @@ const Home = () => {
 
     pulsate();
   }, [scale]);
+
+  if (loading) {
+    return null;
+  }
 
   if (loading) {
     return (

@@ -11,13 +11,12 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { auth } from "../app/(auth)/firebaseConfig";
-import { getUserData } from "../app/(auth)/auth";
 import Greeting from "./Greeting";
 import BottomNav from "./BottomNav";
 import { useTailwind } from "tailwind-rn";
 import SearchComponent from "./SearchComponent";
 import ServicesNavMenu from "./ServicesNavMenu";
+import { supabase } from "../lib/supabase";
 
 const WellnessHome = () => {
   const navigation = useNavigation<NavigationProp<any>>();
@@ -29,21 +28,38 @@ const WellnessHome = () => {
   const [clickedPart, setClickedPart] = useState<string | null>(null);
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (user) {
-      getUserData(user.uid).then((data) => {
-        if (data) {
-          setFirstName(data.firstName);
-          if (!data.hasCompletedWellnessOnboarding) {
-            navigation.navigate("WellnessWelcome");
+    const getProfile = async () => {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+
+          if (profile) {
+            setFirstName(profile.firstName);
+            if (!profile.hascompletedwellnessonboarding) {
+              navigation.navigate("WellnessWelcome");
+            }
           }
+          setLoading(false);
+        } else {
+          setLoading(false);
+          navigation.navigate("Login");
         }
+      } catch (error) {
+        console.error("Error:", error);
         setLoading(false);
-      });
-    } else {
-      setLoading(false);
-      navigation.navigate("Login");
-    }
+        navigation.navigate("Login");
+      }
+    };
+
+    getProfile();
   }, [navigation]);
 
   const handleHeadClick = (event: GestureResponderEvent) => {

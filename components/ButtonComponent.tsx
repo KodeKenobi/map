@@ -12,6 +12,7 @@ export default function ButtonComponent({
   borderColor,
   borderWidth,
   size = "medium",
+  disabled,
 }: {
   title: string;
   color: string;
@@ -22,28 +23,28 @@ export default function ButtonComponent({
   borderColor?: string;
   borderWidth?: number;
   size?: "small" | "medium" | "large";
+  disabled?: boolean;
 }) {
   const tailwind = useTailwind();
 
   const sizeStyles = {
     small: "p-2 text-sm",
-    medium: "p-4 text-base",
-    large: "p-6 text-lg",
+    medium: "p-4 text-base w-full",
+    large: "p-6 text-lg w-full",
   };
 
   return (
     <TouchableOpacity
-      onPress={onPress}
       style={[
-        tailwind(
-          `w-full rounded-full ${color} items-center justify-center ${sizeStyles[size]}`
-        ),
+        { backgroundColor: color, padding: 15 },
+        tailwind("rounded-full"),
         style,
-        {
-          borderColor: borderColor || "transparent",
-          borderWidth: borderWidth || 0,
-        },
+        borderColor ? { borderColor, borderWidth } : {},
+        tailwind(sizeStyles[size]),
+        disabled && { opacity: 0.5 },
       ]}
+      onPress={disabled ? undefined : onPress}
+      disabled={disabled}
     >
       <View style={tailwind("flex-row items-center justify-center w-full")}>
         {icon}

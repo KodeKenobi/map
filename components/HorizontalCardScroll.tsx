@@ -3,7 +3,6 @@ import { ScrollView, View } from "react-native";
 import HomeCardComponent from "./HomeCardComponent";
 import { useTailwind } from "tailwind-rn";
 
-// Add props to accept cards
 interface HorizontalCardScrollProps {
   cards: {
     imageUrl: any;

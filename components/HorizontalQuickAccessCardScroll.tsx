@@ -3,7 +3,6 @@ import { ScrollView } from "react-native";
 import QuickAccessCardComponent from "@/components/QuickAccessCardComponent";
 import { useTailwind } from "tailwind-rn";
 
-// Add props to accept cards
 interface HorizontalQuickAccessCardScrollProps {
   quickAccessCards: {
     iconUrl: any;

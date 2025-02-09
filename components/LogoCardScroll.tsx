@@ -3,7 +3,6 @@ import { ScrollView, View } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import LogoCard from "./LogoCard";
 
-// Add props to accept cards
 interface LogoCardScrollProps {
   cards: {
     imageUrl: any;

@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Image,
-  ActivityIndicator,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import { View, TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
-import { auth } from "@/app/(auth)/firebaseConfig";
-import { getUserData } from "@/app/(auth)/auth";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Skeleton } from "@rneui/themed";
 import { LinearGradient } from "expo-linear-gradient";
+import { supabase } from "@/lib/supabase";
+
+import GreetingAvatar from "./GreetingAvatar";
 
 const Greeting = ({
   notificationCount,
@@ -24,6 +19,7 @@ const Greeting = ({
   const [userName, setUserName] = useState<string | null>(null);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const errorCondition = false;
@@ -36,19 +32,35 @@ const Greeting = ({
     return null;
   }
 
-  useEffect(() => {
-    const user = auth.currentUser;
+  const fetchUserProfile = async () => {
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
     if (user) {
-      getUserData(user.uid).then((data) => {
-        if (data) {
-          setUserName(data.firstName);
-        }
-        setIsLoading(false);
-      });
-    } else {
-      setIsLoading(false);
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("first_name, avatar_url")
+        .eq("id", user.id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching user profile:", error);
+      } else {
+        setUserName(data.first_name);
+        setAvatarUrl(data.avatar_url);
+      }
     }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchUserProfile();
   }, []);
+
+  useEffect(() => {
+    console.log("Avatar URL in Greeting:", avatarUrl);
+  }, [avatarUrl]);
 
   const currentHour = new Date().getHours();
   let greetingMessage = "Good Morning";
@@ -95,19 +107,12 @@ const Greeting = ({
           >
             <View
               style={{
-                padding: 6,
+                padding: 3,
                 backgroundColor: "white",
                 borderRadius: 10,
               }}
             >
-              <Image
-                source={require("../assets/images/logo.png")}
-                style={{
-                  width: 40,
-                  height: 40,
-                }}
-                resizeMode="contain"
-              />
+              <GreetingAvatar url={avatarUrl} width={60} height={60} />
             </View>
           </View>
         </View>

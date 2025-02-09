@@ -10,7 +10,6 @@ import {
 import { useTailwind } from "tailwind-rn";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import BackButton from "./BackButton";
-import AppText from "./AppText";
 
 const CallScreen = () => {
   const tailwind = useTailwind();

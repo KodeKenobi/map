@@ -3,7 +3,6 @@ import { ScrollView, View } from "react-native";
 import CoachingCardComponent from "./CoachingCardComponent";
 import { useTailwind } from "tailwind-rn";
 
-// Add props to accept cards
 interface CoachingPicksCardsProps {
   cards: {
     imageUrl: any;

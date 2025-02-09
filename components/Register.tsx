@@ -5,14 +5,16 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  Alert,
+  AppState,
 } from "react-native";
 import { StyleSheet } from "react-native";
-import { Register } from "../app/(auth)/auth";
 import { Ionicons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
 import CheckboxComponent from "./CheckboxComponent";
 import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
+import { supabase } from "@/lib/supabase";
 
 export default function RegisterScreen({ navigation }: { navigation: any }) {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
@@ -20,31 +22,32 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phone, setPhone] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const tailwind = useTailwind();
 
   const [items, setItems] = useState([
     { label: "Agree to the terms and use and privacy", checked: false },
   ]);
 
-  const handleSignUp = async () => {
-    try {
-      await Register({
-        email,
-        password,
-        firstName,
-        lastName,
-        phoneNumber,
-      });
-      alert("Sign up successful");
-      navigation.navigate("Login");
-    } catch (error) {
-      alert((error as Error).message);
-    }
-  };
+  async function signUpWithEmail() {
+    setLoading(true);
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signUp({
+      email: email,
+      phone: phone,
+      password: password,
+    });
+
+    if (error) Alert.alert(error.message);
+    if (!session)
+      Alert.alert("Please check your inbox for email verification!");
+    setLoading(false);
+  }
 
   const handleToggle = (index: number) => {
     const item = items[index];
@@ -95,18 +98,6 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
           </AppText>
           <TextInput
             style={styles.input}
-            placeholder="Enter your first name"
-            value={firstName}
-            onChangeText={setFirstName}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your last name"
-            value={lastName}
-            onChangeText={setLastName}
-          />
-          <TextInput
-            style={styles.input}
             placeholder="Enter your email"
             keyboardType="email-address"
             value={email}
@@ -116,8 +107,8 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
             style={styles.input}
             placeholder="Enter your phone number"
             keyboardType="phone-pad"
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
+            value={phone}
+            onChangeText={setPhone}
           />
           <TextInput
             style={styles.input}
@@ -141,9 +132,9 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
 
           <ButtonComponent
             title="Create Account"
-            color="bg-w3-gold-1"
+            color="#F9CF67"
             textColor="#000"
-            onPress={handleSignUp}
+            onPress={signUpWithEmail}
           />
         </View>
       </ScrollView>

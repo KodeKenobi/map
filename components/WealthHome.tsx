@@ -2,16 +2,13 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Image, Text, Animated } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { auth } from "../app/(auth)/firebaseConfig";
-import { getUserData } from "../app/(auth)/auth";
 import Greeting from "./Greeting";
 import BottomNav from "./BottomNav";
 import { useTailwind } from "tailwind-rn";
 import HorizontalCardScroll from "./HorizontalCardScroll";
 import LogoNavScroll from "./LogoNavScroll";
 import WealthNavMenu from "./WealthNavMenu";
-import { Link } from "expo-router";
-import ButtonComponent from "./ButtonComponent";
+import { supabase } from "../lib/supabase";
 
 const WealthHome = () => {
   const navigation = useNavigation<NavigationProp<any>>();
@@ -60,21 +57,39 @@ const WealthHome = () => {
   ];
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (user) {
-      getUserData(user.uid).then((data) => {
-        if (data) {
-          setFirstName(data.firstName);
-          if (!data.hasCompletedWealthOnboarding) {
-            navigation.navigate("WealthWelcome");
+    const getProfile = async () => {
+      try {
+        const {
+          data: { user },
+          error: userError,
+        } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile, error } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+
+          if (error) throw error;
+
+          if (profile) {
+            setFirstName(profile.first_name);
+            if (!profile.hascompletedwealthonboarding) {
+              navigation.navigate("WealthWelcome");
+            }
           }
+        } else {
+          navigation.navigate("Login");
         }
+      } catch (error) {
+        console.error("Error:", error);
+        navigation.navigate("Login");
+      } finally {
         setLoading(false);
-      });
-    } else {
-      setLoading(false);
-      navigation.navigate("Login");
-    }
+      }
+    };
+
+    getProfile();
   }, [navigation]);
 
   if (loading) {
@@ -137,22 +152,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-  },
-  loadingBarsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "80%",
-  },
-  loadingBar: {
-    height: 4,
-    width: "30%",
-    backgroundColor: "#ccc",
-    borderRadius: 2,
-    overflow: "hidden",
-  },
-  loadingBarActive: {
-    backgroundColor: "#000",
   },
   faviconBig: {
     width: 100,

@@ -8,6 +8,7 @@ import AppText from "./AppText";
 interface CheckboxItem {
   label: string;
   checked: boolean;
+  checkedBackgroundColor?: string;
 }
 
 interface CheckboxComponentProps {
@@ -33,8 +34,10 @@ const CheckboxComponent: React.FC<CheckboxComponentProps> = ({
         <View key={index} style={tailwind("flex-row items-center mb-4")}>
           <View
             style={tailwind(
-              `flex-row items-center bg-gray-200 p-4 rounded-md w-full ${
-                item.checked ? checkedBackgroundColor : ""
+              `flex-row items-center p-4 rounded-md w-full ${
+                item.checked
+                  ? item.checkedBackgroundColor || checkedBackgroundColor
+                  : "bg-gray-200"
               }`
             )}
           >

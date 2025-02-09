@@ -1,17 +1,26 @@
 import React, { useState } from "react";
-import { View, Image, TouchableOpacity, ScrollView } from "react-native";
+import { View, Image, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 import CheckboxComponent from "./CheckboxComponent";
-import { auth } from "@/app/(auth)/firebaseConfig";
-import { setDoc } from "firebase/firestore";
-import { db } from "@/app/(auth)/firebaseConfig";
-import { doc } from "firebase/firestore";
+import { supabase } from "@/lib/supabase";
 
-export default function OnboardingScreen({ navigation }: { navigation: any }) {
+import { Session } from "@supabase/supabase-js";
+import Toast from "react-native-toast-message";
+
+interface HomeOnboardingScreenProps {
+  navigation: any;
+  session: Session;
+}
+
+export default function HomeOnboardingScreen({
+  navigation,
+  session,
+}: HomeOnboardingScreenProps) {
   const tailwind = useTailwind();
+  const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([
     { label: "Wellness: Heal, rejuvenate, and thrive", checked: false },
     {
@@ -39,32 +48,39 @@ export default function OnboardingScreen({ navigation }: { navigation: any }) {
     setItems(updatedItems);
   };
 
-  const handleCompleteOnboarding = () => {
-    const user = auth.currentUser;
-    console.log("Current User:", user);
-    if (user) {
+  async function saveOnboardingStatus() {
+    try {
+      setLoading(true);
+
       const selectedItems = items.filter((item) => item.checked);
-      setDoc(
-        doc(db, "users", user.uid),
-        {
-          hasCompletedHomeOnboarding: true,
-          selectedHomeOnboardingOptions:
-            selectedItems.length > 0 ? selectedItems : null,
-        },
-        { merge: true }
-      )
-        .then(() => {
-          console.log("Successfully updated hasCompletedHomeOnboarding");
-        })
-        .catch((error) => {
-          console.error("Error updating document:", error);
-        });
-    } else {
-      console.log("No user is logged in.");
+      const updates = {
+        id: session.user.id,
+        hascompletedhomeonboarding: true,
+        selected_home_onboarding_items: selectedItems,
+        updated_at: new Date(),
+      };
+
+      const { error } = await supabase.from("profiles").upsert(updates);
+
+      if (error) {
+        throw error;
+      }
+
+      Toast.show({
+        type: "success",
+        text1: "Profile Updated Successfully",
+        position: "bottom",
+      });
+
+      navigation.replace("Home", { animation: "slide" });
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+    } finally {
+      setLoading(false);
     }
-    console.log("Navigating to Home");
-    navigation.navigate("Home");
-  };
+  }
 
   return (
     <ScrollView>
@@ -93,14 +109,16 @@ export default function OnboardingScreen({ navigation }: { navigation: any }) {
         <CheckboxComponent
           items={items}
           onToggle={handleToggle}
+          checkedBackgroundColor="bg-w3-gold-1"
           checkboxBackgroundColor="#7345B6"
           fontColor="#000"
         />
+
         <ButtonComponent
           title="Continue"
-          color="bg-w3-purple"
+          color="#7345B6"
           textColor="#fff"
-          onPress={handleCompleteOnboarding}
+          onPress={saveOnboardingStatus}
         />
         <TouchableOpacity
           style={{

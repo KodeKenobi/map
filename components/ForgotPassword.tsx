@@ -8,9 +8,7 @@ import {
   Text,
 } from "react-native";
 import AppText from "./AppText";
-import { Ionicons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
-import { TouchableOpacity } from "react-native";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import ButtonComponent from "./ButtonComponent";
 import BackButton from "./BackButton";

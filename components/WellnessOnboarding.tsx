@@ -1,14 +1,11 @@
 import React, { useState } from "react";
-import { View, Image, TouchableOpacity, ScrollView } from "react-native";
+import { View, Image, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 import CheckboxComponent from "./CheckboxComponent";
-import { auth } from "../app/(auth)/firebaseConfig";
-import { setDoc, doc } from "firebase/firestore";
-import { db } from "../app/(auth)/firebaseConfig";
-import { getUserData } from "@/app/(auth)/auth";
+import { supabase } from "@/lib/supabase";
 
 export default function WellnessOnboarding({
   navigation,
@@ -16,6 +13,7 @@ export default function WellnessOnboarding({
   navigation: any;
 }) {
   const tailwind = useTailwind();
+  const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([
     { label: "Wellness: Heal, rejuvenate, and thrive", checked: true },
     { label: "Nutrition: Eat well for a better life", checked: false },
@@ -38,33 +36,55 @@ export default function WellnessOnboarding({
     setItems(updatedItems);
   };
 
-  const handleCompleteOnboarding = () => {
-    const user = auth.currentUser;
-    if (user) {
-      const selectedItems = items.filter((item) => item.checked);
-      setDoc(
-        doc(db, "users", user.uid),
-        {
-          hasCompletedWellnessOnboarding: true,
-          selectedWellnessOnboardingOptions:
+  const handleCompleteOnboarding = async () => {
+    try {
+      setLoading(true);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        const selectedItems = items.filter((item) => item.checked);
+        const { error } = await supabase.from("profiles").upsert({
+          id: user.id,
+          hascompletedwellnessonboarding: true,
+          selected_wellness_onboarding_items:
             selectedItems.length > 0 ? selectedItems : null,
-        },
-        { merge: true }
-      );
+          updated_at: new Date(),
+        });
+
+        if (error) throw error;
+      }
+      navigation.navigate("WellnessHome");
+    } catch (error) {
+      console.error("Error:", error);
+      Alert.alert((error as Error).message);
+    } finally {
+      setLoading(false);
     }
-    console.log("Navigating to Home");
-    navigation.navigate("WellnessHome");
   };
 
   const navigateToWellness = async () => {
-    const user = auth.currentUser;
-    if (user) {
-      const data = await getUserData(user.uid);
-      if (data && !data.hasWellnessOnboarding) {
-        navigation.navigate("WellnessWelcome");
-      } else {
-        navigation.navigate("WellnessHome");
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+
+        if (profile && !profile.hasWellnessOnboarding) {
+          navigation.navigate("WellnessWelcome");
+        } else {
+          navigation.navigate("WellnessHome");
+        }
       }
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 

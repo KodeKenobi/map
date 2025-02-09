@@ -1,7 +1,6 @@
 import React from "react";
 import {
   View,
-  Image,
   Text,
   TouchableOpacity,
   ScrollView,
@@ -10,7 +9,6 @@ import {
 import { useTailwind } from "tailwind-rn";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import BackButton from "./BackButton";
-import AppText from "./AppText";
 import DoctorProfileCard from "./DoctorProfileCard";
 import ButtonComponent from "./ButtonComponent";
 

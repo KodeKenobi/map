@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import ButtonComponent from "./ButtonComponent";
 

@@ -3,7 +3,6 @@ import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { FontAwesome } from "@expo/vector-icons";
 
 export default function DoctorServicesMenu() {
   const tailwind = useTailwind();

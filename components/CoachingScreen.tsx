@@ -13,7 +13,6 @@ import AppText from "./AppText";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 import WisdomNavMenu from "./WisdomNavMenu";
 import HorizontalCardScroll from "./HorizontalCardScroll";
-import BottomCTASection from "./BottomCTASection";
 import CoachingPicksCards from "./CoachingPicksCards";
 
 const CoachingScreen = () => {

@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import BackButton from "./BackButton";
-import DoctorProfileCard from "./DoctorProfileCard";
 import AppText from "./AppText";
 import { NavigationProp } from "@react-navigation/native";
 import DoctorServicesMenu from "./DoctorServicesMenu";

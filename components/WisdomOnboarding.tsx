@@ -1,14 +1,11 @@
 import React, { useState } from "react";
-import { View, Image, TouchableOpacity, ScrollView } from "react-native";
+import { View, Image, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 import CheckboxComponent from "./CheckboxComponent";
-import { auth } from "../app/(auth)/firebaseConfig";
-import { setDoc } from "firebase/firestore";
-import { db } from "../app/(auth)/firebaseConfig";
-import { doc } from "firebase/firestore";
+import { supabase } from "@/lib/supabase";
 
 export default function WisdomOnboardingScreen({
   navigation,
@@ -16,6 +13,7 @@ export default function WisdomOnboardingScreen({
   navigation: any;
 }) {
   const tailwind = useTailwind();
+  const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([
     { label: "Wellness: Heal, rejuvenate, and thrive", checked: false },
     {
@@ -43,31 +41,32 @@ export default function WisdomOnboardingScreen({
     setItems(updatedItems);
   };
 
-  const handleCompleteOnboarding = () => {
-    const user = auth.currentUser;
-    console.log("Current User:", user);
-    if (user) {
-      const selectedItems = items.filter((item) => item.checked);
-      setDoc(
-        doc(db, "users", user.uid),
-        {
-          hasCompletedWisdomOnboarding: true,
-          selectedWisdomOnboardingOptions:
+  const handleCompleteOnboarding = async () => {
+    try {
+      setLoading(true);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        const selectedItems = items.filter((item) => item.checked);
+        const { error } = await supabase.from("profiles").upsert({
+          id: user.id,
+          hascompletedwisdomonboarding: true,
+          selected_wisdom_onboarding_items:
             selectedItems.length > 0 ? selectedItems : null,
-        },
-        { merge: true }
-      )
-        .then(() => {
-          console.log("Successfully updated hasCompletedWisdomOnboarding");
-        })
-        .catch((error) => {
-          console.error("Error updating document:", error);
+          updated_at: new Date(),
         });
-    } else {
-      console.log("No user is logged in.");
+
+        if (error) throw error;
+      }
+      navigation.navigate("WisdomHome");
+    } catch (error) {
+      console.error("Error:", error);
+      Alert.alert((error as Error).message);
+    } finally {
+      setLoading(false);
     }
-    console.log("Navigating to Wisdom Home");
-    navigation.navigate("WisdomHome");
   };
 
   return (

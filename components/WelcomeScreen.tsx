@@ -42,9 +42,9 @@ export default function WelcomeScreen({ navigation }: { navigation: any }) {
       <View style={tailwind("mt-20")}>
         <ButtonComponent
           title="Get Started"
-          color="bg-w3-purple"
+          color="#7345B6"
           textColor="#ffffff"
-          onPress={() => navigation.navigate("Onboarding")}
+          onPress={() => navigation.navigate("HomeOnboarding")}
         />
       </View>
     </Animated.View>

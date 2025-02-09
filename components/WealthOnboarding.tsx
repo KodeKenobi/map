@@ -1,17 +1,15 @@
 import React, { useState } from "react";
-import { View, Image, TouchableOpacity, ScrollView } from "react-native";
+import { View, Image, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 import CheckboxComponent from "./CheckboxComponent";
-import { auth } from "../app/(auth)/firebaseConfig";
-import { setDoc, doc } from "firebase/firestore";
-import { db } from "../app/(auth)/firebaseConfig";
-import { getUserData } from "@/app/(auth)/auth";
+import { supabase } from "@/lib/supabase";
 
 export default function WealthOnboarding({ navigation }: { navigation: any }) {
   const tailwind = useTailwind();
+  const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([
     { label: "Wellness: Heal, rejuvenate, and thrive", checked: true },
     { label: "Nutrition: Eat well for a better life", checked: false },
@@ -34,33 +32,31 @@ export default function WealthOnboarding({ navigation }: { navigation: any }) {
     setItems(updatedItems);
   };
 
-  const handleCompleteOnboarding = () => {
-    const user = auth.currentUser;
-    if (user) {
-      const selectedItems = items.filter((item) => item.checked);
-      setDoc(
-        doc(db, "users", user.uid),
-        {
-          hasCompletedWealthOnboarding: true,
-          selectedWealthOnboardingOptions:
-            selectedItems.length > 0 ? selectedItems : null,
-        },
-        { merge: true }
-      );
-    }
-    console.log("Navigating to Wealth Home");
-    navigation.navigate("Wealth");
-  };
+  const handleCompleteOnboarding = async () => {
+    try {
+      setLoading(true);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-  const navigateToWellness = async () => {
-    const user = auth.currentUser;
-    if (user) {
-      const data = await getUserData(user.uid);
-      if (data && !data.hasWealthOnboarding) {
-        navigation.navigate("WealthWelcome");
-      } else {
-        navigation.navigate("Wealth");
+      if (user) {
+        const selectedItems = items.filter((item) => item.checked);
+        const { error } = await supabase.from("profiles").upsert({
+          id: user.id,
+          hascompletedwealthonboarding: true,
+          selected_wealth_onboarding_items:
+            selectedItems.length > 0 ? selectedItems : null,
+          updated_at: new Date(),
+        });
+
+        if (error) throw error;
       }
+      navigation.navigate("Wealth");
+    } catch (error) {
+      console.error("Error:", error);
+      Alert.alert((error as Error).message);
+    } finally {
+      setLoading(false);
     }
   };
 

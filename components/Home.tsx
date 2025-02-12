@@ -82,30 +82,27 @@ const Home = () => {
           console.log("All Home Cards:", allHomeCards);
           if (allHomeCards) {
             const transformedCards = await Promise.all(
-              allHomeCards.map(async (card) => {
-                const imageUrl = await getImageUrl(card.image_url);
-                console.log("Transformed card image URL:", imageUrl);
-                return {
-                  imageUrl,
-                  title: card.title,
-                  subtitle: card.subtitle,
-                  cta: card.cta,
-                  backgroundColor:
-                    card.tag === "wellness"
-                      ? "rgba(118, 184, 162, 0.14)"
-                      : card.tag === "wisdom"
-                      ? "rgba(115, 69, 182, 0.16)"
-                      : "rgba(249, 207, 103, 0.5)",
-                  textColor:
-                    card.tag === "wellness"
-                      ? "rgba(32, 112, 53, 1)"
-                      : card.tag === "wisdom"
-                      ? "rgba(115, 69, 182, 1)"
-                      : "rgba(187, 132, 0, 1)",
-                  description: card.description,
-                  tag: card.tag,
-                };
-              })
+              allHomeCards.map(async (card) => ({
+                id: card.id,
+                imageUrl: await getImageUrl(card.image_url),
+                title: card.title,
+                subtitle: card.subtitle,
+                cta: card.cta,
+                backgroundColor:
+                  card.tag === "wellness"
+                    ? "rgba(118, 184, 162, 0.14)"
+                    : card.tag === "wisdom"
+                    ? "rgba(115, 69, 182, 0.16)"
+                    : "rgba(249, 207, 103, 0.5)",
+                textColor:
+                  card.tag === "wellness"
+                    ? "rgba(32, 112, 53, 1)"
+                    : card.tag === "wisdom"
+                    ? "rgba(115, 69, 182, 1)"
+                    : "rgba(187, 132, 0, 1)",
+                description: card.description,
+                tag: card.tag,
+              }))
             );
             console.log("Final transformed cards:", transformedCards);
             setHomeCards(transformedCards);

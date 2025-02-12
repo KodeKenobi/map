@@ -21,11 +21,13 @@ interface HomeCardProps {
   description?: string;
   tag?: string;
   cta?: string;
+  id: number;
 }
 
 // Update the navigation type
 type RootStackParamList = {
   BlogRead: {
+    id?: number;
     title: string;
     subtitle: string;
     imageUrl: any;
@@ -45,6 +47,7 @@ const HomeCardComponent: React.FC<HomeCardProps> = ({
   description,
   tag,
   cta,
+  id,
 }) => {
   const tailwind = useTailwind();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -52,6 +55,7 @@ const HomeCardComponent: React.FC<HomeCardProps> = ({
   // Update the handleCardPress function
   const handleCardPress = () => {
     const blogData = {
+      id,
       title,
       subtitle,
       imageUrl,

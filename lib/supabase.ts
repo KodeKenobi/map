@@ -51,3 +51,33 @@ export const getAllHomeCards = async () => {
   const { data, error } = await supabase.from("home_cards").select("*");
   return data;
 };
+
+export const getComments = async (id: string) => {
+  const { data, error } = await supabase
+    .from("comments")
+    .select("*")
+    .eq("id", id);
+
+  if (error) {
+    console.error("Error fetching comments:", error);
+    return null;
+  }
+  return data;
+};
+
+export const getAllComments = async () => {
+  const { data, error } = await supabase.from("comments").select("*");
+  return data;
+  if (error) {
+    console.error("Error fetching comments:", error);
+    return null;
+  }
+  return data;
+};
+
+export const getLikes = async (id: string) => {
+  const { data, error } = await supabase
+    .from("home_cards")
+    .select("likes")
+    .eq("id", id);
+};

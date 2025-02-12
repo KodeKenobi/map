@@ -5,6 +5,7 @@ import { useTailwind } from "tailwind-rn";
 
 interface HorizontalCardScrollProps {
   cards: {
+    id: number;
     imageUrl: any;
     title: string;
     cta: string;
@@ -26,6 +27,7 @@ const HorizontalCardScroll: React.FC<HorizontalCardScrollProps> = ({
       {cards.map((card, index) => (
         <View key={index} style={[tailwind("mr-24"), { height: cardHeight }]}>
           <HomeCardComponent
+            id={card.id}
             imageUrl={card.imageUrl}
             title={card.title}
             cta={card.cta}

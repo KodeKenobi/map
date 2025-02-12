@@ -116,19 +116,6 @@ const ProfileComponent = () => {
           <TouchableOpacity style={tailwind("flex-row items-center mt-2")}>
             <View style={tailwind("bg-gray-200 rounded-full p-2")}>
               <Image
-                source={require("../assets/images/personal-details.png")}
-                style={tailwind("w-6 h-6")}
-              />
-            </View>
-            <View style={tailwind("flex-1")}>
-              <AppText style={tailwind("text-lg font-semibold px-8")}>
-                Personal Details
-              </AppText>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={tailwind("flex-row items-center mt-2")}>
-            <View style={tailwind("bg-gray-200 rounded-full p-2")}>
-              <Image
                 source={require("../assets/images/location-icon.png")}
                 style={tailwind("w-6 h-6")}
               />
@@ -178,6 +165,26 @@ const ProfileComponent = () => {
               </AppText>
             </View>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={tailwind("flex-row items-center mt-2")}
+            onPress={() => {
+              navigation.navigate("UserUpdate");
+            }}
+          >
+            <View style={tailwind("bg-gray-200 rounded-full p-2")}>
+              <Image
+                source={require("../assets/images/personal-details.png")}
+                style={tailwind("w-6 h-6")}
+              />
+            </View>
+            <View style={tailwind("flex-1")}>
+              <AppText style={tailwind("text-lg font-semibold px-8")}>
+                Update Profile
+              </AppText>
+            </View>
+          </TouchableOpacity>
+
           <TouchableOpacity
             style={tailwind("flex-row items-center mt-2")}
             onPress={() => supabase.auth.signOut()}

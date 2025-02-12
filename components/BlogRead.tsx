@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
+  TextInput,
 } from "react-native";
 import {
   useNavigation,
@@ -17,8 +18,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { StackNavigationProp } from "@react-navigation/stack";
 import BackButton from "./BackButton";
+import { supabase } from "../lib/supabase";
+import { getComments, getLikes } from "../lib/supabase";
+import GreetingAvatar from "./GreetingAvatar";
+
 type RootStackParamList = {
   BlogRead: {
+    id?: number;
     title: string;
     subtitle: string;
     cta: string;
@@ -32,6 +38,7 @@ interface BlogReadProps {
   route: RouteProp<
     {
       params: {
+        id?: number;
         title: string;
         subtitle: string;
         cta: string;
@@ -42,13 +49,32 @@ interface BlogReadProps {
     },
     "params"
   >;
-  navigation: StackNavigationProp<any>;
+  navigation: NavigationProp<any>;
 }
+
+type Comment = {
+  content: string;
+  user_id: string;
+  users: {
+    profiles: {
+      first_name: string;
+      last_name: string;
+      avatar_url: string;
+    };
+  };
+};
 
 const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
   const { title, subtitle, cta, imageUrl, description, tag } = route.params;
   const tailwind = useTailwind();
   const [imageError, setImageError] = useState(false);
+  const [likes, setLikes] = useState(0);
+  const [userLiked, setUserLiked] = useState(false);
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [url, setUrl] = useState(null);
 
   const imageSource = React.useMemo(() => {
     if (typeof imageUrl === "string") {
@@ -61,6 +87,310 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
   }, [imageUrl]);
 
   console.log("Final image source:", imageSource);
+
+  const handleLike = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const newLikedState = !userLiked;
+    console.log("Current like status:", { userLiked, newLikedState });
+
+    try {
+      if (newLikedState) {
+        // Add like
+        const { data: likeData, error: likeError } = await supabase
+          .from("likes")
+          .insert({
+            post_id: route.params.id,
+            user_id: user.id,
+          });
+        console.log("Like added:", { likeData, likeError });
+
+        // Increment likes count in home_cards
+        const { data: incrementData, error: incrementError } =
+          await supabase.rpc("increment_likes", { row_id: route.params.id });
+        console.log("Likes incremented:", { incrementData, incrementError });
+
+        setLikes((prev) => {
+          console.log("Updating likes count:", {
+            previous: prev,
+            new: prev + 1,
+          });
+          return prev + 1;
+        });
+      } else {
+        // Remove like
+        const { data: unlikeData, error: unlikeError } = await supabase
+          .from("likes")
+          .delete()
+          .eq("post_id", route.params.id)
+          .eq("user_id", user.id);
+        console.log("Like removed:", { unlikeData, unlikeError });
+
+        // Decrement likes count in home_cards
+        const { data: decrementData, error: decrementError } =
+          await supabase.rpc("decrement_likes", { row_id: route.params.id });
+        console.log("Likes decremented:", { decrementData, decrementError });
+
+        setLikes((prev) => {
+          console.log("Updating likes count:", {
+            previous: prev,
+            new: prev - 1,
+          });
+          return prev - 1;
+        });
+      }
+
+      setUserLiked(newLikedState);
+      console.log("Final like state:", {
+        userLiked: newLikedState,
+        totalLikes: likes,
+      });
+    } catch (error) {
+      console.error("Error updating like:", error);
+    }
+  };
+
+  const fetchUserProfile = async () => {
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+    if (user) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("first_name, last_name, avatar_url")
+        .eq("id", user.id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching user profile:", error);
+      } else {
+        setUserName(`${data.first_name} ${data.last_name}`);
+        setAvatarUrl(data.avatar_url);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (route.params.id) {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) return;
+
+        console.log("Fetching likes data for post:", route.params.id);
+
+        // Fetch likes count and user's like status in parallel
+        const [likesResponse, userLikeResponse] = await Promise.all([
+          supabase
+            .from("home_cards")
+            .select("likes")
+            .eq("id", route.params.id)
+            .single(),
+          supabase
+            .from("likes")
+            .select("*")
+            .eq("post_id", route.params.id)
+            .eq("user_id", user.id)
+            .single(),
+        ]);
+
+        console.log("Likes data fetched:", {
+          likesCount: likesResponse.data?.likes,
+          userLikeStatus: !!userLikeResponse.data,
+          likesResponse,
+          userLikeResponse,
+        });
+
+        // Update likes count
+        if (likesResponse.data) {
+          setLikes(likesResponse.data.likes || 0);
+        }
+
+        // Update user's like status
+        setUserLiked(!!userLikeResponse.data);
+
+        // Fetch comments...
+        const { data: commentsData } = await supabase
+          .from("comments")
+          .select(
+            `
+            content,
+            user_id,
+            first_name,
+            last_name,
+            avatar_url
+          `
+          )
+          .eq("post_id", route.params.id)
+          .order("created_at", { ascending: false });
+
+        console.log(
+          "Raw comments data:",
+          JSON.stringify(commentsData, null, 2)
+        );
+
+        if (commentsData) {
+          const formattedComments = commentsData.map((comment) => ({
+            content: comment.content,
+            user_id: comment.user_id,
+            users: {
+              profiles: {
+                first_name: comment.first_name,
+                last_name: comment.last_name,
+                avatar_url: comment.avatar_url,
+              },
+            },
+          })) as Comment[];
+
+          console.log(
+            "Formatted comments:",
+            JSON.stringify(formattedComments, null, 2)
+          );
+          setComments(formattedComments);
+        }
+      }
+    };
+
+    fetchData();
+  }, [route.params.id]);
+
+  const handleCommentSubmit = async () => {
+    if (!comment.trim()) return;
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+
+    try {
+      console.log("Starting comment submission for user:", user.id);
+
+      // First get the user's profile
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("first_name, last_name, avatar_url")
+        .eq("id", user.id)
+        .single();
+
+      console.log("Retrieved profile:", profile);
+
+      // Then insert comment with user's name
+      const { data: newComment, error: commentError } = await supabase
+        .from("comments")
+        .insert({
+          content: comment.trim(),
+          user_id: user.id,
+          post_id: route.params.id,
+          first_name: profile?.first_name,
+          last_name: profile?.last_name,
+          avatar_url: profile?.avatar_url,
+        })
+        .select(
+          `
+          content,
+          user_id,
+          first_name,
+          last_name,
+          avatar_url
+        `
+        )
+        .single();
+
+      console.log("New comment response:", { newComment, commentError });
+
+      if (commentError) throw commentError;
+
+      if (newComment) {
+        const formattedComment = {
+          content: newComment.content,
+          user_id: newComment.user_id,
+          users: {
+            profiles: {
+              first_name: newComment.first_name,
+              last_name: newComment.last_name,
+              avatar_url: newComment.avatar_url,
+            },
+          },
+        };
+        console.log("Formatted comment:", formattedComment);
+
+        setComments((prevComments) => [formattedComment, ...prevComments]);
+        setComment("");
+      }
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+    }
+  };
+
+  const handleKeyPress = ({
+    nativeEvent: { key },
+  }: {
+    nativeEvent: { key: string };
+  }) => {
+    if (key === "Enter") {
+      handleCommentSubmit();
+    }
+  };
+
+  useEffect(() => {
+    if (url) downloadImage(url);
+  }, [url]);
+
+  async function downloadImage(path: string) {
+    try {
+      const { data, error } = await supabase.storage
+        .from("avatars")
+        .download(path);
+      if (error) {
+        throw error;
+      }
+      const url = URL.createObjectURL(data);
+      console.log("Image URL:", url);
+      setAvatarUrl(url);
+    } catch (error: any) {
+      console.log("Error downloading image: ", error.message);
+    }
+  }
+
+  async function getAvatarUrl(path: string) {
+    try {
+      const { data, error } = await supabase.storage
+        .from("avatars")
+        .download(path);
+      if (error) {
+        console.error("Error downloading avatar:", error);
+        return null;
+      }
+      const url = URL.createObjectURL(data);
+      return url;
+    } catch (error) {
+      console.error("Error downloading avatar:", error);
+      return null;
+    }
+  }
+
+  const getAvatarPublicUrl = (path: string | null) => {
+    if (!path) return null;
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("images").getPublicUrl(`home-cards/${path}`);
+    return publicUrl;
+  };
+
+  const { data } = supabase.storage
+    .from("comments")
+    .getPublicUrl("filePath.jpg");
+
+  console.log("Your public URL is: ", data.publicUrl);
 
   return (
     <SafeAreaView style={tailwind("flex-1 bg-white")}>
@@ -127,19 +457,83 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
             </Text>
           )}
 
-          <TouchableOpacity
-            style={[
-              tailwind("mt-6 p-4 rounded-lg"),
-              { backgroundColor: "#7C3AED" },
-            ]}
-            onPress={() => {
-              /* Handle CTA */
-            }}
-          >
-            <Text style={tailwind("text-white text-center font-bold")}>
-              {cta}
+          {/* Comments Section */}
+          <View style={tailwind("mt-0 border-t border-gray-300")}>
+            <View style={tailwind("flex-row items-center justify-between")}>
+              <View style={tailwind("flex-row items-center")}>
+                <TouchableOpacity onPress={handleLike}>
+                  <Ionicons
+                    name={userLiked ? "heart" : "heart-outline"}
+                    size={24}
+                    color="#7C3AED"
+                  />
+                </TouchableOpacity>
+                <Text style={tailwind("ml-16 text-gray-600")}>
+                  {likes} Likes
+                </Text>
+              </View>
+            </View>
+            <Text style={tailwind("mt-6 text-gray-800 font-bold text-md")}>
+              Comments:
             </Text>
-          </TouchableOpacity>
+            {comments.map((comment, index) => {
+              return (
+                <View
+                  key={index}
+                  style={tailwind("mt-4 bg-gray-50 rounded-lg mb-8")}
+                >
+                  <View style={tailwind("flex-row items-center")}>
+                    {comment.users.profiles.avatar_url && (
+                      <View style={tailwind("mr-2")}>
+                        <GreetingAvatar
+                          url={comment.users.profiles.avatar_url}
+                          width={40}
+                          height={40}
+                        />
+                      </View>
+                    )}
+                    <View style={tailwind("flex-1 ml-18")}>
+                      <Text style={tailwind("font-bold")}>
+                        {comment.users.profiles.first_name}{" "}
+                        {comment.users.profiles.last_name}
+                      </Text>
+                      <Text style={tailwind("mt-1 text-gray-600")}>
+                        {comment.content}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              );
+            })}
+            <View style={tailwind("mt-4 bg-gray-100 rounded-lg px-4 py-2")}>
+              <View style={tailwind("flex-row items-center mt-6 mb-6")}>
+                <TextInput
+                  style={tailwind(
+                    "border border-gray-300 rounded p-2 flex-1 rounded-lg bg-white"
+                  )}
+                  placeholder="Type your comment..."
+                  value={comment}
+                  onChangeText={setComment}
+                  returnKeyType="done"
+                  onSubmitEditing={handleCommentSubmit}
+                  multiline={false}
+                />
+                <TouchableOpacity
+                  style={tailwind("ml-2 p-2 bg-purple-600 rounded")}
+                  onPress={handleCommentSubmit}
+                >
+                  <Text style={tailwind("text-wh font-bold")}>Send</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+          {avatarUrl && (
+            <Image
+              source={{ uri: avatarUrl }}
+              style={tailwind("w-10 h-10 rounded-full")}
+              accessibilityLabel="User Avatar"
+            />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

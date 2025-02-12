@@ -44,6 +44,7 @@ import { Session } from "@supabase/supabase-js";
 import Home from "@/components/Home";
 import HomeOnboardingScreen from "@/components/HomeOnboarding";
 import BlogRead from "@/components/BlogRead";
+import UserUpdate from "@/components/UserUpdate";
 LogBox.ignoreLogs([
   "Text strings must be rendered within a <Text> component",
   "",
@@ -222,6 +223,11 @@ export default function RootLayout({ navigation }: { navigation: any }) {
               />
               <Stack.Screen name="Brands" component={BrandsComponent} />
               <Stack.Screen name="BlogRead" component={BlogRead} />
+              <Stack.Screen
+                name="UserUpdate"
+                component={UserUpdate}
+                initialParams={{ session: session }}
+              />
             </>
           )}
         </Stack.Navigator>

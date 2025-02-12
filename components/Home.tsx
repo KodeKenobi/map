@@ -11,34 +11,7 @@ import HorizontalCardScroll from "./HorizontalCardScroll";
 import HorizontalQuickAccessCardScroll from "./HorizontalQuickAccessCardScroll";
 import AppText from "./AppText";
 import { supabase } from "@/lib/supabase";
-import { getAllProfiles } from "@/lib/supabase";
-
-const cards = [
-  {
-    imageUrl: require("../assets/images/vitamin-drip.png"),
-    title: "Free Wellness Webinar: The Path to Cellular Health",
-    date: "Dec 15th, 7 PM - Join Now",
-    registrationText: "Register Now     >",
-    backgroundColor: "rgba(118, 184, 162, 0.14)",
-    textColor: "rgba(32, 112, 53, 1)",
-  },
-  {
-    imageUrl: require("../assets/images/coaching.png"),
-    title: "Career Coaching: From Entry Level to C-Suite and beyond",
-    date: "Make an appointment today",
-    registrationText: "Explore Coaching     >",
-    backgroundColor: "rgba(115, 69, 182, 0.16)",
-    textColor: "rgba(115, 69, 182, 1)",
-  },
-  {
-    imageUrl: require("../assets/images/wellness-seminar.png"),
-    title: "Free Wellness Webinar: The Path to Cellular Health",
-    date: "Dec 15th, 7 PM - Join Now",
-    registrationText: "Register Now     >",
-    backgroundColor: "rgba(249, 207, 103, 0.5)",
-    textColor: "rgba(187, 132, 0, 1)",
-  },
-];
+import { getAllProfiles, getAllHomeCards } from "@/lib/supabase";
 
 const quickAccessCards = [
   {
@@ -61,6 +34,23 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const tailwind = useTailwind();
   const [scale] = useState(new Animated.Value(1));
+  const [homeCards, setHomeCards] = useState<any[]>([]);
+
+  async function getImageUrl(path: string) {
+    try {
+      console.log("Input image path:", path);
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("images").getPublicUrl(path);
+
+      console.log("Generated public URL:", publicUrl);
+      // Make sure the URL is in the correct format for React Native Image component
+      return { uri: publicUrl }; // Wrap in uri object for Image component
+    } catch (error) {
+      console.error("Error getting image public URL:", error);
+      return null;
+    }
+  }
 
   useEffect(() => {
     const getProfile = async () => {
@@ -76,22 +66,50 @@ const Home = () => {
             .eq("id", user.id)
             .single();
 
-          if (profile) {
-            if (!profile.hascompletedhomeonboarding) {
-              navigation.navigate("Welcome");
-              return;
-            }
+          if (!profile.hascompletedhomeonboarding) {
+            navigation.navigate("Welcome");
+            return;
           }
-          if (profile) {
-            if (!profile.hascompletedprofileupdate) {
-              navigation.navigate("UpdateProfile");
-              return;
-            }
+          if (!profile.hascompletedprofileupdate) {
+            navigation.navigate("UpdateProfile");
+            return;
           }
 
           const allProfiles = await getAllProfiles();
           console.log("All Profiles:", allProfiles);
 
+          const allHomeCards = await getAllHomeCards();
+          console.log("All Home Cards:", allHomeCards);
+          if (allHomeCards) {
+            const transformedCards = await Promise.all(
+              allHomeCards.map(async (card) => {
+                const imageUrl = await getImageUrl(card.image_url);
+                console.log("Transformed card image URL:", imageUrl);
+                return {
+                  imageUrl,
+                  title: card.title,
+                  subtitle: card.subtitle,
+                  cta: card.cta,
+                  backgroundColor:
+                    card.tag === "wellness"
+                      ? "rgba(118, 184, 162, 0.14)"
+                      : card.tag === "wisdom"
+                      ? "rgba(115, 69, 182, 0.16)"
+                      : "rgba(249, 207, 103, 0.5)",
+                  textColor:
+                    card.tag === "wellness"
+                      ? "rgba(32, 112, 53, 1)"
+                      : card.tag === "wisdom"
+                      ? "rgba(115, 69, 182, 1)"
+                      : "rgba(187, 132, 0, 1)",
+                  description: card.description,
+                  tag: card.tag,
+                };
+              })
+            );
+            console.log("Final transformed cards:", transformedCards);
+            setHomeCards(transformedCards);
+          }
           setLoading(false);
         } else {
           setLoading(false);
@@ -151,7 +169,7 @@ const Home = () => {
       </View>
       <ScrollView contentContainerStyle={[styles.scrollContainer]}>
         <View style={tailwind("p-2")}>
-          <HorizontalCardScroll cards={cards} />
+          <HorizontalCardScroll cards={homeCards} />
         </View>
         <View style={tailwind("mt-0 mb-2 p-2")}>
           <AppText style={tailwind("text-lg font-bold")}>Quick Access</AppText>

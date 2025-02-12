@@ -46,3 +46,8 @@ export const updateProfile = async (id: string, profileData: any) => {
 export const homeCards = async () => {
   const { data, error } = await supabase.from("home_cards").select("*");
 };
+
+export const getAllHomeCards = async () => {
+  const { data, error } = await supabase.from("home_cards").select("*");
+  return data;
+};

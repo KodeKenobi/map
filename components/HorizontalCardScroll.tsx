@@ -7,10 +7,11 @@ interface HorizontalCardScrollProps {
   cards: {
     imageUrl: any;
     title: string;
-    date: string;
-    registrationText: string;
+    cta: string;
+    subtitle: string;
     backgroundColor?: string;
     textColor?: string;
+    description?: string;
   }[];
 }
 
@@ -27,8 +28,9 @@ const HorizontalCardScroll: React.FC<HorizontalCardScrollProps> = ({
           <HomeCardComponent
             imageUrl={card.imageUrl}
             title={card.title}
-            date={card.date}
-            registrationText={card.registrationText}
+            cta={card.cta}
+            subtitle={card.subtitle}
+            description={card.description}
             backgroundColor={card.backgroundColor}
             textColor={card.textColor}
           />

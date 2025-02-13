@@ -9,7 +9,7 @@ import {
   AppState,
 } from "react-native";
 import { StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
 import CheckboxComponent from "./CheckboxComponent";
 import AppText from "./AppText";
@@ -25,6 +25,7 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
   const [phone, setPhone] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const tailwind = useTailwind();
 
@@ -110,18 +111,42 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
             value={phone}
             onChangeText={setPhone}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your password"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Confirm your password"
-            secureTextEntry
-          />
+          <View style={{ position: "relative" }}>
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              secureTextEntry={!isPasswordVisible}
+              value={password}
+              onChangeText={setPassword}
+            />
+            <TouchableOpacity
+              onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+              style={{ position: "absolute", right: 10, top: 15 }}
+            >
+              <MaterialIcons
+                name={isPasswordVisible ? "visibility" : "visibility-off"}
+                size={24}
+                color="gray"
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={{ position: "relative" }}>
+            <TextInput
+              style={styles.input}
+              placeholder="Confirm your password"
+              secureTextEntry={!isPasswordVisible}
+            />
+            <TouchableOpacity
+              onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+              style={{ position: "absolute", right: 10, top: 15 }}
+            >
+              <MaterialIcons
+                name={isPasswordVisible ? "visibility" : "visibility-off"}
+                size={24}
+                color="gray"
+              />
+            </TouchableOpacity>
+          </View>
           <CheckboxComponent
             items={items}
             onToggle={handleToggle}

@@ -142,10 +142,6 @@ const Home = () => {
   }, [scale]);
 
   if (loading) {
-    return null;
-  }
-
-  if (loading) {
     return (
       <View style={styles.loadingContainer}>
         <Animated.Image

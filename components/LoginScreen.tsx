@@ -30,6 +30,26 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "PASSWORD_RECOVERY") {
+        const newPassword = prompt(
+          "What would you like your new password to be?"
+        );
+
+        if (newPassword) {
+          const { data, error } = await supabase.auth.updateUser({
+            password: newPassword,
+          });
+
+          if (data) alert("Password updated successfully!");
+          if (error) alert("There was an error updating your password.");
+        }
+      }
+    });
+  }, []);
 
   async function signInWithEmail() {
     try {
@@ -64,6 +84,38 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
     }
   }
 
+  async function handleResetPassword() {
+    if (!email) {
+      Alert.alert("Error", "Please enter your email address");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const redirectTo = __DEV__
+        ? "exp://localhost:19000/--/reset-password"
+        : "com.supabase://auth/callback";
+
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo,
+      });
+
+      if (error) {
+        Alert.alert("Error", error.message);
+      } else {
+        Alert.alert(
+          "Password Reset",
+          "Check your email for the password reset link"
+        );
+        setIsForgotPassword(false);
+      }
+    } catch (error) {
+      Alert.alert("Error", (error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {}, []);
 
   return (
@@ -77,7 +129,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         </View>
 
         <AppText style={tailwind("text-2xl font-bold mb-6 mt-6 text-center")}>
-          <Text>Welcome</Text>
+          <Text>{isForgotPassword ? "Reset Password" : "Welcome"}</Text>
         </AppText>
         <TextInput
           style={styles.input}
@@ -86,39 +138,56 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           value={email}
           onChangeText={setEmail}
         />
-        <View style={{ position: "relative" }}>
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry={!isPasswordVisible}
-            value={password}
-            onChangeText={setPassword}
-          />
-          <TouchableOpacity
-            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-            style={{ position: "absolute", right: 10, top: 15 }}
-          >
-            <MaterialIcons
-              name={isPasswordVisible ? "visibility" : "visibility-off"}
-              size={24}
-              color="gray"
+        {!isForgotPassword && (
+          <View style={{ position: "relative" }}>
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              secureTextEntry={!isPasswordVisible}
+              value={password}
+              onChangeText={setPassword}
             />
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+              style={{ position: "absolute", right: 10, top: 15 }}
+            >
+              <MaterialIcons
+                name={isPasswordVisible ? "visibility" : "visibility-off"}
+                size={24}
+                color="gray"
+              />
+            </TouchableOpacity>
+          </View>
+        )}
         <TouchableOpacity
           style={styles.forgotPassword}
-          onPress={() => navigation.navigate("ForgotPassword")}
+          onPress={() => {
+            if (isForgotPassword) {
+              setIsForgotPassword(false);
+            } else {
+              setIsForgotPassword(true);
+              setPassword("");
+            }
+          }}
         >
           <AppText style={tailwind("text-md font-semibold")}>
-            <Text>Forgot password?</Text>
+            <Text>
+              {isForgotPassword ? "Back to Login" : "Forgot password?"}
+            </Text>
           </AppText>
         </TouchableOpacity>
 
         <ButtonComponent
-          title={loading ? "Loading..." : "Login"}
+          title={
+            loading
+              ? "Loading..."
+              : isForgotPassword
+              ? "Reset Password"
+              : "Login"
+          }
           color="#F9CF67"
           textColor="#000"
-          onPress={signInWithEmail}
+          onPress={isForgotPassword ? handleResetPassword : signInWithEmail}
         />
 
         <AppText style={styles.orText}>

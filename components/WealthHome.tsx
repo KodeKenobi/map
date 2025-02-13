@@ -34,22 +34,31 @@ const WealthHome = () => {
 
   const cards = [
     {
+      id: 1,
       imageUrl: require("../assets/images/wealth-home-card-1.jpg"),
       title: "Free Wellness Webinar: The Path to Cellular Health",
+      subtitle: "Join our free webinar to learn about cellular health.",
+      cta: "Register Now",
       date: "Dec 15th, 7 PM - Join Now",
       registrationText: "Register Now >",
       backgroundColor: "rgba(252, 202, 102, 0.3)",
     },
     {
+      id: 2,
       imageUrl: require("../assets/images/wealth-home-card-2.jpg"),
       title: "Career Coaching: From Entry Level to C-Suite and beyond",
+      subtitle: "Make an appointment today to advance your career.",
+      cta: "Explore Coaching",
       date: "Make an appointment today",
       registrationText: "Explore Coaching >",
       backgroundColor: "rgba(252, 202, 102, 0.3)",
     },
     {
+      id: 3,
       imageUrl: require("../assets/images/wealth-home-card-3.png"),
       title: "Free Wellness Webinar: The Path to Cellular Health",
+      subtitle: "Join our free webinar to learn about cellular health.",
+      cta: "Register Now",
       date: "Dec 15th, 7 PM - Join Now",
       registrationText: "Register Now >",
       backgroundColor: "rgba(252, 202, 102, 0.3)",

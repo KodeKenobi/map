@@ -989,7 +989,7 @@
   },
   "bg-w3-green": {
     "style": {
-      "backgroundColor": "#fff"
+      "backgroundColor": "#228564"
     }
   },
   "p-0": {
@@ -1844,7 +1844,7 @@
   "bg-w3-purple-opacity": {
     "style": {
       "--tw-bg-opacity": 0.9,
-      "backgroundColor": "#AB87D8"
+      "backgroundColor": "rgba(171, 135, 216, 0.16)"
     }
   },
   "bg-grey-active": {

@@ -47,7 +47,7 @@ export default function WisdomWelcomeScreen({
       <View style={tailwind("mt-12")}>
         <ButtonComponent
           title="Get Started"
-          color="bg-w3-purple-primary"
+          color="#6C3BAB"
           textColor="#ffffff"
           onPress={() => navigation.navigate("WisdomOnboarding")}
         />

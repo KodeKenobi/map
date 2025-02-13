@@ -59,9 +59,9 @@ export default function ServicesNavMenu({
             style={tailwind(
               `flex-row items-center rounded-full p-2 mr-22 ${
                 selectedPill === pill.id
-                  ? "bg-gray-500"
+                  ? "bg-w3-green"
                   : pill.title === "Consult"
-                  ? "bg-green-500"
+                  ? "bg-w3-green"
                   : backgroundColor || "bg-gray-200"
               }`
             )}

@@ -128,7 +128,7 @@ const PaymentScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
           title="Pay Now"
           onPress={() => navigation.navigate("PaymentSuccessScreen" as never)}
           style={tailwind("mt-8 p-4 rounded mb-6")}
-          color="bg-w3-green"
+          color="#228564"
           textColor="#fff"
         />
       </View>

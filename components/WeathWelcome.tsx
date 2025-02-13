@@ -47,7 +47,7 @@ export default function WeathWelcomeScreen({
       <View style={tailwind("mt-12")}>
         <ButtonComponent
           title="Get Started"
-          color="bg-w3-gold-primary"
+          color="#E5A500"
           textColor="#ffffff"
           onPress={() => navigation.navigate("WealthOnboarding")}
         />

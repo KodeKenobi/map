@@ -15,7 +15,7 @@ export default function WellnessOnboarding({
   const tailwind = useTailwind();
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([
-    { label: "Wellness: Heal, rejuvenate, and thrive", checked: true },
+    { label: "Wellness: Heal, rejuvenate, and thrive", checked: false },
     { label: "Nutrition: Eat well for a better life", checked: false },
     { label: "Fitness: Stay active and healthy", checked: false },
     { label: "Mental Health: Focus on your well-being", checked: false },
@@ -120,7 +120,7 @@ export default function WellnessOnboarding({
         />
         <ButtonComponent
           title="Continue"
-          color="bg-w3-green"
+          color="#228564"
           textColor="#fff"
           onPress={handleCompleteOnboarding}
         />

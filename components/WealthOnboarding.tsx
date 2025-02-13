@@ -11,7 +11,7 @@ export default function WealthOnboarding({ navigation }: { navigation: any }) {
   const tailwind = useTailwind();
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([
-    { label: "Wellness: Heal, rejuvenate, and thrive", checked: true },
+    { label: "Wellness: Heal, rejuvenate, and thrive", checked: false },
     { label: "Nutrition: Eat well for a better life", checked: false },
     { label: "Fitness: Stay active and healthy", checked: false },
     { label: "Mental Health: Focus on your well-being", checked: false },
@@ -87,12 +87,12 @@ export default function WealthOnboarding({ navigation }: { navigation: any }) {
         <CheckboxComponent
           items={items}
           onToggle={handleToggle}
-          checkedBackgroundColor="bg-w3-gold"
+          checkedBackgroundColor="bg-w3-gold-opacity"
           checkboxBackgroundColor="#E5A500"
         />
         <ButtonComponent
           title="Continue"
-          color="bg-w3-gold"
+          color="#E5A500"
           textColor="#fff"
           onPress={handleCompleteOnboarding}
         />

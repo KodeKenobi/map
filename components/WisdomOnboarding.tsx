@@ -96,13 +96,12 @@ export default function WisdomOnboardingScreen({
         <CheckboxComponent
           items={items}
           onToggle={handleToggle}
-          checkboxBackgroundColor="#7345B6"
-          checkedBackgroundColor="#6C3BAB"
-          fontColor="#000"
+          checkedBackgroundColor="bg-w3-purple-opacity"
+          checkboxBackgroundColor="#6C3BAB"
         />
         <ButtonComponent
           title="Continue"
-          color="bg-w3-purple"
+          color="#6C3BAB"
           textColor="#fff"
           onPress={handleCompleteOnboarding}
         />

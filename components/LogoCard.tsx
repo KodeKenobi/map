@@ -56,11 +56,11 @@ const LogoCard: React.FC<LogoCardProps> = ({
             textColor="text-white"
           />
         </View>
-        <View style={tailwind("flex-row justify-center gap-4 mt-4")}>
+        <View style={tailwind("flex-row justify-center gap-4 mt-4 mb-4")}>
           <ButtonComponent
             title="Learn More"
             onPress={() => console.log("Learn More")}
-            color="kwani-logo"
+            color="#093100"
             textColor="white"
           />
         </View>

@@ -129,7 +129,7 @@ const DoctorProfileScreen = () => {
             title="Book an Appointment"
             onPress={() => navigation.navigate("PaymentScreen" as never)}
             style={tailwind("mt-6 p-4 rounded mb-6")}
-            color="bg-w3-green"
+            color="#228564"
             textColor="#fff"
           />
         </View>

@@ -85,7 +85,7 @@ export default function WisdomNavMenu() {
               `text-sm font-semibold ${
                 selectedPill === pill.id
                   ? "text-w3-purple-primary"
-                  : "text-black"
+                  : "text-gray-800"
               }`
             )}
           >

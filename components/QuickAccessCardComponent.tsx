@@ -37,7 +37,7 @@ const QuickAccessCardComponent: React.FC<QuickAccessProps> = ({
       </View>
 
       <View style={[tailwind("justify-center items-center"), styles.title]}>
-        <AppText style={tailwind("text-sm font-bold text-black")}>
+        <AppText style={tailwind("text-sm font-bold text-gray-800")}>
           {title}
         </AppText>
       </View>

@@ -38,7 +38,6 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
       };
     } catch (error) {
       if (error instanceof Error) {
-        console.log("Error downloading image: ", error.message);
       }
     }
   }
@@ -56,12 +55,10 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
       });
 
       if (result.canceled || !result.assets || result.assets.length === 0) {
-        console.log("User cancelled image picker.");
         return;
       }
 
       const image = result.assets[0];
-      console.log("Got image", image);
 
       if (!image.uri) {
         throw new Error("No image uri!");
@@ -121,7 +118,7 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
           onPress={uploadAvatar}
           disabled={uploading}
           color="transparent"
-          style={tailwind("border-2 border-black")}
+          style={tailwind("border-2 border-gray-100")}
         />
       </View>
     </View>

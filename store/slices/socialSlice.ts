@@ -1,73 +1,53 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { supabase } from "../../lib/supabase";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export const fetchHomeCards = createAsyncThunk(
-  "social/fetchHomeCards",
-  async () => {
-    const { data, error } = await supabase.from("home_cards").select("*");
-    if (error) throw error;
-    return data;
-  }
-);
+interface Comment {
+  content: string;
+  user_id: string;
+  users: {
+    profiles: {
+      first_name: string;
+      last_name: string;
+      avatar_url: string;
+    };
+  };
+}
 
-export const fetchLikes = createAsyncThunk(
-  "social/fetchLikes",
-  async (postId: number) => {
-    const { data, error } = await supabase
-      .from("home_cards")
-      .select("likes")
-      .eq("id", postId)
-      .single();
+interface SocialState {
+  // Define your state structure here
+  data: any[];
+  likes: number;
+  comments: Comment[];
+}
 
-    if (error) throw error;
-    return data.likes;
-  }
-);
-
-export const fetchComments = createAsyncThunk(
-  "social/fetchComments",
-  async (postId: number) => {
-    const { data, error } = await supabase
-      .from("comments")
-      .select(
-        `
-        content,
-        user_id,
-        first_name,
-        last_name,
-        avatar_url
-      `
-      )
-      .eq("post_id", postId)
-      .order("created_at", { ascending: false });
-
-    if (error) throw error;
-    return data;
-  }
-);
+const initialState: SocialState = {
+  data: [],
+  likes: 0,
+  comments: [],
+};
 
 const socialSlice = createSlice({
   name: "social",
-  initialState: {
-    homeCards: [],
-    likes: {},
-    comments: {},
-    loading: false,
-    error: null,
-  },
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchHomeCards.fulfilled, (state, action) => {
-        state.homeCards = action.payload;
-      })
-      .addCase(fetchLikes.fulfilled, (state, action) => {
-        state.likes[action.meta.arg] = action.payload;
-      })
-      .addCase(fetchComments.fulfilled, (state, action) => {
-        state.comments[action.meta.arg] = action.payload;
-      });
+  initialState,
+  reducers: {
+    setData(state, action: PayloadAction<any[]>) {
+      state.data = action.payload;
+    },
+    setLikes: (state, action: PayloadAction<number>) => {
+      state.likes = action.payload;
+    },
+    setComments: (state, action: PayloadAction<Comment[]>) => {
+      state.comments = action.payload;
+    },
+    addComment: (state, action: PayloadAction<Comment>) => {
+      state.comments.push(action.payload);
+    },
+    toggleLike: (state, action: PayloadAction<boolean>) => {
+      state.likes += action.payload ? 1 : -1;
+    },
+    // Add other reducers as needed
   },
 });
 
+export const { setData, setLikes, setComments, addComment, toggleLike } =
+  socialSlice.actions;
 export default socialSlice.reducer;

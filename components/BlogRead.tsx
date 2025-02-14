@@ -8,19 +8,14 @@ import {
   SafeAreaView,
   TextInput,
 } from "react-native";
-import {
-  useNavigation,
-  RouteProp,
-  NavigationProp,
-} from "@react-navigation/native";
+import { RouteProp, NavigationProp } from "@react-navigation/native";
 import { useTailwind } from "tailwind-rn";
 import { Ionicons } from "@expo/vector-icons";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { StackNavigationProp } from "@react-navigation/stack";
 import BackButton from "./BackButton";
 import { supabase } from "../lib/supabase";
-import { getComments, getLikes } from "../lib/supabase";
 import GreetingAvatar from "./GreetingAvatar";
+import { Skeleton } from "@rneui/themed";
+import { LinearGradient } from "expo-linear-gradient";
 
 type RootStackParamList = {
   BlogRead: {
@@ -75,6 +70,7 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
   const [userName, setUserName] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [url, setUrl] = useState(null);
+  const [isLoadingComments, setIsLoadingComments] = useState(true);
 
   const imageSource = React.useMemo(() => {
     if (typeof imageUrl === "string") {
@@ -86,8 +82,6 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
     return imageUrl;
   }, [imageUrl]);
 
-  console.log("Final image source:", imageSource);
-
   const handleLike = async () => {
     const {
       data: { user },
@@ -95,7 +89,6 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
     if (!user) return;
 
     const newLikedState = !userLiked;
-    console.log("Current like status:", { userLiked, newLikedState });
 
     try {
       if (newLikedState) {
@@ -106,18 +99,12 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
             post_id: route.params.id,
             user_id: user.id,
           });
-        console.log("Like added:", { likeData, likeError });
 
         // Increment likes count in home_cards
         const { data: incrementData, error: incrementError } =
           await supabase.rpc("increment_likes", { row_id: route.params.id });
-        console.log("Likes incremented:", { incrementData, incrementError });
 
         setLikes((prev) => {
-          console.log("Updating likes count:", {
-            previous: prev,
-            new: prev + 1,
-          });
           return prev + 1;
         });
       } else {
@@ -127,27 +114,17 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
           .delete()
           .eq("post_id", route.params.id)
           .eq("user_id", user.id);
-        console.log("Like removed:", { unlikeData, unlikeError });
 
         // Decrement likes count in home_cards
         const { data: decrementData, error: decrementError } =
           await supabase.rpc("decrement_likes", { row_id: route.params.id });
-        console.log("Likes decremented:", { decrementData, decrementError });
 
         setLikes((prev) => {
-          console.log("Updating likes count:", {
-            previous: prev,
-            new: prev - 1,
-          });
           return prev - 1;
         });
       }
 
       setUserLiked(newLikedState);
-      console.log("Final like state:", {
-        userLiked: newLikedState,
-        totalLikes: likes,
-      });
     } catch (error) {
       console.error("Error updating like:", error);
     }
@@ -185,9 +162,6 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
           data: { user },
         } = await supabase.auth.getUser();
         if (!user) return;
-
-        console.log("Fetching likes data for post:", route.params.id);
-
         // Fetch likes count and user's like status in parallel
         const [likesResponse, userLikeResponse] = await Promise.all([
           supabase
@@ -203,13 +177,6 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
             .single(),
         ]);
 
-        console.log("Likes data fetched:", {
-          likesCount: likesResponse.data?.likes,
-          userLikeStatus: !!userLikeResponse.data,
-          likesResponse,
-          userLikeResponse,
-        });
-
         // Update likes count
         if (likesResponse.data) {
           setLikes(likesResponse.data.likes || 0);
@@ -219,6 +186,7 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
         setUserLiked(!!userLikeResponse.data);
 
         // Fetch comments...
+        setIsLoadingComments(true);
         const { data: commentsData } = await supabase
           .from("comments")
           .select(
@@ -233,11 +201,6 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
           .eq("post_id", route.params.id)
           .order("created_at", { ascending: false });
 
-        console.log(
-          "Raw comments data:",
-          JSON.stringify(commentsData, null, 2)
-        );
-
         if (commentsData) {
           const formattedComments = commentsData.map((comment) => ({
             content: comment.content,
@@ -251,12 +214,9 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
             },
           })) as Comment[];
 
-          console.log(
-            "Formatted comments:",
-            JSON.stringify(formattedComments, null, 2)
-          );
           setComments(formattedComments);
         }
+        setIsLoadingComments(false);
       }
     };
 
@@ -272,16 +232,12 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
     if (!user) return;
 
     try {
-      console.log("Starting comment submission for user:", user.id);
-
       // First get the user's profile
       const { data: profile } = await supabase
         .from("profiles")
         .select("first_name, last_name, avatar_url")
         .eq("id", user.id)
         .single();
-
-      console.log("Retrieved profile:", profile);
 
       // Then insert comment with user's name
       const { data: newComment, error: commentError } = await supabase
@@ -305,8 +261,6 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
         )
         .single();
 
-      console.log("New comment response:", { newComment, commentError });
-
       if (commentError) throw commentError;
 
       if (newComment) {
@@ -321,7 +275,6 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
             },
           },
         };
-        console.log("Formatted comment:", formattedComment);
 
         setComments((prevComments) => [formattedComment, ...prevComments]);
         setComment("");
@@ -354,11 +307,8 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
         throw error;
       }
       const url = URL.createObjectURL(data);
-      console.log("Image URL:", url);
       setAvatarUrl(url);
-    } catch (error: any) {
-      console.log("Error downloading image: ", error.message);
-    }
+    } catch (error: any) {}
   }
 
   async function getAvatarUrl(path: string) {
@@ -389,8 +339,6 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
   const { data } = supabase.storage
     .from("comments")
     .getPublicUrl("filePath.jpg");
-
-  console.log("Your public URL is: ", data.publicUrl);
 
   return (
     <SafeAreaView style={tailwind("flex-1 bg-white")}>
@@ -428,8 +376,6 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
               ]}
               resizeMode="cover"
               onError={(error) => {
-                console.log("Image loading error:", error.nativeEvent);
-                console.log("Attempted image source:", imageSource);
                 setImageError(true);
               }}
             />
@@ -469,42 +415,61 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
                   />
                 </TouchableOpacity>
                 <Text style={tailwind("ml-16 text-gray-600")}>
-                  {likes} Likes
+                  {likes === 1 ? `${likes} Like` : `${likes} Likes`}
                 </Text>
               </View>
             </View>
             <Text style={tailwind("mt-6 text-gray-800 font-bold text-md")}>
               Comments:
             </Text>
-            {comments.map((comment, index) => {
-              return (
-                <View
-                  key={index}
-                  style={tailwind("mt-4 bg-gray-50 rounded-lg mb-8")}
-                >
-                  <View style={tailwind("flex-row items-center")}>
-                    {comment.users.profiles.avatar_url && (
-                      <View style={tailwind("mr-2")}>
-                        <GreetingAvatar
-                          url={comment.users.profiles.avatar_url}
-                          width={40}
-                          height={40}
-                        />
+            {isLoadingComments ? (
+              <View style={tailwind("flex-row items-center flex-1 mt-4")}>
+                <Skeleton
+                  LinearGradientComponent={LinearGradient}
+                  animation="wave"
+                  circle
+                  width={40}
+                  height={40}
+                  style={tailwind("mr-24 opacity-90")}
+                />
+                <Skeleton
+                  LinearGradientComponent={LinearGradient}
+                  animation="wave"
+                  width={280}
+                  height={40}
+                />
+              </View>
+            ) : (
+              comments.map((comment, index) => {
+                return (
+                  <View
+                    key={index}
+                    style={tailwind("mt-4 bg-gray-50 rounded-lg mb-8")}
+                  >
+                    <View style={tailwind("flex-row items-center")}>
+                      {comment.users.profiles.avatar_url && (
+                        <View style={tailwind("mr-2")}>
+                          <GreetingAvatar
+                            url={comment.users.profiles.avatar_url}
+                            width={40}
+                            height={40}
+                          />
+                        </View>
+                      )}
+                      <View style={tailwind("flex-1 ml-18")}>
+                        <Text style={tailwind("font-bold")}>
+                          {comment.users.profiles.first_name}{" "}
+                          {comment.users.profiles.last_name}
+                        </Text>
+                        <Text style={tailwind("mt-1 text-gray-600")}>
+                          {comment.content}
+                        </Text>
                       </View>
-                    )}
-                    <View style={tailwind("flex-1 ml-18")}>
-                      <Text style={tailwind("font-bold")}>
-                        {comment.users.profiles.first_name}{" "}
-                        {comment.users.profiles.last_name}
-                      </Text>
-                      <Text style={tailwind("mt-1 text-gray-600")}>
-                        {comment.content}
-                      </Text>
                     </View>
                   </View>
-                </View>
-              );
-            })}
+                );
+              })
+            )}
             <View style={tailwind("mt-4 bg-gray-100 rounded-lg px-4 py-2")}>
               <View style={tailwind("flex-row items-center mt-6 mb-6")}>
                 <TextInput

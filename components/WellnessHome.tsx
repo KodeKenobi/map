@@ -11,19 +11,32 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setWellnessCards,
+  setLoading,
+} from "../store/slices/wellnessCardsSlice";
+import { supabase } from "../lib/supabase";
+import { RootState } from "../store/store";
 import Greeting from "./Greeting";
 import BottomNav from "./BottomNav";
 import { useTailwind } from "tailwind-rn";
 import SearchComponent from "./SearchComponent";
 import ServicesNavMenu from "./ServicesNavMenu";
-import { supabase } from "../lib/supabase";
+import HorizontalCardScroll from "./HorizontalCardScroll";
 
 const WellnessHome = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const [firstName, setFirstName] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [scale] = useState(new Animated.Value(1));
+  const dispatch = useDispatch();
+  const wellnessCards = useSelector(
+    (state: RootState) => state.wellnessCards.cards
+  );
+  const loading = useSelector(
+    (state: RootState) => state.wellnessCards.loading
+  );
   const tailwind = useTailwind();
+  const [scale] = useState(new Animated.Value(1));
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [clickedPart, setClickedPart] = useState<string | null>(null);
 
@@ -47,25 +60,30 @@ const WellnessHome = () => {
               navigation.navigate("WellnessWelcome");
             }
           }
-          setLoading(false);
+
+          const allWellnessCards = await supabase
+            .from("wellness_cards")
+            .select("*");
+          if (allWellnessCards.data) {
+            dispatch(setWellnessCards(allWellnessCards.data));
+          }
+          dispatch(setLoading(false));
         } else {
-          setLoading(false);
+          dispatch(setLoading(false));
           navigation.navigate("Login");
         }
       } catch (error) {
         console.error("Error:", error);
-        setLoading(false);
+        dispatch(setLoading(false));
         navigation.navigate("Login");
       }
     };
 
     getProfile();
-  }, [navigation]);
+  }, [navigation, dispatch]);
 
   const handleHeadClick = (event: GestureResponderEvent) => {
     const { locationX, locationY } = event.nativeEvent;
-
-    console.log(`Clicked coordinates: X: ${locationX}, Y: ${locationY}`);
 
     if (
       locationX >= 200 &&
@@ -164,6 +182,8 @@ const WellnessHome = () => {
         <View style={tailwind("mt-2")}>
           <ServicesNavMenu />
         </View>
+
+        <HorizontalCardScroll cards={wellnessCards} />
 
         <TouchableOpacity onPress={handleHeadClick} activeOpacity={1}>
           <View style={tailwind("mb-4 mt-8 flex items-center justify-center")}>

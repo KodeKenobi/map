@@ -53,11 +53,6 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
   const handleToggle = (index: number) => {
     const item = items[index];
     const newCheckedState = !item.checked;
-    console.log(
-      `Item: ${item.label} has been ${
-        newCheckedState ? "selected" : "unselected"
-      }`
-    );
     const updatedItems = items.map((item, i) => ({
       ...item,
       checked: i === index ? newCheckedState : item.checked,

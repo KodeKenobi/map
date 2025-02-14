@@ -1,45 +1,28 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { supabase } from "../../lib/supabase";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export const fetchUserProfile = createAsyncThunk(
-  "profile/fetchUserProfile",
-  async (userId: string) => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("first_name, avatar_url")
-      .eq("id", userId)
-      .single();
+interface ProfileState {
+  firstName: string | null;
+  lastName: string | null;
+  avatarUrl: string | null;
+}
 
-    if (error) throw error;
-    return data;
-  }
-);
+const initialState: ProfileState = {
+  firstName: null,
+  lastName: null,
+  avatarUrl: null,
+};
 
 const profileSlice = createSlice({
   name: "profile",
-  initialState: {
-    firstName: null,
-    avatarUrl: null,
-    loading: false,
-    error: null,
-  },
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchUserProfile.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchUserProfile.fulfilled, (state, action) => {
-        state.loading = false;
-        state.firstName = action.payload.first_name;
-        state.avatarUrl = action.payload.avatar_url;
-      })
-      .addCase(fetchUserProfile.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-      });
+  initialState,
+  reducers: {
+    setProfile(state, action: PayloadAction<ProfileState>) {
+      state.firstName = action.payload.firstName;
+      state.lastName = action.payload.lastName;
+      state.avatarUrl = action.payload.avatarUrl;
+    },
   },
 });
 
+export const { setProfile } = profileSlice.actions;
 export default profileSlice.reducer;

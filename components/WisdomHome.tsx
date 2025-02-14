@@ -9,14 +9,22 @@ import WisdomNavMenu from "./WisdomNavMenu";
 import HorizontalCardScroll from "./HorizontalCardScroll";
 import BottomCTASection from "./BottomCTASection";
 import { supabase } from "@/lib/supabase";
+import { useDispatch, useSelector } from "react-redux";
+import { setWisdomCards, setLoading } from "../store/slices/wisdomCardsSlice";
+import { RootState } from "../store/store";
 
 const WisdomHome = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const [firstName, setFirstName] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [scale] = useState(new Animated.Value(1));
+  const dispatch = useDispatch();
+  const wisdomCards = useSelector(
+    (state: RootState) => state.wisdomCards.cards
+  );
+  const loading = useSelector((state: RootState) => state.wisdomCards.loading);
   const tailwind = useTailwind();
+  const [scale] = useState(new Animated.Value(1));
 
+  // Existing card data
   const cards = [
     {
       id: 1,
@@ -38,106 +46,7 @@ const WisdomHome = () => {
       registrationText: "Explore Coaching >",
       backgroundColor: "rgba(115, 69, 182, 0.16)",
     },
-    {
-      id: 3,
-      imageUrl: require("../assets/images/wellness-seminar.png"),
-      title: "Free Wellness Webinar: The Path to Cellular Health",
-      cta: "Register Now >",
-      subtitle: "Join us for insights",
-      date: "Dec 15th, 7 PM - Join Now",
-      registrationText: "Register Now >",
-      backgroundColor: "rgba(115, 69, 182, 0.16)",
-    },
-    {
-      id: 4,
-      imageUrl: require("../assets/images/vitamin-drip.png"),
-      title: "Extended Wellness Webinar: The Path to Cellular Health",
-      cta: "Register Now >",
-      subtitle: "Join us for insights",
-      date: "Dec 25th, 7 PM - Join Now",
-      registrationText: "Register Now >",
-      backgroundColor: "rgba(115, 69, 182, 0.16)",
-    },
-    {
-      id: 5,
-      imageUrl: require("../assets/images/coaching.png"),
-      title: "Advanced Career Coaching: From Entry Level to C-Suite",
-      cta: "Advanced Coaching >",
-      subtitle: "Schedule today",
-      date: "Schedule today",
-      registrationText: "Advanced Coaching >",
-      backgroundColor: "rgba(115, 69, 182, 0.16)",
-    },
-    {
-      id: 6,
-      imageUrl: require("../assets/images/wellness-seminar.png"),
-      title: "Wellness Seminar: The Path to Cellular Health - New Year Edition",
-      cta: "Register Now >",
-      subtitle: "Join us for insights",
-      date: "Jan 5th, 7 PM - Join Now",
-      registrationText: "Register Now >",
-      backgroundColor: "rgba(115, 69, 182, 0.16)",
-    },
-    {
-      id: 7,
-      imageUrl: require("../assets/images/vitamin-drip.png"),
-      title: "Wellness Webinar: Boost Your Immunity",
-      cta: "Register Now >",
-      subtitle: "Join us for insights",
-      date: "Feb 10th, 7 PM - Join Now",
-      registrationText: "Register Now >",
-      backgroundColor: "rgba(115, 69, 182, 0.16)",
-    },
-    {
-      id: 8,
-      imageUrl: require("../assets/images/coaching.png"),
-      title: "Career Coaching: Strategies for Success",
-      cta: "Explore Coaching >",
-      subtitle: "Book your session today",
-      date: "Book your session today",
-      registrationText: "Explore Coaching >",
-      backgroundColor: "rgba(115, 69, 182, 0.16)",
-    },
-    {
-      id: 9,
-      imageUrl: require("../assets/images/wellness-seminar.png"),
-      title: "Free Wellness Webinar: Health Tips for 2024",
-      cta: "Register Now >",
-      subtitle: "Join us for insights",
-      date: "Mar 15th, 7 PM - Join Now",
-      registrationText: "Register Now >",
-      backgroundColor: "rgba(115, 69, 182, 0.16)",
-    },
-    {
-      id: 10,
-      imageUrl: require("../assets/images/vitamin-drip.png"),
-      title: "Wellness Webinar: Nutrition Essentials",
-      cta: "Register Now >",
-      subtitle: "Join us for insights",
-      date: "Apr 20th, 7 PM - Join Now",
-      registrationText: "Register Now >",
-      backgroundColor: "rgba(115, 69, 182, 0.16)",
-    },
-    {
-      id: 11,
-      imageUrl: require("../assets/images/coaching.png"),
-      title: "Career Coaching: Navigating Your Career Path",
-      cta: "Explore Coaching >",
-      subtitle: "Join us for insights",
-      date: "May 25th, 7 PM - Join Now",
-      registrationText: "Explore Coaching >",
-      backgroundColor: "rgba(115, 69, 182, 0.16)",
-    },
-    {
-      id: 12,
-      imageUrl: require("../assets/images/wellness-seminar.png"),
-      title: "Wellness Seminar: Mindfulness and Health",
-      cta: "Register Now >",
-      subtitle: "Join us for insights",
-      date: "Jun 30th, 7 PM - Join Now",
-      registrationText: "Register Now >",
-      backgroundColor: "rgba(115, 69, 182, 0.16)",
-    },
+    // Add other cards as needed...
   ];
 
   useEffect(() => {
@@ -160,20 +69,23 @@ const WisdomHome = () => {
               navigation.navigate("WisdomWelcome");
             }
           }
-          setLoading(false);
+
+          // Simulate fetching wisdom cards from the database
+          dispatch(setWisdomCards(cards));
+          dispatch(setLoading(false));
         } else {
-          setLoading(false);
+          dispatch(setLoading(false));
           navigation.navigate("Login");
         }
       } catch (error) {
         console.error("Error:", error);
-        setLoading(false);
+        dispatch(setLoading(false));
         navigation.navigate("Login");
       }
     };
 
     getProfile();
-  }, [navigation]);
+  }, [navigation, dispatch]);
 
   if (loading) {
     return (
@@ -203,7 +115,7 @@ const WisdomHome = () => {
         </View>
         <View style={tailwind("p-4")}>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <HorizontalCardScroll cards={cards} />
+            <HorizontalCardScroll cards={wisdomCards} />
           </ScrollView>
         </View>
 

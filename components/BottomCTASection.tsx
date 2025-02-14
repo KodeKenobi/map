@@ -28,7 +28,7 @@ const BottomCTASection = () => {
           </AppText>
           <TouchableOpacity
             style={tailwind(
-              "bg-transparent rounded-full p-1 border border-black w-34"
+              "bg-transparent rounded-full p-1 border border-gray-100 w-34"
             )}
             onPress={() => {}}
           >

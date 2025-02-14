@@ -117,7 +117,7 @@ const Notifications = () => {
 
         {/* Header */}
         <View style={tailwind("flex-row justify-between items-center p-4")}>
-          <AppText style={tailwind("text-lg font-bold text-black")}>
+          <AppText style={tailwind("text-lg font-bold text-gray-800")}>
             New
           </AppText>
           <TouchableOpacity onPress={markAllAsRead}>
@@ -155,7 +155,7 @@ const Notifications = () => {
                 <AppText
                   style={tailwind(
                     `truncate text-sm ${
-                      notification.read ? "text-black" : "text-white"
+                      notification.read ? "text-gray-800" : "text-white"
                     } text-center`
                   )}
                 >

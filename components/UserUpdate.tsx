@@ -41,18 +41,14 @@ export default function UserUpdate({ route, navigation }: UserUpdateProps) {
       try {
         setLoading(true);
         if (!session?.user) {
-          console.log("No session user");
           return;
         }
 
-        console.log("Fetching profile for user:", session.user.id);
         const { data, error } = await supabase
           .from("profiles")
           .select("*") // Select all fields to see what we're getting
           .eq("id", session.user.id)
           .single();
-
-        console.log("Profile data:", data); // Debug what we receive
 
         if (error) {
           console.error("Error fetching profile:", error);

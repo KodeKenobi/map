@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { Skeleton } from "@rneui/themed";
-import { LinearGradient } from "expo-linear-gradient";
+import { useDispatch, useSelector } from "react-redux";
+import { setProfile } from "@/store/slices/profileSlice";
+import { RootState } from "../store/store";
 import { supabase } from "@/lib/supabase";
 
 import GreetingAvatar from "./GreetingAvatar";
@@ -16,55 +17,43 @@ const Greeting = ({
   notificationCount: number;
 }) => {
   const tailwind = useTailwind();
-  const [userName, setUserName] = useState<string | null>(null);
-  const [hasError, setHasError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const dispatch = useDispatch();
+  const profile = useSelector((state: RootState) => state.profile);
+  const navigation = useNavigation<NavigationProp<any>>();
 
   useEffect(() => {
-    const errorCondition = false;
-    if (errorCondition) {
-      setHasError(true);
+    if (!profile.firstName) {
+      const fetchUserProfile = async () => {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (user) {
+          const { data, error } = await supabase
+            .from("profiles")
+            .select("first_name, last_name, avatar_url")
+            .eq("id", user.id)
+            .single();
+
+          if (error) {
+            console.error("Error fetching user profile:", error);
+          } else {
+            dispatch(
+              setProfile({
+                firstName: data.first_name,
+                lastName: data.last_name,
+                avatarUrl: data.avatar_url,
+              })
+            );
+          }
+        }
+      };
+
+      fetchUserProfile();
     }
-  }, []);
-
-  if (hasError) {
-    return null;
-  }
-
-  const fetchUserProfile = async () => {
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-    if (user) {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("first_name, avatar_url")
-        .eq("id", user.id)
-        .single();
-
-      if (error) {
-        console.error("Error fetching user profile:", error);
-      } else {
-        setUserName(data.first_name);
-        setAvatarUrl(data.avatar_url);
-      }
-    }
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
-
-  useEffect(() => {
-    console.log("Avatar URL in Greeting:", avatarUrl);
-  }, [avatarUrl]);
+  }, [dispatch, profile.firstName]);
 
   const currentHour = new Date().getHours();
   let greetingMessage = "Good Morning";
-  const navigation = useNavigation<NavigationProp<any>>();
 
   if (currentHour >= 5 && currentHour < 12) {
     greetingMessage = "Good Morning";
@@ -78,50 +67,31 @@ const Greeting = ({
     <View
       style={tailwind("flex-row items-center justify-between p-4 bg-white")}
     >
-      {isLoading ? (
-        <View style={tailwind("flex-row items-center flex-1")}>
-          <Skeleton
-            LinearGradientComponent={LinearGradient}
-            animation="wave"
-            circle
-            width={40}
-            height={40}
-            style={tailwind("mr-24")}
-          />
-          <Skeleton
-            LinearGradientComponent={LinearGradient}
-            animation="wave"
-            width={280}
-            height={40}
-          />
-        </View>
-      ) : (
-        <View style={tailwind("flex-row items-center justify-center")}>
+      <View style={tailwind("flex-row items-center justify-center")}>
+        <View
+          style={{
+            borderWidth: 2,
+            borderColor: "#999",
+            borderRadius: 160,
+            overflow: "hidden",
+          }}
+        >
           <View
             style={{
-              borderWidth: 2,
-              borderColor: "#999",
-              borderRadius: 160,
-              overflow: "hidden",
+              padding: 3,
+              backgroundColor: "white",
+              borderRadius: 10,
             }}
           >
-            <View
-              style={{
-                padding: 3,
-                backgroundColor: "white",
-                borderRadius: 10,
-              }}
-            >
-              <GreetingAvatar url={avatarUrl} width={60} height={60} />
-            </View>
+            <GreetingAvatar url={profile.avatarUrl} width={60} height={60} />
           </View>
         </View>
-      )}
+      </View>
 
-      {userName ? (
+      {profile.firstName ? (
         <View style={tailwind("flex-1 pl-4")}>
           <Text style={tailwind("text-lg font-bold text-gray-600")}>
-            {greetingMessage}, {userName}
+            {greetingMessage}, {profile.firstName}
           </Text>
           <Text style={tailwind("text-md text-gray-600")}>
             Let's make today great

@@ -45,6 +45,8 @@ import Home from "@/components/Home";
 import HomeOnboardingScreen from "@/components/HomeOnboarding";
 import BlogRead from "@/components/BlogRead";
 import UserUpdate from "@/components/UserUpdate";
+import { Provider } from "react-redux";
+import { store } from "../store/store";
 LogBox.ignoreLogs([
   "Text strings must be rendered within a <Text> component",
   "",
@@ -54,7 +56,7 @@ const TailwindProviderFix = TailwindProvider as any;
 
 const Stack = createStackNavigator();
 
-export default function RootLayout({ navigation }: { navigation: any }) {
+const AppLayout = () => {
   const colorScheme = useColorScheme();
 
   const [isSplashFinished, setSplashFinished] = useState(false);
@@ -133,106 +135,113 @@ export default function RootLayout({ navigation }: { navigation: any }) {
   }
 
   return (
-    <ThemeProvider
-      value={colorScheme === "light" ? DefaultTheme : DefaultTheme}
-    >
-      <TailwindProviderFix utilities={utilities}>
-        <StatusBar
-          hidden={false}
-          backgroundColor={"white"}
-          barStyle={colorScheme === "dark" ? "dark-content" : "light-content"}
-          translucent={true}
-        />
-        <Stack.Navigator
-          initialRouteName={initialRoute}
-          screenOptions={{ headerShown: false }}
-        >
-          {!session ? (
-            <>
-              <Stack.Screen name="Login" component={LoginScreen} />
-              <Stack.Screen name="Register" component={RegisterScreen} />
-              <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-              <Stack.Screen name="OTPCode" component={OTPCodeComponent} />
-              <Stack.Screen
-                name="ResetPassword"
-                component={ResetPasswordComponent}
-              />
-            </>
-          ) : (
-            <>
-              <Stack.Screen name="Welcome" component={WelcomeScreen} />
-              <Stack.Screen
-                name="UpdateProfile"
-                component={UpdateProfileWrapper}
-                options={{
-                  gestureEnabled: false,
-                }}
-              />
-              <Stack.Screen
-                name="Home"
-                component={Home}
-                options={{
-                  gestureEnabled: false,
-                }}
-              />
-              <Stack.Screen
-                name="HomeOnboarding"
-                component={HomeOnboardingWrapper}
-              />
-              <Stack.Screen name="Profile" component={ProfileComponent} />
-              <Stack.Screen name="Notifications" component={Notifications} />
-              <Stack.Screen
-                name="WellnessWelcome"
-                component={WellnessWelcomeScreen}
-              />
-              <Stack.Screen
-                name="WellnessOnboarding"
-                component={WellnessOnboardingComponent}
-              />
-              <Stack.Screen name="WellnessHome" component={WellnessHome} />
-              <Stack.Screen name="Consult" component={ConsultScreen} />
-              <Stack.Screen
-                name="DoctorProfile"
-                component={DoctorProfileScreen}
-              />
-              <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
-              <Stack.Screen
-                name="PaymentSuccessScreen"
-                component={PaymentSuccessScreen}
-              />
-              <Stack.Screen name="Message" component={MessageComponent} />
-              <Stack.Screen name="CallScreen" component={CallScreen} />
-              <Stack.Screen
-                name="WisdomWelcome"
-                component={WisdomWelcomeScreen}
-              />
-              <Stack.Screen name="WisdomHome" component={WisdomHome} />
-              <Stack.Screen
-                name="WisdomOnboarding"
-                component={WisdomOnboardingScreen}
-              />
-              <Stack.Screen name="Coaching" component={CoachingScreen} />
-              <Stack.Screen
-                name="WealthWelcome"
-                component={WealthWelcomeScreen}
-              />
-              <Stack.Screen name="Wealth" component={WealthHome} />
-              <Stack.Screen
-                name="WealthOnboarding"
-                component={WealthOnboardingScreen}
-              />
-              <Stack.Screen name="Brands" component={BrandsComponent} />
-              <Stack.Screen name="BlogRead" component={BlogRead} />
-              <Stack.Screen
-                name="UserUpdate"
-                component={UserUpdate}
-                initialParams={{ session: session }}
-              />
-            </>
-          )}
-        </Stack.Navigator>
-        <Toast />
-      </TailwindProviderFix>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider
+        value={colorScheme === "light" ? DefaultTheme : DefaultTheme}
+      >
+        <TailwindProviderFix utilities={utilities}>
+          <StatusBar
+            hidden={false}
+            backgroundColor={"white"}
+            barStyle={colorScheme === "dark" ? "dark-content" : "light-content"}
+            translucent={true}
+          />
+          <Stack.Navigator
+            initialRouteName={initialRoute}
+            screenOptions={{ headerShown: false }}
+          >
+            {!session ? (
+              <>
+                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="Register" component={RegisterScreen} />
+                <Stack.Screen
+                  name="ForgotPassword"
+                  component={ForgotPassword}
+                />
+                <Stack.Screen name="OTPCode" component={OTPCodeComponent} />
+                <Stack.Screen
+                  name="ResetPassword"
+                  component={ResetPasswordComponent}
+                />
+              </>
+            ) : (
+              <>
+                <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                <Stack.Screen
+                  name="UpdateProfile"
+                  component={UpdateProfileWrapper}
+                  options={{
+                    gestureEnabled: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="Home"
+                  component={Home}
+                  options={{
+                    gestureEnabled: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="HomeOnboarding"
+                  component={HomeOnboardingWrapper}
+                />
+                <Stack.Screen name="Profile" component={ProfileComponent} />
+                <Stack.Screen name="Notifications" component={Notifications} />
+                <Stack.Screen
+                  name="WellnessWelcome"
+                  component={WellnessWelcomeScreen}
+                />
+                <Stack.Screen
+                  name="WellnessOnboarding"
+                  component={WellnessOnboardingComponent}
+                />
+                <Stack.Screen name="WellnessHome" component={WellnessHome} />
+                <Stack.Screen name="Consult" component={ConsultScreen} />
+                <Stack.Screen
+                  name="DoctorProfile"
+                  component={DoctorProfileScreen}
+                />
+                <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+                <Stack.Screen
+                  name="PaymentSuccessScreen"
+                  component={PaymentSuccessScreen}
+                />
+                <Stack.Screen name="Message" component={MessageComponent} />
+                <Stack.Screen name="CallScreen" component={CallScreen} />
+                <Stack.Screen
+                  name="WisdomWelcome"
+                  component={WisdomWelcomeScreen}
+                />
+                <Stack.Screen name="WisdomHome" component={WisdomHome} />
+                <Stack.Screen
+                  name="WisdomOnboarding"
+                  component={WisdomOnboardingScreen}
+                />
+                <Stack.Screen name="Coaching" component={CoachingScreen} />
+                <Stack.Screen
+                  name="WealthWelcome"
+                  component={WealthWelcomeScreen}
+                />
+                <Stack.Screen name="Wealth" component={WealthHome} />
+                <Stack.Screen
+                  name="WealthOnboarding"
+                  component={WealthOnboardingScreen}
+                />
+                <Stack.Screen name="Brands" component={BrandsComponent} />
+                <Stack.Screen name="BlogRead" component={BlogRead} />
+                <Stack.Screen
+                  name="UserUpdate"
+                  component={UserUpdate}
+                  initialParams={{ session: session }}
+                />
+              </>
+            )}
+          </Stack.Navigator>
+          <Toast />
+        </TailwindProviderFix>
+      </ThemeProvider>
+    </Provider>
   );
-}
+};
+
+export default AppLayout;

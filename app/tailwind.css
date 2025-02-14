@@ -934,7 +934,7 @@
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-.text-black {
+.text-gray-800 {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
 }
@@ -1246,7 +1246,7 @@
 .bg-black {
   background-color: #000000;
 }
-.text-black {
+.text-gray-800 {
   color: #000000;
 }
 

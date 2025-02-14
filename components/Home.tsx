@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, LogBox, Text, Animated, Image } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useDispatch, useSelector } from "react-redux";
+import { setHomeCards, setLoading } from "../store/slices/homeCardsSlice";
+import { supabase } from "../lib/supabase";
+import { RootState } from "../store/store";
 
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import Greeting from "./Greeting";
@@ -10,7 +14,6 @@ import { useTailwind } from "tailwind-rn";
 import HorizontalCardScroll from "./HorizontalCardScroll";
 import HorizontalQuickAccessCardScroll from "./HorizontalQuickAccessCardScroll";
 import AppText from "./AppText";
-import { supabase } from "@/lib/supabase";
 import { getAllProfiles, getAllHomeCards } from "@/lib/supabase";
 
 const quickAccessCards = [
@@ -31,24 +34,21 @@ const quickAccessCards = [
 const Home = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const [firstName, setFirstName] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const dispatch = useDispatch();
+  const homeCards = useSelector((state: RootState) => state.homeCards.cards);
+  const loading = useSelector((state: RootState) => state.homeCards.loading);
   const tailwind = useTailwind();
   const [scale] = useState(new Animated.Value(1));
-  const [homeCards, setHomeCards] = useState<any[]>([]);
 
-  async function getImageUrl(path: string) {
+  async function getImageUrl(path: string): Promise<string> {
     try {
-      console.log("Input image path:", path);
       const {
         data: { publicUrl },
       } = supabase.storage.from("images").getPublicUrl(path);
-
-      console.log("Generated public URL:", publicUrl);
-      // Make sure the URL is in the correct format for React Native Image component
-      return { uri: publicUrl }; // Wrap in uri object for Image component
+      return publicUrl || "";
     } catch (error) {
       console.error("Error getting image public URL:", error);
-      return null;
+      return "";
     }
   }
 
@@ -76,10 +76,8 @@ const Home = () => {
           }
 
           const allProfiles = await getAllProfiles();
-          console.log("All Profiles:", allProfiles);
 
           const allHomeCards = await getAllHomeCards();
-          console.log("All Home Cards:", allHomeCards);
           if (allHomeCards) {
             const transformedCards = await Promise.all(
               allHomeCards.map(async (card) => ({
@@ -104,23 +102,22 @@ const Home = () => {
                 tag: card.tag,
               }))
             );
-            console.log("Final transformed cards:", transformedCards);
-            setHomeCards(transformedCards);
+            dispatch(setHomeCards(transformedCards));
           }
-          setLoading(false);
+          dispatch(setLoading(false));
         } else {
-          setLoading(false);
+          dispatch(setLoading(false));
           navigation.navigate("Login");
         }
       } catch (error) {
         console.error("Error:", error);
-        setLoading(false);
+        dispatch(setLoading(false));
         navigation.navigate("Login");
       }
     };
 
     getProfile();
-  }, [navigation]);
+  }, [navigation, dispatch]);
 
   useEffect(() => {
     const pulsate = () => {

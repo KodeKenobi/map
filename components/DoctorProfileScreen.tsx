@@ -51,7 +51,7 @@ const DoctorProfileScreen = () => {
         </View>
 
         <View style={tailwind("flex-row justify-between items-center p-4")}>
-          <Text style={tailwind("text-lg font-bold text-black")}>
+          <Text style={tailwind("text-lg font-bold text-gray-800")}>
             <Text>Working Hours</Text>
           </Text>
           <TouchableOpacity onPress={() => {}}>
@@ -88,7 +88,7 @@ const DoctorProfileScreen = () => {
         </View>
 
         <View style={tailwind("flex-row justify-between items-center p-4")}>
-          <Text style={tailwind("text-lg font-bold text-black")}>
+          <Text style={tailwind("text-lg font-bold text-gray-800")}>
             <Text>Date</Text>
           </Text>
           <TouchableOpacity onPress={() => {}}>

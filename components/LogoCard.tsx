@@ -49,7 +49,7 @@ const LogoCard: React.FC<LogoCardProps> = ({
         <View style={tailwind("flex-row justify-center gap-4")}>
           <ButtonComponent
             title="Learn More About Kwani"
-            onPress={() => console.log("Learn More")}
+            onPress={() => "Learn More"}
             color="bg-white"
             borderColor="#000"
             borderWidth={1}
@@ -59,7 +59,7 @@ const LogoCard: React.FC<LogoCardProps> = ({
         <View style={tailwind("flex-row justify-center gap-4 mt-4 mb-4")}>
           <ButtonComponent
             title="Learn More"
-            onPress={() => console.log("Learn More")}
+            onPress={() => "Learn More"}
             color="#093100"
             textColor="white"
           />

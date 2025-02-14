@@ -38,7 +38,6 @@ export default function GreetingAvatar({
       };
     } catch (error) {
       if (error instanceof Error) {
-        console.log("Error downloading image: ", error.message);
       }
     }
   }

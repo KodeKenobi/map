@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Image, Text, Animated } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useDispatch, useSelector } from "react-redux";
+import { setWealthCards, setLoading } from "../store/slices/wealthCardsSlice";
+import { supabase } from "../lib/supabase";
+import { RootState } from "../store/store";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import Greeting from "./Greeting";
 import BottomNav from "./BottomNav";
@@ -8,14 +12,17 @@ import { useTailwind } from "tailwind-rn";
 import HorizontalCardScroll from "./HorizontalCardScroll";
 import LogoNavScroll from "./LogoNavScroll";
 import WealthNavMenu from "./WealthNavMenu";
-import { supabase } from "../lib/supabase";
 
 const WealthHome = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const [firstName, setFirstName] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [scale] = useState(new Animated.Value(1));
+  const dispatch = useDispatch();
+  const wealthCards = useSelector(
+    (state: RootState) => state.wealthCards.cards
+  );
+  const loading = useSelector((state: RootState) => state.wealthCards.loading);
   const tailwind = useTailwind();
+  const [scale] = useState(new Animated.Value(1));
 
   const coachingCards = [
     {
@@ -70,36 +77,42 @@ const WealthHome = () => {
       try {
         const {
           data: { user },
-          error: userError,
         } = await supabase.auth.getUser();
+
         if (user) {
-          const { data: profile, error } = await supabase
+          const { data: profile } = await supabase
             .from("profiles")
             .select("*")
             .eq("id", user.id)
             .single();
 
-          if (error) throw error;
-
           if (profile) {
-            setFirstName(profile.first_name);
+            setFirstName(profile.firstName);
             if (!profile.hascompletedwealthonboarding) {
               navigation.navigate("WealthWelcome");
             }
           }
+
+          const allWealthCards = await supabase
+            .from("wealth_cards")
+            .select("*");
+          if (allWealthCards.data) {
+            dispatch(setWealthCards(allWealthCards.data));
+          }
+          dispatch(setLoading(false));
         } else {
+          dispatch(setLoading(false));
           navigation.navigate("Login");
         }
       } catch (error) {
         console.error("Error:", error);
+        dispatch(setLoading(false));
         navigation.navigate("Login");
-      } finally {
-        setLoading(false);
       }
     };
 
     getProfile();
-  }, [navigation]);
+  }, [navigation, dispatch]);
 
   if (loading) {
     return (
@@ -118,7 +131,7 @@ const WealthHome = () => {
         <Greeting
           userName={firstName ? `${firstName}` : ""}
           notificationCount={8}
-        />{" "}
+        />
       </View>
       <ScrollView contentContainerStyle={[styles.scrollContainer]}>
         <View style={tailwind("mt-0")}>
@@ -131,7 +144,9 @@ const WealthHome = () => {
           </Text>
         </View>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <HorizontalCardScroll cards={cards} />
+          <View style={tailwind("mb-4")}>
+            <HorizontalCardScroll cards={cards} />
+          </View>
         </ScrollView>
         <View style={tailwind("mt-2 mb-8")}>
           <Text style={tailwind("text-lg font-bold")}>

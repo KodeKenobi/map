@@ -1,28 +1,27 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./slices/authSlice";
 import profileReducer from "./slices/profileSlice";
 import socialReducer from "./slices/socialSlice";
-
-// Custom middleware to log actions and state
-const loggerMiddleware = (storeAPI: any) => (next: any) => (action: any) => {
-  console.log("Dispatching action:", action);
-  const result = next(action);
-  console.log("Next state:", storeAPI.getState());
-  return result;
-};
+import authReducer from "./slices/authSlice";
+import likesCommentsReducer from "./slices/likesCommentsSlice";
+import homeReducer from "./slices/homeSlice";
+import homeCardsReducer from "./slices/homeCardsSlice";
+import wellnessCardsReducer from "./slices/wellnessCardsSlice";
+import wisdomCardsReducer from "./slices/wisdomCardsSlice";
+import wealthCardsReducer from "./slices/wealthCardsSlice";
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
     profile: profileReducer,
     social: socialReducer,
+    auth: authReducer,
+    likesComments: likesCommentsReducer,
+    home: homeReducer,
+    homeCards: homeCardsReducer,
+    wellnessCards: wellnessCardsReducer,
+    wisdomCards: wisdomCardsReducer,
+    wealthCards: wealthCardsReducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(loggerMiddleware),
 });
-
-// Log the store
-console.log("Initial store state:", store.getState());
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

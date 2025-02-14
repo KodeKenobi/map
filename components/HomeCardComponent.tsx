@@ -63,7 +63,6 @@ const HomeCardComponent: React.FC<HomeCardProps> = ({
       tag,
       cta,
     };
-    console.log("Navigating to BlogRead with data:", blogData);
     navigation.navigate("BlogRead", blogData);
   };
 

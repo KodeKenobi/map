@@ -54,7 +54,7 @@ const PaymentScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
           <TouchableOpacity style={tailwind("rounded-full p-4 w-48 h-48")}>
             <Text
               style={tailwind(
-                "text-black rounded-full p-4 bg-w3-green font-semibold text-white"
+                "text-gray-800 rounded-full p-4 bg-w3-green font-semibold text-white"
               )}
             >
               Card Payment
@@ -63,7 +63,7 @@ const PaymentScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
           <TouchableOpacity style={tailwind("rounded-full p-4 w-48 h-48")}>
             <Text
               style={tailwind(
-                "text-black rounded-full p-4 bg-w3-green font-semibold text-white"
+                "text-gray-800 rounded-full p-4 bg-w3-green font-semibold text-white"
               )}
             >
               Cash Payment

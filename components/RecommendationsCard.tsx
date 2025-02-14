@@ -41,7 +41,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({
 
       <View style={[tailwind(""), styles.title]}>
         <AppText
-          style={tailwind("text-md font-bold text-black")}
+          style={tailwind("text-md font-bold text-gray-800")}
           fontColor={"#BB8400"}
         >
           {description}

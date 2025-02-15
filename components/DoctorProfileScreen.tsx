@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,10 +11,43 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import BackButton from "./BackButton";
 import DoctorProfileCard from "./DoctorProfileCard";
 import ButtonComponent from "./ButtonComponent";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const DoctorProfileScreen = () => {
   const tailwind = useTailwind();
   const navigation = useNavigation();
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+  const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const showTimePicker = () => {
+    setTimePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const hideTimePicker = () => {
+    setTimePickerVisibility(false);
+  };
+
+  const handleConfirm = (date: Date) => {
+    console.warn("A date has been picked: ", date);
+    setSelectedDate(date);
+    hideDatePicker();
+  };
+
+  const handleTimeConfirm = (time: Date) => {
+    console.warn("A time has been picked: ", time);
+    setSelectedTime(time);
+    hideTimePicker();
+  };
 
   return (
     <SafeAreaView style={tailwind("flex-1")}>
@@ -29,6 +62,7 @@ const DoctorProfileScreen = () => {
                 Dr. S. Ndou
               </Text>
             </View>
+
             <View style={tailwind("w-10")} />
           </View>
         </View>
@@ -40,6 +74,10 @@ const DoctorProfileScreen = () => {
           <Text style={tailwind("text-lg font-bold")}>
             <Text>Details</Text>
           </Text>
+          <TouchableOpacity onPress={showDatePicker}>
+            <Text style={tailwind("text-blue-500 mt-2")}>Select Date</Text>
+          </TouchableOpacity>
+
           <Text style={tailwind("text-gray-600 mt-2 text-md")}>
             <Text>
               Worem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
@@ -54,36 +92,62 @@ const DoctorProfileScreen = () => {
           <Text style={tailwind("text-lg font-bold text-gray-800")}>
             <Text>Working Hours</Text>
           </Text>
-          <TouchableOpacity onPress={() => {}}>
-            <Text style={tailwind("text-lg")}>See All</Text>
+          <TouchableOpacity onPress={showTimePicker}>
+            <Text style={tailwind("text-lg underline")}>
+              Book Your Time &gt;
+            </Text>
           </TouchableOpacity>
+          <DateTimePickerModal
+            isVisible={isTimePickerVisible}
+            mode="time"
+            onConfirm={handleTimeConfirm}
+            onCancel={hideTimePicker}
+          />
         </View>
         <View style={tailwind("p-4 mb-4")}>
           <View style={tailwind("flex-row justify-between")}>
-            <Text
-              key="10am"
-              style={tailwind(
-                "bg-gray-400 p-2 rounded-md w-30 font-semibold text-center"
-              )}
-            >
-              <Text>10:00 AM</Text>
-            </Text>
-            <Text
-              key="11am"
-              style={tailwind(
-                "bg-w3-green-grad-1 p-2 rounded-md w-30 font-semibold text-center"
-              )}
-            >
-              <Text>11:00 AM</Text>
-            </Text>
-            <Text
-              key="12pm"
-              style={tailwind(
-                "bg-gray-400 p-2 rounded-md w-30 font-semibold text-center"
-              )}
-            >
-              <Text>12:00 PM</Text>
-            </Text>
+            {selectedTime ? (
+              <Text
+                key={selectedTime.toDateString()}
+                style={tailwind(
+                  "bg-w3-green-grad-1 p-2 rounded-md w-30 font-semibold text-center"
+                )}
+              >
+                <Text>
+                  {selectedTime.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </Text>
+              </Text>
+            ) : (
+              <>
+                <Text
+                  key="10am"
+                  style={tailwind(
+                    "bg-gray-400 p-2 rounded-md w-30 font-semibold text-center"
+                  )}
+                >
+                  <Text>10:00 AM</Text>
+                </Text>
+                <Text
+                  key="11am"
+                  style={tailwind(
+                    "bg-w3-green-grad-1 p-2 rounded-md w-30 font-semibold text-center"
+                  )}
+                >
+                  <Text>11:00 AM</Text>
+                </Text>
+                <Text
+                  key="12pm"
+                  style={tailwind(
+                    "bg-gray-400 p-2 rounded-md w-30 font-semibold text-center"
+                  )}
+                >
+                  <Text>12:00 PM</Text>
+                </Text>
+              </>
+            )}
           </View>
         </View>
 
@@ -91,37 +155,108 @@ const DoctorProfileScreen = () => {
           <Text style={tailwind("text-lg font-bold text-gray-800")}>
             <Text>Date</Text>
           </Text>
-          <TouchableOpacity onPress={() => {}}>
-            <Text style={tailwind("text-lg")}>See All</Text>
+          <TouchableOpacity onPress={showDatePicker}>
+            <Text style={tailwind("text-lg underline")}>
+              Book Your Date &gt;
+            </Text>
           </TouchableOpacity>
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+          />
         </View>
         <View style={tailwind("p-4")}>
           <View style={tailwind("flex-row justify-between")}>
-            <Text
-              key="sun5"
-              style={tailwind(
-                "bg-gray-400 p-2 rounded-md w-30 font-semibold text-center"
-              )}
-            >
-              <Text>SUN 5</Text>
-            </Text>
-            <Text
-              key="mon6"
-              style={tailwind(
-                "bg-gray-400 p-2 rounded-md w-30 font-semibold text-center"
-              )}
-            >
-              <Text>MON 6</Text>
-            </Text>
-            <Text
-              key="tue7"
-              style={tailwind(
-                "bg-w3-green-grad-1 p-2 rounded-md w-30 font-semibold text-center"
-              )}
-            >
-              <Text>TUE 7</Text>
-            </Text>
+            {selectedDate ? (
+              <Text
+                key={selectedDate.toDateString()}
+                style={tailwind(
+                  "bg-w3-green-grad-1 p-2 rounded-md w-30 font-semibold text-center"
+                )}
+              >
+                <Text>{selectedDate.toLocaleDateString()}</Text>
+              </Text>
+            ) : (
+              Array.from({ length: 3 }).map((_, index) => {
+                const date = new Date();
+                date.setDate(date.getDate() + index);
+                const options: Intl.DateTimeFormatOptions = {
+                  weekday: "short" as "short",
+                  day: "numeric",
+                };
+                const weekday = date
+                  .toLocaleDateString("en-US", { weekday: "short" })
+                  .toUpperCase();
+                const day = date.getDate();
+                const formattedDate = `${weekday} ${day}`;
+
+                return (
+                  <Text
+                    key={date.toDateString()}
+                    style={tailwind(
+                      index === 2
+                        ? "bg-w3-green-grad-1 p-2 rounded-md w-30 font-semibold text-center"
+                        : "bg-gray-400 p-2 rounded-md w-30 font-semibold text-center"
+                    )}
+                  >
+                    <Text>{formattedDate}</Text>
+                  </Text>
+                );
+              })
+            )}
           </View>
+        </View>
+
+        <View style={tailwind("p-4 rounded mb-6 ")}>
+          {selectedDate && selectedTime ? (
+            <>
+              <Text style={tailwind("text-lg font-bold")}>
+                Confirm your Appointment
+              </Text>
+              <Text style={tailwind("mt-2 font-semibold text-md")}>
+                Date: {selectedDate.toLocaleDateString()}
+              </Text>
+              <Text style={tailwind("mt-2 font-semibold text-md")}>
+                Time:{" "}
+                {selectedTime.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </Text>
+              <View style={tailwind("flex-col justify-between mt-4")}>
+                <ButtonComponent
+                  title="Confirm"
+                  size="small"
+                  onPress={() => {
+                    // Handle confirmation logic here
+                    console.warn(
+                      "Appointment confirmed for:",
+                      selectedDate,
+                      selectedTime
+                    );
+                  }}
+                  style={tailwind("p-2 rounded")}
+                  color="#228564"
+                  textColor="#fff"
+                />
+                <ButtonComponent
+                  title="Cancel"
+                  size="small"
+                  onPress={() => {
+                    // Reset selected date and time
+                    setSelectedDate(null);
+                    setSelectedTime(null);
+                    console.warn("Appointment canceled");
+                  }}
+                  style={tailwind("p-2 rounded bg-red-500 mt-2")}
+                  color="#ff0000"
+                  textColor="#fff"
+                />
+              </View>
+            </>
+          ) : null}
         </View>
 
         <View style={tailwind("p-4 rounded mb-6")}>

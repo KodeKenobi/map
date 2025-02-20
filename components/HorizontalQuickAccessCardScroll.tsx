@@ -10,11 +10,12 @@ interface HorizontalQuickAccessCardScrollProps {
     backgroundColor?: string;
     iconBackgroundColor?: string;
   }[];
+  navigation: any;
 }
 
 const HorizontalQuickAccessCardScroll: React.FC<
   HorizontalQuickAccessCardScrollProps
-> = ({ quickAccessCards }) => {
+> = ({ quickAccessCards, navigation }) => {
   const tailwind = useTailwind();
 
   return (
@@ -24,11 +25,9 @@ const HorizontalQuickAccessCardScroll: React.FC<
           key={index}
           iconUrl={card.iconUrl}
           title={card.title}
-          backgroundColor={
-            card.backgroundColor ||
-            (tailwind("bg-w3-purple-opacity").backgroundColor as string)
-          }
+          backgroundColor={card.backgroundColor}
           iconBackgroundColor={card.iconBackgroundColor}
+          navigation={navigation}
         />
       ))}
     </ScrollView>

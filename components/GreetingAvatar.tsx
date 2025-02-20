@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { StyleSheet, View, Image } from "react-native";
 import { useTailwind } from "tailwind-rn";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Props {
   width: number;
@@ -18,7 +19,20 @@ export default function GreetingAvatar({
   const tailwind = useTailwind();
 
   useEffect(() => {
-    if (url) downloadImage(url);
+    const fetchAvatar = async () => {
+      try {
+        const cachedUrl = await AsyncStorage.getItem(`avatar-${url}`);
+        if (cachedUrl) {
+          setAvatarUrl(cachedUrl);
+        } else if (url) {
+          await downloadImage(url);
+        }
+      } catch (error) {
+        console.error("Error fetching avatar from storage:", error);
+      }
+    };
+
+    fetchAvatar();
   }, [url]);
 
   async function downloadImage(path: string) {
@@ -33,11 +47,18 @@ export default function GreetingAvatar({
 
       const fr = new FileReader();
       fr.readAsDataURL(data);
-      fr.onload = () => {
-        setAvatarUrl(fr.result as string);
+      fr.onload = async () => {
+        const result = fr.result as string;
+        setAvatarUrl(result);
+        try {
+          await AsyncStorage.setItem(`avatar-${path}`, result); // Cache the image
+        } catch (error) {
+          console.error("Error saving avatar to storage:", error);
+        }
       };
     } catch (error) {
       if (error instanceof Error) {
+        console.log("Error downloading image: ", error.message);
       }
     }
   }

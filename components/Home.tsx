@@ -168,6 +168,7 @@ const Home = () => {
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <HorizontalQuickAccessCardScroll
               quickAccessCards={quickAccessCards}
+              navigation={navigation}
             />
           </ScrollView>
         </View>

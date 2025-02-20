@@ -6,50 +6,89 @@ import {
   ScrollView,
   SafeAreaView,
   Text,
+  ActivityIndicator,
 } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import AppText from "./AppText";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 import { supabase } from "@/lib/supabase";
-
-import { Session } from "@supabase/supabase-js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import GreetingAvatar from "./GreetingAvatar";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store/store";
+import { setProfile } from "../store/slices/profileSlice";
 
 const ProfileComponent = () => {
   const tailwind = useTailwind();
   const navigation = useNavigation<NavigationProp<any>>();
-  const [userName, setUserName] = useState<string | null>(null);
-  const [lastName, setLastName] = useState<string | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const dispatch = useDispatch();
+  const profile = useSelector((state: RootState) => state.profile);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchUserProfile = async () => {
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-    if (user) {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("first_name, last_name, avatar_url")
-        .eq("id", user.id)
-        .single();
+    try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+      if (user) {
+        const cachedAvatarUrl = await AsyncStorage.getItem(`avatar-${user.id}`);
+        if (cachedAvatarUrl) {
+          dispatch(
+            setProfile({
+              firstName: profile.firstName,
+              lastName: profile.lastName,
+              avatarUrl: cachedAvatarUrl,
+            })
+          );
+        } else {
+          const { data, error } = await supabase
+            .from("profiles")
+            .select("first_name, last_name, avatar_url")
+            .eq("id", user.id)
+            .single();
 
-      if (error) {
-        console.error("Error fetching user profile:", error);
-      } else {
-        setUserName(data.first_name);
-        setLastName(data.last_name);
-        setAvatarUrl(data.avatar_url);
+          if (error) {
+            console.error("Error fetching user profile:", error);
+          } else {
+            dispatch(
+              setProfile({
+                firstName: data.first_name,
+                lastName: data.last_name,
+                avatarUrl: data.avatar_url,
+              })
+            );
+
+            // Cache the avatar URL
+            if (data.avatar_url) {
+              await AsyncStorage.setItem(`avatar-${user.id}`, data.avatar_url);
+            }
+          }
+        }
       }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
-    fetchUserProfile();
-  }, []);
+    if (!profile.firstName || !profile.lastName || !profile.avatarUrl) {
+      fetchUserProfile();
+    } else {
+      setIsLoading(false);
+    }
+  }, [profile]);
+
+  if (isLoading) {
+    return (
+      <View style={tailwind("flex-1 justify-center items-center")}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={tailwind("flex-1")}>
@@ -88,12 +127,16 @@ const ProfileComponent = () => {
                 overflow: "hidden",
               }}
             >
-              <GreetingAvatar url={avatarUrl} width={150} height={150} />
+              <GreetingAvatar
+                url={profile.avatarUrl}
+                width={150}
+                height={150}
+              />
             </View>
           </View>
 
           <AppText style={tailwind("text-2xl font-bold mt-6 text-center")}>
-            {userName || "User"} {lastName || ""}
+            {profile.firstName || "User"} {profile.lastName || ""}
           </AppText>
         </View>
 

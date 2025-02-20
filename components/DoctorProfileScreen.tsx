@@ -7,19 +7,47 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useTailwind } from "tailwind-rn";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import {
+  NavigationProp,
+  useNavigation,
+  RouteProp,
+} from "@react-navigation/native";
 import BackButton from "./BackButton";
 import DoctorProfileCard from "./DoctorProfileCard";
 import ButtonComponent from "./ButtonComponent";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-const DoctorProfileScreen = () => {
+// Step 1: Define the type for the navigation parameters
+type DoctorProfileParams = {
+  fullname: string;
+  job_title: string;
+  consultation_fee: number;
+  job_description: string;
+  experience: number;
+  rating: number;
+};
+
+// Step 2: Define the props type for the component
+type Props = {
+  route: RouteProp<{ params: DoctorProfileParams }, "params">;
+};
+
+const DoctorProfileScreen: React.FC<Props> = ({ route }) => {
   const tailwind = useTailwind();
   const navigation = useNavigation();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  // const {
+  //   full_name,
+  //   job_title,
+  //   consultation_fee,
+  //   job_description,
+  //   experience,
+  //   rating,
+  // } = route.params;
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -59,35 +87,16 @@ const DoctorProfileScreen = () => {
             <BackButton navigation={navigation as NavigationProp<any>} />
             <View style={tailwind("flex-row items-center")}>
               <Text style={tailwind("text-xl font-bold text-center")}>
-                Dr. S. Ndou
+                Doctor Details
               </Text>
             </View>
 
             <View style={tailwind("w-10")} />
           </View>
         </View>
-        <View style={tailwind("flex-1 justify-center items-center p-4")}>
-          <DoctorProfileCard />
+        <View style={tailwind("flex-1 justify-center items-center p-2")}>
+          <DoctorProfileCard doctor={route.params} />
         </View>
-
-        <View style={tailwind("p-4")}>
-          <Text style={tailwind("text-lg font-bold")}>
-            <Text>Details</Text>
-          </Text>
-          <TouchableOpacity onPress={showDatePicker}>
-            <Text style={tailwind("text-blue-500 mt-2")}>Select Date</Text>
-          </TouchableOpacity>
-
-          <Text style={tailwind("text-gray-600 mt-2 text-md")}>
-            <Text>
-              Worem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
-              vulputate libero et velit interdum, ac aliquet odio mattis. Class
-              aptent taciti sociosqu ad litora torquent per conubia nostra, per
-              inceptos himenaeos.
-            </Text>
-          </Text>
-        </View>
-
         <View style={tailwind("flex-row justify-between items-center p-4")}>
           <Text style={tailwind("text-lg font-bold text-gray-800")}>
             <Text>Working Hours</Text>

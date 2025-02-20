@@ -81,3 +81,20 @@ export const getLikes = async (id: string) => {
     .select("likes")
     .eq("id", id);
 };
+
+export const getAllDoctors = async () => {
+  const { data, error } = await supabase.from("doctors").select("*");
+
+  if (error) {
+    console.error("Error fetching doctors:", error);
+    return [];
+  }
+
+  return data;
+};
+
+export const getImageUrl = (path: string) => {
+  const baseUrl =
+    "https://yfnseftemcxacgncqcck.supabase.co/storage/v1/object/public/images/";
+  return `${baseUrl}${path}`;
+};

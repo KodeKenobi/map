@@ -311,35 +311,6 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
     } catch (error: any) {}
   }
 
-  async function getAvatarUrl(path: string) {
-    try {
-      const { data, error } = await supabase.storage
-        .from("avatars")
-        .download(path);
-      if (error) {
-        console.error("Error downloading avatar:", error);
-        return null;
-      }
-      const url = URL.createObjectURL(data);
-      return url;
-    } catch (error) {
-      console.error("Error downloading avatar:", error);
-      return null;
-    }
-  }
-
-  const getAvatarPublicUrl = (path: string | null) => {
-    if (!path) return null;
-    const {
-      data: { publicUrl },
-    } = supabase.storage.from("images").getPublicUrl(`home-cards/${path}`);
-    return publicUrl;
-  };
-
-  const { data } = supabase.storage
-    .from("comments")
-    .getPublicUrl("filePath.jpg");
-
   return (
     <SafeAreaView style={tailwind("flex-1 bg-white")}>
       <ScrollView>

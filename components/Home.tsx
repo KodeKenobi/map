@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, LogBox, Text, Animated, Image } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useDispatch, useSelector } from "react-redux";
+import { setHomeCards, setLoading } from "../store/slices/homeCardsSlice";
+import { supabase } from "../lib/supabase";
+import { RootState } from "../store/store";
 
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { auth } from "../app/(auth)/firebaseConfig";
-import { getUserData } from "../app/(auth)/auth";
 import Greeting from "./Greeting";
 import RecommendationsCard from "./RecommendationsCard";
 import BottomNav from "./BottomNav";
@@ -12,114 +14,161 @@ import { useTailwind } from "tailwind-rn";
 import HorizontalCardScroll from "./HorizontalCardScroll";
 import HorizontalQuickAccessCardScroll from "./HorizontalQuickAccessCardScroll";
 import AppText from "./AppText";
-
-const cards = [
-  {
-    imageUrl: require("../assets/images/vitamin-drip.png"),
-    title: "Free Wellness Webinar: The Path to Cellular Health",
-    date: "Dec 15th, 7 PM - Join Now",
-    registrationText: "Register Now >",
-    backgroundColor: "rgba(115, 69, 182, 0.16)",
-  },
-  {
-    imageUrl: require("../assets/images/coaching.png"),
-    title: "Career Coaching: From Entry Level to C-Suite and beyond",
-    date: "Make your first appointment today",
-    registrationText: "Explore Coaching >",
-    backgroundColor: "rgba(255, 215, 0, 0.16)",
-  },
-  {
-    imageUrl: require("../assets/images/wellness-seminar.png"),
-    title: "Free Wellness Webinar: The Path to Cellular Health",
-    date: "Dec 15th, 7 PM - Join Now",
-    registrationText: "Register Now >",
-    backgroundColor: "rgba(115, 69, 182, 0.16)",
-  },
-];
+import { getAllProfiles, getAllHomeCards } from "@/lib/supabase";
 
 const quickAccessCards = [
   {
     iconUrl: require("../assets/images/heart-bit-icon-white.png"),
     title: "Explore Wellness Services",
-    backgroundColor: "rgba(115, 69, 182, 0.16)",
-    iconBackgroundColor: "black",
+    backgroundColor: "rgba(74, 244, 170, 0.16)",
+    iconBackgroundColor: "rgba(34, 133, 101, 1)",
   },
   {
     iconUrl: require("../assets/images/light-bulb-white.png"),
     title: "Discover Coaching and Mindfulness",
-    backgroundColor: "rgba(255, 215, 0, 0.16)",
-    iconBackgroundColor: "black",
+    backgroundColor: "rgba(115, 69, 182, 0.16)",
+    iconBackgroundColor: "rgba(115, 69, 182, 1)",
   },
 ];
 
 const Home = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const [firstName, setFirstName] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const dispatch = useDispatch();
+  const homeCards = useSelector((state: RootState) => state.homeCards.cards);
+  const loading = useSelector((state: RootState) => state.homeCards.loading);
   const tailwind = useTailwind();
+  const [scale] = useState(new Animated.Value(1));
+
+  async function getImageUrl(path: string): Promise<string> {
+    try {
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("images").getPublicUrl(path);
+      return publicUrl || "";
+    } catch (error) {
+      console.error("Error getting image public URL:", error);
+      return "";
+    }
+  }
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (user) {
-      getUserData(user.uid).then((data) => {
-        if (data) {
-          setFirstName(data.firstName);
-          if (!data.hasCompletedHomeOnboarding) {
-            navigation.navigate("Home");
+    const getProfile = async () => {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+
+          if (!profile.hascompletedhomeonboarding) {
+            navigation.navigate("Welcome");
+            return;
           }
+          if (!profile.hascompletedprofileupdate) {
+            navigation.navigate("UpdateProfile");
+            return;
+          }
+
+          const allProfiles = await getAllProfiles();
+
+          const allHomeCards = await getAllHomeCards();
+          if (allHomeCards) {
+            const transformedCards = await Promise.all(
+              allHomeCards.map(async (card) => ({
+                id: card.id,
+                imageUrl: await getImageUrl(card.image_url),
+                title: card.title,
+                subtitle: card.subtitle,
+                cta: card.cta,
+                backgroundColor:
+                  card.tag === "wellness"
+                    ? "rgba(118, 184, 162, 0.14)"
+                    : card.tag === "wisdom"
+                    ? "rgba(115, 69, 182, 0.16)"
+                    : "rgba(249, 207, 103, 0.5)",
+                textColor:
+                  card.tag === "wellness"
+                    ? "rgba(32, 112, 53, 1)"
+                    : card.tag === "wisdom"
+                    ? "rgba(115, 69, 182, 1)"
+                    : "rgba(187, 132, 0, 1)",
+                description: card.description,
+                tag: card.tag,
+              }))
+            );
+            dispatch(setHomeCards(transformedCards));
+          }
+          dispatch(setLoading(false));
+        } else {
+          dispatch(setLoading(false));
+          navigation.navigate("Login");
         }
-        setLoading(false);
+      } catch (error) {
+        console.error("Error:", error);
+        dispatch(setLoading(false));
+        navigation.navigate("Login");
+      }
+    };
+
+    getProfile();
+  }, [navigation, dispatch]);
+
+  useEffect(() => {
+    const pulsate = () => {
+      scale.setValue(1);
+      Animated.timing(scale, {
+        toValue: 1.1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start(() => {
+        Animated.timing(scale, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }).start(pulsate);
       });
-    } else {
-      setLoading(false);
-      navigation.navigate("Login");
-    }
-  }, [navigation]);
+    };
+
+    pulsate();
+  }, [scale]);
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <View style={styles.loadingBarsContainer}>
-          <View style={styles.loadingBar} />
-          <View style={styles.loadingBar} />
-          <View style={styles.loadingBar} />
-        </View>
+        <Animated.Image
+          source={require("../assets/images/faviconBig.png")}
+          style={[styles.faviconBig, { transform: [{ scale }] }]}
+        />
       </View>
     );
   }
 
-  const handleLogout = () => {
-    auth
-      .signOut()
-      .then(() => {
-        console.log("User logged out");
-        navigation.navigate("Login");
-      })
-      .catch((error) => {
-        console.error("Logout error:", error);
-        alert("An error occurred while logging out. Please try again.");
-      });
-  };
-
   return (
     <View style={styles.container}>
-      <Greeting
-        userName={firstName ? `${firstName}` : ""}
-        notificationCount={8}
-      />{" "}
+      <View style={tailwind("mt-10")}>
+        <Greeting
+          userName={firstName ? `${firstName}` : ""}
+          notificationCount={8}
+        />{" "}
+      </View>
       <ScrollView contentContainerStyle={[styles.scrollContainer]}>
         <View style={tailwind("p-2")}>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <HorizontalCardScroll cards={cards} />
-          </ScrollView>
+          <HorizontalCardScroll cards={homeCards} />
         </View>
-        <View style={tailwind("mt-4 mb-2 p-2")}>
+        <View style={tailwind("mt-0 mb-2 p-2")}>
           <AppText style={tailwind("text-lg font-bold")}>Quick Access</AppText>
         </View>
         <View style={tailwind("p-2")}>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <HorizontalQuickAccessCardScroll
               quickAccessCards={quickAccessCards}
+              navigation={navigation}
             />
           </ScrollView>
         </View>
@@ -133,9 +182,10 @@ const Home = () => {
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <RecommendationsCard
               iconUrl={require("../assets/images/wellness-seminar.png")}
-              title="IV Drip for Boosting Immunity >"
-              backgroundColor="rgba(115, 69, 182, 0.16)"
-              iconBackgroundColor="black"
+              title="IV Drip for Boosting Immunity     >"
+              description="Top pick"
+              backgroundColor="rgba(249, 207, 103, 0.5)"
+              iconBackgroundColor="transparent"
             />
           </ScrollView>
         </View>
@@ -174,6 +224,11 @@ const styles = StyleSheet.create({
   },
   loadingBarActive: {
     backgroundColor: "#000",
+  },
+  faviconBig: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
   },
 });
 

@@ -31,7 +31,7 @@ export default function WellnessWelcomeScreen({
       <View style={tailwind("mt-20")}>
         <ButtonComponent
           title="Get Started"
-          color="bg-w3-green"
+          color="#228565"
           textColor="#fff"
           onPress={() => navigation.navigate("WellnessOnboarding")}
         />

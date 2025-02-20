@@ -1,0 +1,285 @@
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+} from "react-native";
+import { useTailwind } from "tailwind-rn";
+import {
+  NavigationProp,
+  useNavigation,
+  RouteProp,
+} from "@react-navigation/native";
+import BackButton from "./BackButton";
+import DoctorProfileCard from "./DoctorProfileCard";
+import ButtonComponent from "./ButtonComponent";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
+// Step 1: Define the type for the navigation parameters
+type DoctorProfileParams = {
+  fullname: string;
+  job_title: string;
+  consultation_fee: number;
+  job_description: string;
+  experience: number;
+  rating: number;
+};
+
+// Step 2: Define the props type for the component
+type Props = {
+  route: RouteProp<{ params: DoctorProfileParams }, "params">;
+};
+
+const DoctorProfileScreen: React.FC<Props> = ({ route }) => {
+  const tailwind = useTailwind();
+  const navigation = useNavigation();
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+  const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  // const {
+  //   full_name,
+  //   job_title,
+  //   consultation_fee,
+  //   job_description,
+  //   experience,
+  //   rating,
+  // } = route.params;
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const showTimePicker = () => {
+    setTimePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const hideTimePicker = () => {
+    setTimePickerVisibility(false);
+  };
+
+  const handleConfirm = (date: Date) => {
+    console.warn("A date has been picked: ", date);
+    setSelectedDate(date);
+    hideDatePicker();
+  };
+
+  const handleTimeConfirm = (time: Date) => {
+    console.warn("A time has been picked: ", time);
+    setSelectedTime(time);
+    hideTimePicker();
+  };
+
+  return (
+    <SafeAreaView style={tailwind("flex-1")}>
+      <ScrollView>
+        <View style={tailwind("flex-1 justify-center items-center mt-10")}>
+          <View
+            style={tailwind("flex-row items-center w-full p-4 justify-between")}
+          >
+            <BackButton navigation={navigation as NavigationProp<any>} />
+            <View style={tailwind("flex-row items-center")}>
+              <Text style={tailwind("text-xl font-bold text-center")}>
+                Doctor Details
+              </Text>
+            </View>
+
+            <View style={tailwind("w-10")} />
+          </View>
+        </View>
+        <View style={tailwind("flex-1 justify-center items-center p-2")}>
+          <DoctorProfileCard doctor={route.params} />
+        </View>
+        <View style={tailwind("flex-row justify-between items-center p-4")}>
+          <Text style={tailwind("text-lg font-bold text-gray-800")}>
+            <Text>Working Hours</Text>
+          </Text>
+          <TouchableOpacity onPress={showTimePicker}>
+            <Text style={tailwind("text-lg underline")}>
+              Book Your Time &gt;
+            </Text>
+          </TouchableOpacity>
+          <DateTimePickerModal
+            isVisible={isTimePickerVisible}
+            mode="time"
+            onConfirm={handleTimeConfirm}
+            onCancel={hideTimePicker}
+          />
+        </View>
+        <View style={tailwind("p-4 mb-4")}>
+          <View style={tailwind("flex-row justify-between")}>
+            {selectedTime ? (
+              <Text
+                key={selectedTime.toDateString()}
+                style={tailwind(
+                  "bg-w3-green-grad-1 p-2 rounded-md w-30 font-semibold text-center"
+                )}
+              >
+                <Text>
+                  {selectedTime.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </Text>
+              </Text>
+            ) : (
+              <>
+                <Text
+                  key="10am"
+                  style={tailwind(
+                    "bg-gray-400 p-2 rounded-md w-30 font-semibold text-center"
+                  )}
+                >
+                  <Text>10:00 AM</Text>
+                </Text>
+                <Text
+                  key="11am"
+                  style={tailwind(
+                    "bg-w3-green-grad-1 p-2 rounded-md w-30 font-semibold text-center"
+                  )}
+                >
+                  <Text>11:00 AM</Text>
+                </Text>
+                <Text
+                  key="12pm"
+                  style={tailwind(
+                    "bg-gray-400 p-2 rounded-md w-30 font-semibold text-center"
+                  )}
+                >
+                  <Text>12:00 PM</Text>
+                </Text>
+              </>
+            )}
+          </View>
+        </View>
+
+        <View style={tailwind("flex-row justify-between items-center p-4")}>
+          <Text style={tailwind("text-lg font-bold text-gray-800")}>
+            <Text>Date</Text>
+          </Text>
+          <TouchableOpacity onPress={showDatePicker}>
+            <Text style={tailwind("text-lg underline")}>
+              Book Your Date &gt;
+            </Text>
+          </TouchableOpacity>
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+          />
+        </View>
+        <View style={tailwind("p-4")}>
+          <View style={tailwind("flex-row justify-between")}>
+            {selectedDate ? (
+              <Text
+                key={selectedDate.toDateString()}
+                style={tailwind(
+                  "bg-w3-green-grad-1 p-2 rounded-md w-30 font-semibold text-center"
+                )}
+              >
+                <Text>{selectedDate.toLocaleDateString()}</Text>
+              </Text>
+            ) : (
+              Array.from({ length: 3 }).map((_, index) => {
+                const date = new Date();
+                date.setDate(date.getDate() + index);
+                const options: Intl.DateTimeFormatOptions = {
+                  weekday: "short" as "short",
+                  day: "numeric",
+                };
+                const weekday = date
+                  .toLocaleDateString("en-US", { weekday: "short" })
+                  .toUpperCase();
+                const day = date.getDate();
+                const formattedDate = `${weekday} ${day}`;
+
+                return (
+                  <Text
+                    key={date.toDateString()}
+                    style={tailwind(
+                      index === 2
+                        ? "bg-w3-green-grad-1 p-2 rounded-md w-30 font-semibold text-center"
+                        : "bg-gray-400 p-2 rounded-md w-30 font-semibold text-center"
+                    )}
+                  >
+                    <Text>{formattedDate}</Text>
+                  </Text>
+                );
+              })
+            )}
+          </View>
+        </View>
+
+        <View style={tailwind("p-4 rounded mb-6 ")}>
+          {selectedDate && selectedTime ? (
+            <>
+              <Text style={tailwind("text-lg font-bold")}>
+                Confirm your Appointment
+              </Text>
+              <Text style={tailwind("mt-2 font-semibold text-md")}>
+                Date: {selectedDate.toLocaleDateString()}
+              </Text>
+              <Text style={tailwind("mt-2 font-semibold text-md")}>
+                Time:{" "}
+                {selectedTime.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </Text>
+              <View style={tailwind("flex-col justify-between mt-4")}>
+                <ButtonComponent
+                  title="Confirm"
+                  size="small"
+                  onPress={() => {
+                    // Handle confirmation logic here
+                    console.warn(
+                      "Appointment confirmed for:",
+                      selectedDate,
+                      selectedTime
+                    );
+                  }}
+                  style={tailwind("p-2 rounded")}
+                  color="#228564"
+                  textColor="#fff"
+                />
+                <ButtonComponent
+                  title="Cancel"
+                  size="small"
+                  onPress={() => {
+                    // Reset selected date and time
+                    setSelectedDate(null);
+                    setSelectedTime(null);
+                    console.warn("Appointment canceled");
+                  }}
+                  style={tailwind("p-2 rounded bg-red-500 mt-2")}
+                  color="#ff0000"
+                  textColor="#fff"
+                />
+              </View>
+            </>
+          ) : null}
+        </View>
+
+        <View style={tailwind("p-4 rounded mb-6")}>
+          <ButtonComponent
+            title="Book an Appointment"
+            onPress={() => navigation.navigate("PaymentScreen" as never)}
+            style={tailwind("mt-6 p-4 rounded mb-6")}
+            color="#228564"
+            textColor="#fff"
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+export default DoctorProfileScreen;

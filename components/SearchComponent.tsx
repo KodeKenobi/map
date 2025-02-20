@@ -12,22 +12,19 @@ const SearchBar = () => {
         "flex-row items-center bg-gray-200 rounded-full px-4 py-2 w-full"
       )}
     >
-      {/* Search Icon */}
       <Ionicons name="search" size={20} color="gray" />
 
-      {/* AppText Input */}
       <TextInput
         placeholder="Search"
         placeholderTextColor="gray"
         style={{
-          flex: 1, // Expand to take remaining space
+          flex: 1,
           marginLeft: 10,
           fontSize: 16,
           color: "black",
         }}
       />
 
-      {/* Voice Recording Icon */}
       <TouchableOpacity>
         <Ionicons name="mic" size={20} color="gray" />
       </TouchableOpacity>

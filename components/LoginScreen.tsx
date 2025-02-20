@@ -1,46 +1,69 @@
 import React, { useState, useEffect } from "react";
-import { View, TextInput, TouchableOpacity, Image } from "react-native";
-import { StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Text,
+  Alert,
+  StyleSheet,
+  AppState,
+} from "react-native";
 import AppText from "./AppText";
-import { Login } from "@/app/(auth)/auth";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
 import Toast from "react-native-toast-message";
 import ButtonComponent from "./ButtonComponent";
-import { auth } from "@/app/(auth)/firebaseConfig";
-import { getUserData } from "@/app/(auth)/auth";
-// import {
-//   GoogleSignin,
-//   GoogleSigninButton,
-// } from "@react-native-google-signin/google-signin";
+import { supabase } from "../lib/supabase";
+
+AppState.addEventListener("change", (state) => {
+  if (state === "active") {
+    supabase.auth.startAutoRefresh();
+  } else {
+    supabase.auth.stopAutoRefresh();
+  }
+});
 
 export default function LoginScreen({ navigation }: { navigation: any }) {
   const tailwind = useTailwind();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
 
-  // const GoogleSignIn = () => {
-  //   const signIn = async () => {
-  //     GoogleSignin.configure({
-  //       scopes: [],
-  //       webClientId:
-  //         "541893526993-elf1nsemgjcghdt8ebqrh10jhsbpi238.apps.googleusercontent.com",
-  //       offlineAccess: true,
-  //     });
-  //     try {
-  //       await GoogleSignin.hasPlayServices();
-  //       const userInfo = await GoogleSignin.signIn();
-  //       console.log("userinfo", userInfo);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  // };
+  useEffect(() => {
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "PASSWORD_RECOVERY") {
+        const newPassword = prompt(
+          "What would you like your new password to be?"
+        );
 
-  const handleLogin = async () => {
+        if (newPassword) {
+          const { data, error } = await supabase.auth.updateUser({
+            password: newPassword,
+          });
+
+          if (data) alert("Password updated successfully!");
+          if (error) alert("There was an error updating your password.");
+        }
+      }
+    });
+  }, []);
+
+  async function signInWithEmail() {
     try {
-      await Login(email, password);
+      setLoading(true);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (error) {
+        Alert.alert(error.message);
+        return;
+      }
+
       Toast.show({
         text1: "Login successful",
         position: "bottom",
@@ -49,19 +72,49 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         type: "success",
       });
 
-      const user = auth.currentUser;
-      if (user) {
-        const data = await getUserData(user.uid);
-        if (!data || !data.hasCompletedHomeOnboarding) {
-          navigation.navigate("Welcome");
-        } else {
-          navigation.navigate("Home");
-        }
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", data.user.id)
+        .single();
+    } catch (error) {
+      Alert.alert((error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleResetPassword() {
+    if (!email) {
+      Alert.alert("Error", "Please enter your email address");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const redirectTo = __DEV__
+        ? "exp://localhost:19000/--/reset-password"
+        : "com.supabase://auth/callback";
+
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo,
+      });
+
+      if (error) {
+        Alert.alert("Error", error.message);
+      } else {
+        Alert.alert(
+          "Password Reset",
+          "Check your email for the password reset link"
+        );
+        setIsForgotPassword(false);
       }
     } catch (error) {
-      alert((error as Error).message);
+      Alert.alert("Error", (error as Error).message);
+    } finally {
+      setLoading(false);
     }
-  };
+  }
 
   useEffect(() => {}, []);
 
@@ -75,8 +128,8 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           />
         </View>
 
-        <AppText style={tailwind("text-2xl font-bold mb-6 mt-6  text-center")}>
-          Welcome back
+        <AppText style={tailwind("text-2xl font-bold mb-6 mt-6 text-center")}>
+          <Text>{isForgotPassword ? "Reset Password" : "Welcome"}</Text>
         </AppText>
         <TextInput
           style={styles.input}
@@ -85,42 +138,61 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           value={email}
           onChangeText={setEmail}
         />
-        <View style={{ position: "relative" }}>
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry={!isPasswordVisible}
-            value={password}
-            onChangeText={setPassword}
-          />
-          <TouchableOpacity
-            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-            style={{ position: "absolute", right: 10, top: 15 }}
-          >
-            <MaterialIcons
-              name={isPasswordVisible ? "visibility" : "visibility-off"}
-              size={24}
-              color="gray"
+        {!isForgotPassword && (
+          <View style={{ position: "relative" }}>
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              secureTextEntry={!isPasswordVisible}
+              value={password}
+              onChangeText={setPassword}
             />
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+              style={{ position: "absolute", right: 10, top: 15 }}
+            >
+              <MaterialIcons
+                name={isPasswordVisible ? "visibility" : "visibility-off"}
+                size={24}
+                color="gray"
+              />
+            </TouchableOpacity>
+          </View>
+        )}
         <TouchableOpacity
           style={styles.forgotPassword}
-          onPress={() => navigation.navigate("ForgotPassword")}
+          onPress={() => {
+            if (isForgotPassword) {
+              setIsForgotPassword(false);
+            } else {
+              setIsForgotPassword(true);
+              setPassword("");
+            }
+          }}
         >
           <AppText style={tailwind("text-md font-semibold")}>
-            Forgot password?
+            <Text>
+              {isForgotPassword ? "Back to Login" : "Forgot password?"}
+            </Text>
           </AppText>
         </TouchableOpacity>
 
         <ButtonComponent
-          title="Login"
-          color="bg-w3-gold"
+          title={
+            loading
+              ? "Loading..."
+              : isForgotPassword
+              ? "Reset Password"
+              : "Login"
+          }
+          color="#F9CF67"
           textColor="#000"
-          onPress={handleLogin}
+          onPress={isForgotPassword ? handleResetPassword : signInWithEmail}
         />
 
-        <AppText style={styles.orText}>or</AppText>
+        <AppText style={styles.orText}>
+          <Text>or</Text>
+        </AppText>
 
         <TouchableOpacity
           onPress={() => navigation.navigate("Login")}
@@ -190,11 +262,11 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
           }}
         >
           <AppText style={tailwind("text-base ")}>
-            Don't have an account?{" "}
+            <Text>Don't have an account? </Text>
           </AppText>
           <TouchableOpacity onPress={() => navigation.navigate("Register")}>
             <AppText style={tailwind("text-base  font-semibold")}>
-              Sign up
+              <Text>Sign up</Text>
             </AppText>
           </TouchableOpacity>
         </View>

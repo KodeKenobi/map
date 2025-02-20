@@ -6,6 +6,7 @@ import AppText from "./AppText";
 interface RecommendationsProps {
   iconUrl: any;
   title: string;
+  description?: string;
   backgroundColor?: string;
   iconBackgroundColor?: string;
 }
@@ -13,6 +14,7 @@ interface RecommendationsProps {
 const Recommendations: React.FC<RecommendationsProps> = ({
   iconUrl,
   title,
+  description,
   backgroundColor,
   iconBackgroundColor,
 }) => {
@@ -21,7 +23,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({
   return (
     <View
       style={[
-        tailwind("p-4 rounded-lg mr-4 mb-6 flex-row items-center"),
+        tailwind("p-4 rounded-lg mr-4 mb-6 flex-row items-center w-full"),
         styles.card,
         { backgroundColor: backgroundColor || "#FCFCFC" },
         { padding: 10 },
@@ -37,8 +39,14 @@ const Recommendations: React.FC<RecommendationsProps> = ({
         <Image source={iconUrl} style={styles.icon} resizeMode="cover" />
       </View>
 
-      <View style={[tailwind("justify-center items-center"), styles.title]}>
-        <AppText style={tailwind("text-sm font-bold text-black")}>
+      <View style={[tailwind(""), styles.title]}>
+        <AppText
+          style={tailwind("text-md font-bold text-gray-800")}
+          fontColor={"#BB8400"}
+        >
+          {description}
+        </AppText>
+        <AppText style={tailwind("text-lg font-bold font-bold")}>
           {title}
         </AppText>
       </View>
@@ -48,7 +56,6 @@ const Recommendations: React.FC<RecommendationsProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    width: 340,
     height: 100,
   },
   iconContainer: {
@@ -57,8 +64,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   icon: {
-    width: 36,
-    height: 36,
+    width: 52,
+    height: 52,
   },
   title: {
     flexWrap: "wrap",

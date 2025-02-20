@@ -165,10 +165,6 @@ node_modules
 package-lock.json
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,macos,windows,visualstudiocode,flutter
-huntly_admin/huntly_admin.dmg
-app/.expo/devices.json
-app/.expo/README.md
-app/(auth)/firebaseConfig.ts
 .exp/
 .vscode
 

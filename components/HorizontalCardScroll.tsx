@@ -3,14 +3,16 @@ import { ScrollView, View } from "react-native";
 import HomeCardComponent from "./HomeCardComponent";
 import { useTailwind } from "tailwind-rn";
 
-// Add props to accept cards
 interface HorizontalCardScrollProps {
   cards: {
+    id: number;
     imageUrl: any;
     title: string;
-    date: string;
-    registrationText: string;
+    cta: string;
+    subtitle: string;
     backgroundColor?: string;
+    textColor?: string;
+    description?: string;
   }[];
 }
 
@@ -18,21 +20,21 @@ const HorizontalCardScroll: React.FC<HorizontalCardScrollProps> = ({
   cards,
 }) => {
   const tailwind = useTailwind();
+  const cardHeight = 320;
 
   return (
-    <ScrollView horizontal>
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
       {cards.map((card, index) => (
-        <View style={tailwind("mr-24")}>
+        <View key={index} style={[tailwind("mr-24"), { height: cardHeight }]}>
           <HomeCardComponent
-            key={index}
+            id={card.id}
             imageUrl={card.imageUrl}
             title={card.title}
-            date={card.date}
-            registrationText={card.registrationText}
-            backgroundColor={
-              card.backgroundColor ||
-              (tailwind("bg-w3-purple-opacity").backgroundColor as string)
-            }
+            cta={card.cta}
+            subtitle={card.subtitle}
+            description={card.description}
+            backgroundColor={card.backgroundColor}
+            textColor={card.textColor}
           />
         </View>
       ))}

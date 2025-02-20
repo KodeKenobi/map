@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, TouchableOpacity, ScrollView, SafeAreaView } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
@@ -6,15 +6,41 @@ import AppText from "./AppText";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 import DoctorCard from "./DoctorCard";
 import Referrals from "./Referrals";
+import { getAllDoctors } from "../lib/supabase";
+
+// Option 1: Import the Doctor type
+// import { Doctor } from "./DoctorCard"; // Uncomment if defined in DoctorCard.tsx
+
+// Option 2: Define the Doctor type
+interface Doctor {
+  id: number;
+  fullname: string;
+  job_title: string;
+  experience: number;
+  rating: number;
+  consultation_fee: number;
+  job_description: string;
+  avatar_url: string;
+}
 
 const ConsultScreen = () => {
   const tailwind = useTailwind();
   const navigation = useNavigation<NavigationProp<any>>();
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      const doctorsData = await getAllDoctors();
+      setDoctors(doctorsData);
+    };
+
+    fetchDoctors();
+  }, []);
 
   return (
     <SafeAreaView style={tailwind("flex-1")}>
       <ScrollView>
-        <View style={tailwind("flex-1 justify-center items-center mt-14")}>
+        <View style={tailwind("flex-1 justify-center items-center mt-10")}>
           <View
             style={tailwind("flex-row items-center w-full p-4 justify-between")}
           >
@@ -43,7 +69,9 @@ const ConsultScreen = () => {
             </AppText>
           </View>
           <View style={tailwind("flex items-center justify-center w-full p-4")}>
-            <DoctorCard />
+            {doctors.map((doctor) => (
+              <DoctorCard key={doctor.id} doctor={doctor} />
+            ))}
           </View>
         </View>
         <View style={tailwind("mt-20 p-4")}>

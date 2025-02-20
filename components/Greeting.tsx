@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { View, Image, ActivityIndicator, TouchableOpacity } from "react-native";
+import React, { useEffect } from "react";
+import { View, TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
-import AppText from "./AppText";
-import { auth } from "@/app/(auth)/firebaseConfig";
-import { getUserData } from "@/app/(auth)/auth";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { setProfile } from "@/store/slices/profileSlice";
+import { RootState } from "../store/store";
+import { supabase } from "@/lib/supabase";
+
+import GreetingAvatar from "./GreetingAvatar";
 
 const Greeting = ({
   notificationCount,
@@ -14,22 +17,43 @@ const Greeting = ({
   notificationCount: number;
 }) => {
   const tailwind = useTailwind();
-  const [userName, setUserName] = useState<string | null>(null);
+  const dispatch = useDispatch();
+  const profile = useSelector((state: RootState) => state.profile);
+  const navigation = useNavigation<NavigationProp<any>>();
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (user) {
-      getUserData(user.uid).then((data) => {
-        if (data) {
-          setUserName(data.firstName);
+    if (!profile.firstName) {
+      const fetchUserProfile = async () => {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (user) {
+          const { data, error } = await supabase
+            .from("profiles")
+            .select("first_name, last_name, avatar_url")
+            .eq("id", user.id)
+            .single();
+
+          if (error) {
+            console.error("Error fetching user profile:", error);
+          } else {
+            dispatch(
+              setProfile({
+                firstName: data.first_name,
+                lastName: data.last_name,
+                avatarUrl: data.avatar_url,
+              })
+            );
+          }
         }
-      });
+      };
+
+      fetchUserProfile();
     }
-  }, []);
+  }, [dispatch, profile.firstName]);
 
   const currentHour = new Date().getHours();
   let greetingMessage = "Good Morning";
-  const navigation = useNavigation<NavigationProp<any>>();
 
   if (currentHour >= 5 && currentHour < 12) {
     greetingMessage = "Good Morning";
@@ -41,14 +65,12 @@ const Greeting = ({
 
   return (
     <View
-      style={tailwind(
-        "flex-row items-center justify-between p-4 bg-white mt-8"
-      )}
+      style={tailwind("flex-row items-center justify-between p-4 bg-white")}
     >
-      <View className="flex-row items-center justify-center">
+      <View style={tailwind("flex-row items-center justify-center")}>
         <View
           style={{
-            borderWidth: 4,
+            borderWidth: 2,
             borderColor: "#999",
             borderRadius: 160,
             overflow: "hidden",
@@ -56,46 +78,29 @@ const Greeting = ({
         >
           <View
             style={{
-              padding: 6,
+              padding: 3,
               backgroundColor: "white",
               borderRadius: 10,
             }}
           >
-            <Image
-              source={require("../assets/images/logo.png")}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 10,
-                borderColor: "rgba(153, 153, 153, 0.1)",
-                borderWidth: 0.2,
-              }}
-              resizeMode="contain"
-            />
+            <GreetingAvatar url={profile.avatarUrl} width={60} height={60} />
           </View>
         </View>
       </View>
 
-      {userName ? (
+      {profile.firstName ? (
         <View style={tailwind("flex-1 pl-4")}>
-          <AppText style={tailwind("text-lg font-bold text-black")}>
-            {greetingMessage}, {userName}
-          </AppText>
-          <AppText style={tailwind("text-sm text-gray-500")}>
+          <Text style={tailwind("text-lg font-bold text-gray-600")}>
+            {greetingMessage}, {profile.firstName}
+          </Text>
+          <Text style={tailwind("text-md text-gray-600")}>
             Let's make today great
-          </AppText>
+          </Text>
         </View>
-      ) : (
-        <ActivityIndicator
-          size="small"
-          color="gray"
-          style={tailwind("flex-1 pl-4")}
-        />
-      )}
-      {/* Notification Icon */}
+      ) : null}
       <TouchableOpacity
         style={tailwind("relative")}
-        onPress={() => navigation.navigate("Notifications")} // Navigate to Notifications page
+        onPress={() => navigation.navigate("Notifications")}
       >
         <Ionicons name="notifications-outline" size={26} color="black" />
         <View
@@ -109,16 +114,7 @@ const Greeting = ({
             paddingVertical: 2,
           }}
         >
-          <AppText
-            style={{
-              color: "white",
-              fontSize: 12,
-              fontWeight: "bold",
-            }}
-            fontColor="white"
-          >
-            {notificationCount}
-          </AppText>
+          <Text style={{ color: "white" }}>{notificationCount}</Text>
         </View>
       </TouchableOpacity>
     </View>

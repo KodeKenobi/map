@@ -854,6 +854,13 @@
     }
   },
 
+  "bg-red-500": {
+    "style": {
+      "--tw-bg-opacity": 1,
+      "backgroundColor": "rgb(247 74 93 / var(--tw-bg-opacity))"
+    }
+  },
+
   "bg-[#0FD6A6]": {
     "style": {
       "--tw-bg-opacity": 1,

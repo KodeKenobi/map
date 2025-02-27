@@ -47,6 +47,9 @@ import BlogRead from "@/components/BlogRead";
 import UserUpdate from "@/components/UserUpdate";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
+import ProductsScreen from "@/components/ProductsScreen";
+import CartScreen from "@/components/CartScreen";
+import WishlistScreen from "@/components/WishlistScreen";
 LogBox.ignoreLogs([
   "Text strings must be rendered within a <Text> component",
   "",
@@ -233,6 +236,12 @@ const AppLayout = () => {
                   name="UserUpdate"
                   component={UserUpdate}
                   initialParams={{ session: session }}
+                />
+                <Stack.Screen name="Products" component={ProductsScreen} />
+                <Stack.Screen name="CartScreen" component={CartScreen} />
+                <Stack.Screen
+                  name="WishlistScreen"
+                  component={WishlistScreen}
                 />
               </>
             )}

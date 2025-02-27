@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, LogBox, Text, Animated, Image } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { View, StyleSheet, Animated, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { setHomeCards, setLoading } from "../store/slices/homeCardsSlice";
 import { supabase } from "../lib/supabase";
 import { RootState } from "../store/store";
-
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import Greeting from "./Greeting";
 import RecommendationsCard from "./RecommendationsCard";
@@ -54,6 +52,7 @@ const Home = () => {
 
   useEffect(() => {
     const getProfile = async () => {
+      dispatch(setLoading(true));
       try {
         const {
           data: { user },
@@ -76,7 +75,6 @@ const Home = () => {
           }
 
           const allProfiles = await getAllProfiles();
-
           const allHomeCards = await getAllHomeCards();
           if (allHomeCards) {
             const transformedCards = await Promise.all(
@@ -155,7 +153,7 @@ const Home = () => {
         <Greeting
           userName={firstName ? `${firstName}` : ""}
           notificationCount={8}
-        />{" "}
+        />
       </View>
       <ScrollView contentContainerStyle={[styles.scrollContainer]}>
         <View style={tailwind("p-2")}>
@@ -174,7 +172,6 @@ const Home = () => {
         </View>
         <View style={tailwind("mt-4 mb-2 p-2")}>
           <AppText style={tailwind("text-lg font-bold")}>
-            {" "}
             Personalised Recommendations
           </AppText>
         </View>
@@ -208,22 +205,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-  },
-  loadingBarsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "80%",
-  },
-  loadingBar: {
-    height: 4,
-    width: "30%",
-    backgroundColor: "#ccc",
-    borderRadius: 2,
-    overflow: "hidden",
-  },
-  loadingBarActive: {
-    backgroundColor: "#000",
   },
   faviconBig: {
     width: 100,

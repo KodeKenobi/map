@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { View, StyleSheet, Animated, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { setHomeCards, setLoading } from "../store/slices/homeCardsSlice";
@@ -12,7 +12,7 @@ import { useTailwind } from "tailwind-rn";
 import HorizontalCardScroll from "./HorizontalCardScroll";
 import HorizontalQuickAccessCardScroll from "./HorizontalQuickAccessCardScroll";
 import AppText from "./AppText";
-import { getAllProfiles, getAllHomeCards } from "@/lib/supabase";
+import { getAllHomeCards } from "@/lib/supabase";
 
 const quickAccessCards = [
   {
@@ -74,8 +74,8 @@ const Home = () => {
             return;
           }
 
-          const allProfiles = await getAllProfiles();
           const allHomeCards = await getAllHomeCards();
+
           if (allHomeCards) {
             const transformedCards = await Promise.all(
               allHomeCards.map(async (card) => ({
@@ -108,7 +108,7 @@ const Home = () => {
           navigation.navigate("Login");
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error during data fetch:", error);
         dispatch(setLoading(false));
         navigation.navigate("Login");
       }

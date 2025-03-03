@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, ScrollView, SafeAreaView } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+  Animated,
+  StyleSheet,
+} from "react-native";
 import { useTailwind } from "tailwind-rn";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import AppText from "./AppText";
@@ -23,15 +30,29 @@ const ConsultScreen = () => {
   const tailwind = useTailwind();
   const navigation = useNavigation<NavigationProp<any>>();
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [scale] = useState(new Animated.Value(1));
 
   useEffect(() => {
     const fetchDoctors = async () => {
       const doctorsData = await getAllDoctors();
       setDoctors(doctorsData);
+      setLoading(false);
     };
 
     fetchDoctors();
   }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Animated.Image
+          source={require("../assets/images/faviconBig.png")}
+          style={[styles.faviconBig, { transform: [{ scale }] }]}
+        />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={tailwind("flex-1")}>
@@ -79,3 +100,24 @@ const ConsultScreen = () => {
 };
 
 export default ConsultScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  scrollContainer: {
+    padding: 12,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  faviconBig: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+  },
+});

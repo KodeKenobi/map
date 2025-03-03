@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
@@ -20,6 +20,7 @@ const Greeting = ({
   const dispatch = useDispatch();
   const profile = useSelector((state: RootState) => state.profile);
   const navigation = useNavigation<NavigationProp<any>>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!profile.firstName) {
@@ -49,6 +50,7 @@ const Greeting = ({
       };
 
       fetchUserProfile();
+      setLoading(false);
     }
   }, [dispatch, profile.firstName]);
 

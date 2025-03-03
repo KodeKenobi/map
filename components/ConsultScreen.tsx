@@ -70,7 +70,7 @@ const ConsultScreen = () => {
             ))}
           </View>
         </View>
-        <View style={tailwind("mt-20 p-4")}>
+        <View style={tailwind("mt-0 p-4 mb-16")}>
           <Referrals />
         </View>
       </ScrollView>

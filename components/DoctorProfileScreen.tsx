@@ -16,6 +16,7 @@ import BackButton from "./BackButton";
 import DoctorProfileCard from "./DoctorProfileCard";
 import ButtonComponent from "./ButtonComponent";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import * as MailComposer from "expo-mail-composer";
 
 // Step 1: Define the type for the navigation parameters
 type DoctorProfileParams = {
@@ -76,6 +77,30 @@ const DoctorProfileScreen: React.FC<Props> = ({ route }) => {
     setSelectedTime(time);
     hideTimePicker();
   };
+
+  async function handleBookClick() {
+    const result = await MailComposer.composeAsync({
+      recipients: ["kodekenobi@gmail.com"],
+      subject: "Booking Appointment",
+      body:
+        `Hi:\n\n` +
+        `I would like to book an appointment with you on:\n\n` +
+        `Date: ${selectedDate?.toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}\n` +
+        `Time: ${selectedTime?.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        })}\n\n` +
+        `Thank you! Kind Regards,\n\n` +
+        `${route.params.fullname}`,
+    });
+    alert(result.status);
+  }
 
   return (
     <SafeAreaView style={tailwind("flex-1")}>
@@ -221,21 +246,32 @@ const DoctorProfileScreen: React.FC<Props> = ({ route }) => {
         <View style={tailwind("p-4 rounded mb-6 ")}>
           {selectedDate && selectedTime ? (
             <>
-              <Text style={tailwind("text-lg font-bold")}>
+              <Text style={tailwind("text-lg mb-2 font-bold")}>
                 Confirm your Appointment
               </Text>
               <Text style={tailwind("mt-2 font-semibold text-md")}>
-                Date: {selectedDate.toLocaleDateString()}
+                Date:{" "}
+                {selectedDate
+                  ? selectedDate.toLocaleDateString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
+                  : "Not selected"}
               </Text>
               <Text style={tailwind("mt-2 font-semibold text-md")}>
                 Time:{" "}
-                {selectedTime.toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
+                {selectedTime
+                  ? selectedTime.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })
+                  : "Not selected"}
               </Text>
               <View style={tailwind("flex-col justify-between mt-4")}>
-                <ButtonComponent
+                {/* <ButtonComponent
                   title="Confirm"
                   size="small"
                   onPress={() => {
@@ -249,8 +285,8 @@ const DoctorProfileScreen: React.FC<Props> = ({ route }) => {
                   style={tailwind("p-2 rounded")}
                   color="#228564"
                   textColor="#fff"
-                />
-                <ButtonComponent
+                /> */}
+                {/* <ButtonComponent
                   title="Cancel"
                   size="small"
                   onPress={() => {
@@ -262,21 +298,35 @@ const DoctorProfileScreen: React.FC<Props> = ({ route }) => {
                   style={tailwind("p-2 rounded bg-red-500 mt-2")}
                   color="#ff0000"
                   textColor="#fff"
-                />
+                /> */}
               </View>
             </>
           ) : null}
         </View>
 
-        <View style={tailwind("p-4 rounded mb-6")}>
-          <ButtonComponent
-            title="Book an Appointment"
-            onPress={() => navigation.navigate("PaymentScreen" as never)}
-            style={tailwind("mt-6 p-4 rounded mb-6")}
-            color="#228564"
-            textColor="#fff"
-          />
-        </View>
+        {selectedDate && selectedTime ? (
+          <View style={tailwind("p-4 rounded mb-6")}>
+            <ButtonComponent
+              title="Book an Appointment"
+              onPress={handleBookClick}
+              style={tailwind("mt-2 p-4 rounded mb-2")}
+              color="#228564"
+              textColor="#fff"
+            />
+            <ButtonComponent
+              title="Cancel"
+              onPress={() => {
+                // Reset selected date and time
+                setSelectedDate(null);
+                setSelectedTime(null);
+                console.warn("Appointment canceled");
+              }}
+              style={tailwind("p-2 rounded bg-red-500 mt-2")}
+              color="#ff0000"
+              textColor="#fff"
+            />
+          </View>
+        ) : null}
       </ScrollView>
     </SafeAreaView>
   );

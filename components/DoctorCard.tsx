@@ -63,7 +63,7 @@ const DoctorCard = ({ doctor }: { doctor: Doctor }) => {
   return (
     <View
       style={tailwind(
-        "bg-white rounded-lg shadow p-4 w-full border border-gray-400"
+        "bg-white rounded-lg shadow p-4 w-full border border-gray-400 mb-8"
       )}
     >
       <View style={tailwind("flex-row justify-between items-start ")}>

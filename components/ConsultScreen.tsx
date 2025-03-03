@@ -8,10 +8,6 @@ import DoctorCard from "./DoctorCard";
 import Referrals from "./Referrals";
 import { getAllDoctors } from "../lib/supabase";
 
-// Option 1: Import the Doctor type
-// import { Doctor } from "./DoctorCard"; // Uncomment if defined in DoctorCard.tsx
-
-// Option 2: Define the Doctor type
 interface Doctor {
   id: number;
   fullname: string;

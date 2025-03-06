@@ -128,7 +128,7 @@ const DoctorProfileScreen: React.FC<Props> = ({ route }) => {
       // Create a campaign
       await createCampaign(
         "Womb Vitality & Healing Course",
-        "502c41d225d426462278cfab95cbb392", // Template ID
+        "1fc86a0d21092f0d8feed29a9f16608e", // Template ID
         "125082" // List ID
       );
 

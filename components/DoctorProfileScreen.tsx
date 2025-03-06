@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  Modal,
+  Alert,
 } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import {
@@ -17,6 +19,17 @@ import DoctorProfileCard from "./DoctorProfileCard";
 import ButtonComponent from "./ButtonComponent";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as MailComposer from "expo-mail-composer";
+import { Resend } from "resend";
+import {
+  sendEmail,
+  createCampaign,
+  getAddressBookIdByName,
+  addEmailToAddressBook,
+} from "@/lib/sendpulse";
+import ReactDOMServer from "react-dom/server";
+import { supabase } from "@/lib/supabase";
+
+import { Session } from "@supabase/supabase-js";
 
 // Step 1: Define the type for the navigation parameters
 type DoctorProfileParams = {
@@ -26,6 +39,7 @@ type DoctorProfileParams = {
   job_description: string;
   experience: number;
   rating: number;
+  userEmail: string;
 };
 
 // Step 2: Define the props type for the component
@@ -40,15 +54,19 @@ const DoctorProfileScreen: React.FC<Props> = ({ route }) => {
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
 
-  // const {
-  //   full_name,
-  //   job_title,
-  //   consultation_fee,
-  //   job_description,
-  //   experience,
-  //   rating,
-  // } = route.params;
+  useEffect(() => {
+    const fetchSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setSession(session);
+    };
+
+    fetchSession();
+  }, []);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -76,6 +94,50 @@ const DoctorProfileScreen: React.FC<Props> = ({ route }) => {
     console.warn("A time has been picked: ", time);
     setSelectedTime(time);
     hideTimePicker();
+  };
+
+  const handleBookAppointment = async () => {
+    setModalVisible(true);
+
+    const senderEmail = "ignatius.mutizwa@procoders.co.za";
+    const recipientEmail = session?.user?.email;
+    const recipientName = session?.user?.user_metadata?.full_name;
+
+    console.log("Sender Email:", senderEmail);
+    console.log("Recipient Email:", recipientEmail);
+
+    if (!recipientEmail) {
+      console.error("Recipient email is undefined");
+      Alert.alert("Error", "User email is not available.");
+      return;
+    }
+
+    try {
+      // Get address book ID
+      const addressBookId = await getAddressBookIdByName("womb_vitality");
+      if (!addressBookId) {
+        console.error("Address book not found");
+        return;
+      }
+
+      // Log the email being added to the address book
+      console.log("Adding email to address book:", recipientEmail);
+
+      // Add email to address book
+      await addEmailToAddressBook(recipientEmail, addressBookId, recipientName);
+
+      // Create a campaign
+      await createCampaign(
+        "Womb Vitality & Healing Course",
+        "be7661ce431175dfebc344f7ed4da56c", // Template ID
+        "125082" // List ID
+      );
+
+      Alert.alert("Success", "Appointment booked and email sent.");
+    } catch (error) {
+      console.error("Error during booking process:", error);
+      Alert.alert("Error", "Failed to send email.");
+    }
   };
 
   async function handleBookClick() {
@@ -308,7 +370,7 @@ const DoctorProfileScreen: React.FC<Props> = ({ route }) => {
           <View style={tailwind("p-4 rounded mb-6")}>
             <ButtonComponent
               title="Book an Appointment"
-              onPress={handleBookClick}
+              onPress={handleBookAppointment}
               style={tailwind("mt-2 p-4 rounded mb-2")}
               color="#228564"
               textColor="#fff"
@@ -328,6 +390,35 @@ const DoctorProfileScreen: React.FC<Props> = ({ route }) => {
           </View>
         ) : null}
       </ScrollView>
+
+      {/* Modal for Confirmation */}
+      <Modal
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View
+          style={tailwind(
+            "flex-1 justify-center items-center bg-black bg-opacity-50"
+          )}
+        >
+          <View style={tailwind("bg-white p-6 rounded-lg")}>
+            <Text style={tailwind("text-lg font-bold mb-4")}>
+              Appointment Booked
+            </Text>
+            <Text style={tailwind("mb-4")}>
+              Please check your inbox for the confirmation email.
+            </Text>
+            <ButtonComponent
+              title="Close"
+              onPress={() => setModalVisible(false)}
+              style={tailwind("p-2 rounded bg-green-500")}
+              color="#228564"
+              textColor="#fff"
+            />
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };

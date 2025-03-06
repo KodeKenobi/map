@@ -26,7 +26,6 @@ import {
   getAddressBookIdByName,
   addEmailToAddressBook,
 } from "@/lib/sendpulse";
-import ReactDOMServer from "react-dom/server";
 import { supabase } from "@/lib/supabase";
 
 import { Session } from "@supabase/supabase-js";

@@ -3,7 +3,7 @@ import { View, StyleSheet, Image, Text, Animated } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
 import { setWealthCards, setLoading } from "../store/slices/wealthCardsSlice";
-import { supabase } from "../lib/supabase";
+import { supabase, getAllEventsCards } from "../lib/supabase";
 import { RootState } from "../store/store";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import Greeting from "./Greeting";
@@ -12,6 +12,20 @@ import { useTailwind } from "tailwind-rn";
 import HorizontalCardScroll from "./HorizontalCardScroll";
 import LogoNavScroll from "./LogoNavScroll";
 import WealthNavMenu from "./WealthNavMenu";
+import EventsCardComponent from "./EventsCardComponent";
+import WealthHorizontalCardScroll from "./WealthHorizontalCardScroll";
+
+// Define the type for event cards
+interface EventCard {
+  id: number;
+  title: string;
+  subtitle: string;
+  date: string;
+  tagline: string;
+  tag: string;
+  description: string;
+  image_url: string;
+}
 
 const WealthHome = () => {
   const navigation = useNavigation<NavigationProp<any>>();
@@ -23,6 +37,7 @@ const WealthHome = () => {
   const loading = useSelector((state: RootState) => state.wealthCards.loading);
   const tailwind = useTailwind();
   const [scale] = useState(new Animated.Value(1));
+  const [eventCards, setEventCards] = useState<EventCard[]>([]);
 
   const coachingCards = [
     {
@@ -99,6 +114,11 @@ const WealthHome = () => {
           if (allWealthCards.data) {
             dispatch(setWealthCards(allWealthCards.data));
           }
+
+          // Fetch and log events cards
+          const eventsCards = await getAllEventsCards();
+          console.log("Events Cards:", eventsCards);
+
           dispatch(setLoading(false));
         } else {
           dispatch(setLoading(false));
@@ -113,6 +133,17 @@ const WealthHome = () => {
 
     getProfile();
   }, [navigation, dispatch]);
+
+  useEffect(() => {
+    const fetchEventCards = async () => {
+      const data = await getAllEventsCards();
+      if (data) {
+        setEventCards(data);
+      }
+    };
+
+    fetchEventCards();
+  }, []);
 
   if (loading) {
     return (
@@ -143,11 +174,9 @@ const WealthHome = () => {
             Discover Franchise Opportunities
           </Text>
         </View>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <View style={tailwind("mb-4")}>
-            <HorizontalCardScroll cards={cards} />
-          </View>
-        </ScrollView>
+        <View style={[tailwind("mb-4")]}>
+          <WealthHorizontalCardScroll cards={eventCards} />
+        </View>
         <View style={tailwind("mt-2 mb-8")}>
           <Text style={tailwind("text-lg font-bold")}>
             {" "}

@@ -129,7 +129,7 @@ const DoctorProfileScreen: React.FC<Props> = ({ route }) => {
       // Create a campaign
       await createCampaign(
         "Womb Vitality & Healing Course",
-        "be7661ce431175dfebc344f7ed4da56c", // Template ID
+        "502c41d225d426462278cfab95cbb392", // Template ID
         "125082" // List ID
       );
 
@@ -407,7 +407,9 @@ const DoctorProfileScreen: React.FC<Props> = ({ route }) => {
               Appointment Booked
             </Text>
             <Text style={tailwind("mb-4")}>
-              Please check your inbox for the confirmation email.
+              Please check your inbox for the confirmation email.{"\n\n"}(Your
+              email could be under Promotions or Spam, you may need to move it
+              to your Inbox)
             </Text>
             <ButtonComponent
               title="Close"

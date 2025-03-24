@@ -51,6 +51,7 @@ import ProductsScreen from "@/components/ProductsScreen";
 import CartScreen from "@/components/CartScreen";
 import WishlistScreen from "@/components/WishlistScreen";
 import EventRead from "@/components/EventRead";
+import Treatments from "@/components/Treatments";
 LogBox.ignoreLogs([
   "Text strings must be rendered within a <Text> component",
   "",
@@ -245,6 +246,7 @@ const AppLayout = () => {
                   component={WishlistScreen}
                 />
                 <Stack.Screen name="EventRead" component={EventRead} />
+                <Stack.Screen name="Treatments" component={Treatments} />
               </>
             )}
           </Stack.Navigator>

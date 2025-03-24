@@ -59,6 +59,7 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
+    "react-native-webview": "^13.13.4",
     "react-redux": "^9.2.0",
     "resend": "^4.1.2",
     "supabase": "^2.9.6",

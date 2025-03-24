@@ -1,43 +1,138 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
-import { RouteProp } from "@react-navigation/native";
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Linking,
+  TextStyle,
+  SafeAreaView,
+} from "react-native";
+import { NavigationProp, RouteProp } from "@react-navigation/native";
+import AppText from "./AppText";
+import { useTailwind } from "tailwind-rn";
+import BackButton from "./BackButton";
 
 // Define the type for the route parameters
 type EventReadRouteParams = {
+  id: number;
   title: string;
   subtitle: string;
   date: string;
-  description: string;
   image_url: string;
   tagline: string;
   tag: string;
+  description: string;
+  meta?: any; // Make meta optional
 };
 
+// Define the props for the component, including navigation
 interface EventReadProps {
+  navigation: NavigationProp<any>; // Add navigation prop
   route: {
     params: EventReadRouteParams;
   };
 }
 
-const EventRead: React.FC<EventReadProps> = ({ route }) => {
-  const { title, subtitle, date, description, image_url, tagline, tag } =
-    route.params;
+const EventRead: React.FC<EventReadProps> = ({ navigation, route }) => {
+  useEffect(() => {
+    console.log("Navigated to EventRead"); // Log when navigating to EventRead
+    console.log("Event details:", route.params); // Log event details for debugging
+  }, [route.params]); // Add route.params as a dependency
+
+  const {
+    id,
+    title,
+    subtitle,
+    date,
+    image_url,
+    tagline,
+    tag,
+    description,
+    meta = {}, // Default to an empty object if meta is undefined
+  } = route.params;
+  const tailwind = useTailwind();
+
+  // Parse the tickets list from meta
+  const tickets = JSON.parse(meta._tribe_tickets_list || "[]");
+
+  // Function to open the calendar app with event details
+  const addToCalendar = () => {
+    const startDate = new Date(date).toISOString().replace(/-|:|\.\d+/g, ""); // Format to YYYYMMDDTHHMMSSZ
+    const endDate = new Date(new Date(date).getTime() + 60 * 60 * 1000)
+      .toISOString()
+      .replace(/-|:|\.\d+/g, ""); // Format to YYYYMMDDTHHMMSSZ
+
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startDate}/${endDate}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(subtitle)}`;
+
+    Linking.openURL(url).catch((err) =>
+      console.error("An error occurred", err)
+    );
+  };
+
+  // Determine if the event is a whole-day event
+  const isWholeDayEvent = (date: string) => {
+    return date.includes("00:00:00") && date.includes("23:59:59");
+  };
 
   return (
-    <ScrollView style={styles.container}>
-      <Image
-        source={{
-          uri: `https://yfnseftemcxacgncqcck.supabase.co/storage/v1/object/public/images/${image_url}`,
-        }}
-        style={styles.image}
-      />
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.subtitle}>{subtitle}</Text>
-      <Text style={styles.date}>{date}</Text>
-      <Text style={styles.subtitle}>{tagline}</Text>
-      <Text style={styles.subtitle}>{tag}</Text>
-      <Text style={styles.description}>{description}</Text>
-    </ScrollView>
+    <SafeAreaView style={tailwind("flex-1 bg-white")}>
+      <ScrollView>
+        <View style={tailwind("flex-1 justify-center items-center mt-14")}>
+          <View
+            style={tailwind("flex-row items-center w-full p-4 justify-between")}
+          >
+            <BackButton navigation={navigation} />
+            <Text style={tailwind("text-xl font-bold text-center")}>Event</Text>
+            <View style={tailwind("w-10")} />
+          </View>
+        </View>
+        <View style={tailwind("p-4")}>
+          <Image
+            source={{
+              uri: image_url,
+            }}
+            style={styles.image}
+          />
+          <AppText style={tailwind("text-lg font-bold")}>{title}</AppText>
+          <AppText style={tailwind("text-md text-gray-600 mb-2 mt-4")}>
+            {isWholeDayEvent(date)
+              ? "All Day"
+              : `${new Date(date).toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })} @ ${new Date(date).toLocaleTimeString("en-US", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })}`}
+          </AppText>
+          {tickets.map((ticket: any) => (
+            <AppText key={ticket.id} style={tailwind("text-md mt-2")}>
+              {ticket.title}: R{ticket.price} (Available: {ticket.available})
+            </AppText>
+          ))}
+          <TouchableOpacity
+            onPress={addToCalendar}
+            style={tailwind("mt-4 bg-w3-gold-1 rounded-lg shadow-lg p-3")}
+          >
+            <Text
+              style={tailwind("text-white text-lg font-semibold text-center")}
+            >
+              Add to Calendar
+            </Text>
+          </TouchableOpacity>
+          {/* <Text style={styles.subtitle}>{subtitle}</Text>
+          <Text style={styles.subtitle}>{tagline}</Text>
+          <Text style={styles.subtitle}>{tag}</Text>
+          <Text style={styles.description}>{description}</Text> */}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

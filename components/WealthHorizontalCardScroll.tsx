@@ -11,6 +11,7 @@ import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { getAllEventsCards } from "../lib/supabase";
 import { RootStackParamList } from "../types";
 import { useTailwind } from "tailwind-rn";
+import EventsCardComponent from "./EventsCardComponent";
 
 interface EventCard {
   id: number;
@@ -20,23 +21,19 @@ interface EventCard {
   description: string;
   image_url: string;
   tagline: string;
+  tag: string;
+  meta: any;
 }
 
-const WealthHorizontalCardScroll = () => {
-  const [eventCards, setEventCards] = useState<EventCard[]>([]);
+interface WealthHorizontalCardScrollProps {
+  cards: EventCard[];
+}
+
+const WealthHorizontalCardScroll: React.FC<WealthHorizontalCardScrollProps> = ({
+  cards,
+}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const tailwind = useTailwind();
-
-  useEffect(() => {
-    const fetchEventCards = async () => {
-      const data = await getAllEventsCards();
-      if (data) {
-        setEventCards(data);
-      }
-    };
-
-    fetchEventCards();
-  }, []);
 
   const renderEventCard = ({ item }: { item: EventCard }) => (
     <View style={tailwind("border-2 border-gray-200 rounded-lg w-full")}>
@@ -70,11 +67,21 @@ const WealthHorizontalCardScroll = () => {
   return (
     <FlatList
       horizontal
-      data={eventCards}
-      renderItem={renderEventCard}
+      data={cards}
       keyExtractor={(item) => item.id.toString()}
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ paddingHorizontal: 0, width: "100%" }}
+      renderItem={({ item }) => (
+        <EventsCardComponent
+          id={item.id}
+          title={item.title}
+          subtitle={item.subtitle}
+          date={item.date}
+          tagline={item.tagline}
+          tag={item.tag}
+          description={item.description}
+          image_url={item.image_url}
+          meta={item.meta}
+        />
+      )}
     />
   );
 };

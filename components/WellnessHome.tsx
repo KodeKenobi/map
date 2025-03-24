@@ -8,8 +8,8 @@ import {
   TouchableOpacity,
   Modal,
   GestureResponderEvent,
+  ScrollView,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -208,20 +208,20 @@ const WellnessHome = () => {
               {clickedPart === "head"
                 ? "Information about the head"
                 : clickedPart === "neck"
-                ? "Information about the neck"
-                : clickedPart === "leftArm"
-                ? "Information about the left arm"
-                : clickedPart === "rightArm"
-                ? "Information about the right arm"
-                : clickedPart === "stomach"
-                ? "Information about the stomach"
-                : clickedPart === "leftLeg"
-                ? "Information about the left leg"
-                : clickedPart === "rightLeg"
-                ? "Information about the right leg"
-                : clickedPart === "torso"
-                ? "Information about the torso"
-                : "Information about other parts"}
+                  ? "Information about the neck"
+                  : clickedPart === "leftArm"
+                    ? "Information about the left arm"
+                    : clickedPart === "rightArm"
+                      ? "Information about the right arm"
+                      : clickedPart === "stomach"
+                        ? "Information about the stomach"
+                        : clickedPart === "leftLeg"
+                          ? "Information about the left leg"
+                          : clickedPart === "rightLeg"
+                            ? "Information about the right leg"
+                            : clickedPart === "torso"
+                              ? "Information about the torso"
+                              : "Information about other parts"}
             </Text>
             <TouchableOpacity onPress={() => setModalVisible(false)}>
               <Text style={styles.closeButton}>Close</Text>

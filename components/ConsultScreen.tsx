@@ -14,7 +14,10 @@ import Ionicons from "@expo/vector-icons/build/Ionicons";
 import DoctorCard from "./DoctorCard";
 import Referrals from "./Referrals";
 import { getAllDoctors } from "../lib/supabase";
-
+import ConsultationsScreenCard from "./GPConsultationScreen";
+import BodyTherapiesScreenCard from "./BodyTherapies";
+import IVDripScreenCard from "./IVDrip";
+import CoachingConsultationScreenCard from "./CoachingConsultation";
 interface Doctor {
   id: number;
   fullname: string;
@@ -76,20 +79,21 @@ const ConsultScreen = () => {
               </TouchableOpacity>
             </View>
             <AppText style={tailwind("text-xl font-bold text-center")}>
-              Consult
+              Consultations
             </AppText>
             <View style={tailwind("w-10")} />
           </View>
-          <View style={tailwind("flex items-start justify-start w-full p-4")}>
-            <AppText style={tailwind("font-semibold text-lg")}>
-              Available Doctors
-            </AppText>
-          </View>
           <View style={tailwind("flex items-center justify-center w-full p-4")}>
+            <ConsultationsScreenCard consultation={doctors[0]} />
+            <BodyTherapiesScreenCard consultation={doctors[0]} />
+            <IVDripScreenCard consultation={doctors[0]} />
+            <CoachingConsultationScreenCard consultation={doctors[0]} />
+          </View>
+          {/* <View style={tailwind("flex items-center justify-center w-full p-4")}>
             {doctors.map((doctor) => (
               <DoctorCard key={doctor.id} doctor={doctor} />
             ))}
-          </View>
+          </View> */}
         </View>
         <View style={tailwind("mt-0 p-4 mb-16")}>
           <Referrals />

@@ -38,6 +38,14 @@ const Home = () => {
   const tailwind = useTailwind();
   const [scale] = useState(new Animated.Value(1));
 
+  const fetchWordpressData = async () => {
+    const response = await fetch(
+      "https://test.mapw3.co.za/wp-json/wp/v2/posts/"
+    );
+    const data = await response.json();
+    console.log("The Wordpress Data is: ", data);
+  };
+
   async function getImageUrl(path: string): Promise<string> {
     try {
       const {
@@ -88,14 +96,14 @@ const Home = () => {
                   card.tag === "wellness"
                     ? "rgba(118, 184, 162, 0.14)"
                     : card.tag === "wisdom"
-                    ? "rgba(115, 69, 182, 0.16)"
-                    : "rgba(249, 207, 103, 0.5)",
+                      ? "rgba(115, 69, 182, 0.16)"
+                      : "rgba(249, 207, 103, 0.5)",
                 textColor:
                   card.tag === "wellness"
                     ? "rgba(32, 112, 53, 1)"
                     : card.tag === "wisdom"
-                    ? "rgba(115, 69, 182, 1)"
-                    : "rgba(187, 132, 0, 1)",
+                      ? "rgba(115, 69, 182, 1)"
+                      : "rgba(187, 132, 0, 1)",
                 description: card.description,
                 tag: card.tag,
               }))
@@ -135,6 +143,10 @@ const Home = () => {
 
     pulsate();
   }, [scale]);
+
+  useEffect(() => {
+    fetchWordpressData();
+  }, []);
 
   if (loading) {
     return (

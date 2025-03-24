@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Image, Text, Animated } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  Animated,
+  ScrollView,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { setWealthCards, setLoading } from "../store/slices/wealthCardsSlice";
 import { supabase, getAllEventsCards } from "../lib/supabase";
@@ -14,6 +20,7 @@ import LogoNavScroll from "./LogoNavScroll";
 import WealthNavMenu from "./WealthNavMenu";
 import EventsCardComponent from "./EventsCardComponent";
 import WealthHorizontalCardScroll from "./WealthHorizontalCardScroll";
+import EventsList from "./EventsList";
 
 // Define the type for event cards
 interface EventCard {
@@ -175,7 +182,8 @@ const WealthHome = () => {
           </Text>
         </View>
         <View style={[tailwind("mb-4")]}>
-          <WealthHorizontalCardScroll cards={eventCards} />
+          {/* <WealthHorizontalCardScroll cards={eventCards} /> */}
+          <EventsList />
         </View>
         <View style={tailwind("mt-2 mb-8")}>
           <Text style={tailwind("text-lg font-bold")}>

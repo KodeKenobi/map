@@ -296,6 +296,26 @@
       "height": 128
     }
   },
+  "h-34": {
+    "style": {
+      "height": 136
+    }
+  },
+  "h-36": {
+    "style": {
+      "height": 144
+    }
+  },
+  "h-38": {
+    "style": {
+      "height": 152
+    }
+  },
+  "h-40": {
+    "style": {
+      "height": 160
+    }
+  },
   "h-5": {
     "style": {
       "height": 20
@@ -851,6 +871,13 @@
       "borderRightColor": "rgb(209 213 219 / var(--tw-border-opacity))",
       "borderBottomColor": "rgb(209 213 219 / var(--tw-border-opacity))",
       "borderLeftColor": "rgb(209 213 219 / var(--tw-border-opacity))"
+    }
+  },
+
+  "bg-red-500": {
+    "style": {
+      "--tw-bg-opacity": 1,
+      "backgroundColor": "rgb(247 74 93 / var(--tw-bg-opacity))"
     }
   },
 

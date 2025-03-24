@@ -2,12 +2,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface HomeCard {
   id: number;
+  imageUrl: string;
   title: string;
   subtitle: string;
-  imageUrl: string;
-  description?: string;
-  tag?: string;
   cta: string;
+  backgroundColor: string;
+  textColor: string;
+  description: string;
+  tag: string;
 }
 
 interface HomeCardsState {
@@ -17,7 +19,7 @@ interface HomeCardsState {
 
 const initialState: HomeCardsState = {
   cards: [],
-  loading: false,
+  loading: true,
 };
 
 const homeCardsSlice = createSlice({

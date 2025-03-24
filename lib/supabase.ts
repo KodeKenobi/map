@@ -52,6 +52,23 @@ export const getAllHomeCards = async () => {
   return data;
 };
 
+export const eventsCards = async () => {
+  const { data, error } = await supabase.from("event_cards").select("*");
+};
+
+export const getAllEventsCards = async () => {
+  const { data, error } = await supabase.from("event_cards").select("*");
+
+  // Log the data or error for debugging
+  if (error) {
+    console.error("Error fetching events cards:", error);
+  } else {
+    console.log("Fetched event cards:", data);
+  }
+
+  return data;
+};
+
 export const getComments = async (id: string) => {
   const { data, error } = await supabase
     .from("comments")

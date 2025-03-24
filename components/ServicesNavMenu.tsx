@@ -60,8 +60,6 @@ export default function ServicesNavMenu({
               `flex-row items-center rounded-full p-2 mr-22 ${
                 selectedPill === pill.id
                   ? "bg-w3-green"
-                  : pill.title === "Consult"
-                  ? "bg-w3-green"
                   : backgroundColor || "bg-gray-200"
               }`
             )}

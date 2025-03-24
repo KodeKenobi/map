@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, LogBox, Text, Animated, Image } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import React, { useEffect, useState, useMemo } from "react";
+import { View, StyleSheet, Animated, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { setHomeCards, setLoading } from "../store/slices/homeCardsSlice";
 import { supabase } from "../lib/supabase";
 import { RootState } from "../store/store";
-
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import Greeting from "./Greeting";
 import RecommendationsCard from "./RecommendationsCard";
@@ -14,7 +12,7 @@ import { useTailwind } from "tailwind-rn";
 import HorizontalCardScroll from "./HorizontalCardScroll";
 import HorizontalQuickAccessCardScroll from "./HorizontalQuickAccessCardScroll";
 import AppText from "./AppText";
-import { getAllProfiles, getAllHomeCards } from "@/lib/supabase";
+import { getAllHomeCards } from "@/lib/supabase";
 
 const quickAccessCards = [
   {
@@ -40,6 +38,14 @@ const Home = () => {
   const tailwind = useTailwind();
   const [scale] = useState(new Animated.Value(1));
 
+  const fetchWordpressData = async () => {
+    const response = await fetch(
+      "https://test.mapw3.co.za/wp-json/wp/v2/posts/"
+    );
+    const data = await response.json();
+    console.log("The Wordpress Data is: ", data);
+  };
+
   async function getImageUrl(path: string): Promise<string> {
     try {
       const {
@@ -54,6 +60,7 @@ const Home = () => {
 
   useEffect(() => {
     const getProfile = async () => {
+      dispatch(setLoading(true));
       try {
         const {
           data: { user },
@@ -75,9 +82,8 @@ const Home = () => {
             return;
           }
 
-          const allProfiles = await getAllProfiles();
-
           const allHomeCards = await getAllHomeCards();
+
           if (allHomeCards) {
             const transformedCards = await Promise.all(
               allHomeCards.map(async (card) => ({
@@ -90,14 +96,14 @@ const Home = () => {
                   card.tag === "wellness"
                     ? "rgba(118, 184, 162, 0.14)"
                     : card.tag === "wisdom"
-                    ? "rgba(115, 69, 182, 0.16)"
-                    : "rgba(249, 207, 103, 0.5)",
+                      ? "rgba(115, 69, 182, 0.16)"
+                      : "rgba(249, 207, 103, 0.5)",
                 textColor:
                   card.tag === "wellness"
                     ? "rgba(32, 112, 53, 1)"
                     : card.tag === "wisdom"
-                    ? "rgba(115, 69, 182, 1)"
-                    : "rgba(187, 132, 0, 1)",
+                      ? "rgba(115, 69, 182, 1)"
+                      : "rgba(187, 132, 0, 1)",
                 description: card.description,
                 tag: card.tag,
               }))
@@ -110,7 +116,7 @@ const Home = () => {
           navigation.navigate("Login");
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error during data fetch:", error);
         dispatch(setLoading(false));
         navigation.navigate("Login");
       }
@@ -138,6 +144,10 @@ const Home = () => {
     pulsate();
   }, [scale]);
 
+  useEffect(() => {
+    fetchWordpressData();
+  }, []);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -155,7 +165,7 @@ const Home = () => {
         <Greeting
           userName={firstName ? `${firstName}` : ""}
           notificationCount={8}
-        />{" "}
+        />
       </View>
       <ScrollView contentContainerStyle={[styles.scrollContainer]}>
         <View style={tailwind("p-2")}>
@@ -174,7 +184,6 @@ const Home = () => {
         </View>
         <View style={tailwind("mt-4 mb-2 p-2")}>
           <AppText style={tailwind("text-lg font-bold")}>
-            {" "}
             Personalised Recommendations
           </AppText>
         </View>
@@ -208,22 +217,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-  },
-  loadingBarsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "80%",
-  },
-  loadingBar: {
-    height: 4,
-    width: "30%",
-    backgroundColor: "#ccc",
-    borderRadius: 2,
-    overflow: "hidden",
-  },
-  loadingBarActive: {
-    backgroundColor: "#000",
   },
   faviconBig: {
     width: 100,

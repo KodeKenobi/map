@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Image, Text, Animated } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  Animated,
+  ScrollView,
+} from "react-native";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import Greeting from "./Greeting";
 import BottomNav from "./BottomNav";

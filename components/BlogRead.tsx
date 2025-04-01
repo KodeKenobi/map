@@ -14,7 +14,6 @@ import { Ionicons } from "@expo/vector-icons";
 import BackButton from "./BackButton";
 import { supabase } from "../lib/supabase";
 import GreetingAvatar from "./GreetingAvatar";
-import { Skeleton } from "@rneui/themed";
 import { LinearGradient } from "expo-linear-gradient";
 
 type RootStackParamList = {
@@ -395,20 +394,7 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
             </Text>
             {isLoadingComments ? (
               <View style={tailwind("flex-row items-center flex-1 mt-4")}>
-                <Skeleton
-                  LinearGradientComponent={LinearGradient}
-                  animation="wave"
-                  circle
-                  width={40}
-                  height={40}
-                  style={tailwind("mr-24 opacity-90")}
-                />
-                <Skeleton
-                  LinearGradientComponent={LinearGradient}
-                  animation="wave"
-                  width={280}
-                  height={40}
-                />
+                <Text>Loading comments...</Text>
               </View>
             ) : (
               comments.map((comment, index) => {

@@ -20,7 +20,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.procoderssa.mapw3app"
     },
     "web": {
       "bundler": "metro",
@@ -30,6 +31,14 @@
     "plugins": ["expo-router"],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ece4059e-b6d6-426f-a4de-6ddb2ad8ff31"
+      }
     }
   }
 }

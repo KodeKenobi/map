@@ -63,7 +63,7 @@ const CoachingConsultationScreenCard = ({
     <View style={tailwind("bg-white rounded-lg shadow-lg p-4 mb-4")}>
       <TouchableOpacity onPress={() => setModalVisible(true)}>
         <Image
-          source={require("../assets/images/coaching.jpg")}
+          source={require("../assets/images/coaching-consult.jpg")}
           style={[tailwind("w-full rounded-lg"), { height: 200 }]}
           resizeMode="cover"
         />

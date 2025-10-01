@@ -36,10 +36,28 @@ const ConsultScreen = () => {
   const [loading, setLoading] = useState(true);
   const [scale] = useState(new Animated.Value(1));
 
+  // Hardcoded doctor data as fallback
+  const hardcodedDoctor: Doctor = {
+    id: 1,
+    fullname: "Dr. Sarah Johnson",
+    job_title: "General Practitioner",
+    experience: 8,
+    rating: 4.8,
+    consultation_fee: 150,
+    job_description:
+      "Experienced general practitioner specializing in preventive care and wellness consultations.",
+    avatar_url: "doctor-avatar.jpg",
+  };
+
   useEffect(() => {
     const fetchDoctors = async () => {
       const doctorsData = await getAllDoctors();
-      setDoctors(doctorsData);
+      // Use hardcoded doctor if no doctors from database
+      if (doctorsData && doctorsData.length > 0) {
+        setDoctors(doctorsData);
+      } else {
+        setDoctors([hardcodedDoctor]);
+      }
       setLoading(false);
     };
 
@@ -84,10 +102,14 @@ const ConsultScreen = () => {
             <View style={tailwind("w-10")} />
           </View>
           <View style={tailwind("flex w-full p-4")}>
-            <ConsultationsScreenCard consultation={doctors[0]} />
-            <BodyTherapiesScreenCard consultation={doctors[0]} />
-            <IVDripScreenCard consultation={doctors[0]} />
-            <CoachingConsultationScreenCard consultation={doctors[0]} />
+            {doctors.length > 0 && (
+              <>
+                <ConsultationsScreenCard consultation={doctors[0]} />
+                <BodyTherapiesScreenCard consultation={doctors[0]} />
+                <IVDripScreenCard consultation={doctors[0]} />
+                <CoachingConsultationScreenCard consultation={doctors[0]} />
+              </>
+            )}
           </View>
           {/* <View style={tailwind("flex items-center justify-center w-full p-4")}>
             {doctors.map((doctor) => (

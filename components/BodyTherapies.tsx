@@ -42,11 +42,11 @@ const BodyTherapiesScreenCard = ({
   const webViewRef = useRef(null);
 
   useEffect(() => {
-    if (consultation.avatar_url) {
+    if (consultation && consultation.avatar_url) {
       const fullUrl = getImageUrl(consultation.avatar_url);
       setAvatarUrl(fullUrl);
     }
-  }, [consultation.avatar_url]);
+  }, [consultation?.avatar_url]);
 
   useEffect(() => {
     async function loadFont() {

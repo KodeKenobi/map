@@ -58,11 +58,11 @@ const ConsultationsScreenCard = ({
   const webViewRef = useRef(null);
 
   useEffect(() => {
-    if (consultation.avatar_url) {
+    if (consultation && consultation.avatar_url) {
       const fullUrl = getImageUrl(consultation.avatar_url);
       setAvatarUrl(fullUrl);
     }
-  }, [consultation.avatar_url]);
+  }, [consultation?.avatar_url]);
 
   useEffect(() => {
     async function loadFont() {
@@ -74,6 +74,16 @@ const ConsultationsScreenCard = ({
   }, []);
 
   const imageSource = avatarUrl ? { uri: avatarUrl } : null;
+
+  if (!consultation) {
+    return (
+      <View style={tailwind("bg-white rounded-lg shadow-lg p-4 mb-4")}>
+        <AppText style={tailwind("text-center text-gray-500")}>
+          Consultation data not available
+        </AppText>
+      </View>
+    );
+  }
 
   return (
     <View style={tailwind("bg-white rounded-lg shadow-lg p-4 mb-4")}>

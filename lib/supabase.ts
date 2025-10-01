@@ -1,20 +1,31 @@
 import { createClient } from "@supabase/supabase-js";
 import "react-native-url-polyfill/auto";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Get your Supabase URL and anon key from your Supabase project settings
-const supabaseUrl = "https://yfnseftemcxacgncqcck.supabase.co";
+const supabaseUrl = "https://behgffwegnpbjuhepstg.supabase.co";
 const supabaseAnonKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmbnNlZnRlbWN4YWNnbmNxY2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg3Njc1MzUsImV4cCI6MjA1NDM0MzUzNX0.yjq-ea6J95xJAbg7YGv4pOOC0nhuVMDiOMUGyNsHaVc";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlaGdmZndlZ25wYmp1aGVwc3RnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyMDg3MjcsImV4cCI6MjA3NDc4NDcyN30.yIU9GmDO553FiTBqri2Fv9wpFfnTGv0uABTrQwzoruw";
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    storage: AsyncStorage,
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false,
-  },
-});
+// Get the appropriate redirect URL based on environment
+const getRedirectUrl = () => {
+  if (typeof window !== "undefined") {
+    // Web environment
+    return window.location.origin;
+  }
+
+  // Mobile environment - check if we're in development or production
+  // You can set this via environment variables or build configuration
+  const isDev = __DEV__; // React Native's built-in dev flag
+
+  if (isDev) {
+    return "exp://192.168.0.138:8082"; // Your development server
+  } else {
+    return "yourapp://auth/callback"; // Your production deep link scheme
+  }
+};
+
+// Create Supabase client
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export const getAllProfiles = async () => {
   const { data, error } = await supabase
@@ -112,6 +123,6 @@ export const getAllDoctors = async () => {
 
 export const getImageUrl = (path: string) => {
   const baseUrl =
-    "https://yfnseftemcxacgncqcck.supabase.co/storage/v1/object/public/images/";
+    "https://behgffwegnpbjuhepstg.supabase.co/storage/v1/object/public/images/";
   return `${baseUrl}${path}`;
 };

@@ -13,8 +13,10 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useTailwind } from "tailwind-rn";
 import CheckboxComponent from "./CheckboxComponent";
 import AppText from "./AppText";
+import CustomAlert from "./CustomAlert";
 import ButtonComponent from "./ButtonComponent";
 import { supabase } from "@/lib/supabase";
+import Toast from "react-native-toast-message";
 
 export default function RegisterScreen({ navigation }: { navigation: any }) {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
@@ -26,8 +28,72 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({
+    type: "success" as "success" | "warning" | "error" | "info",
+    title: "",
+    message: "",
+    onAction: undefined as (() => void) | undefined,
+    actionText: undefined as string | undefined,
+  });
 
   const tailwind = useTailwind();
+
+  const showAlert = (
+    type: "success" | "warning" | "error" | "info",
+    title: string,
+    message: string,
+    onAction?: () => void,
+    actionText?: string
+  ) => {
+    setAlertConfig({ type, title, message, onAction, actionText });
+    setAlertVisible(true);
+  };
+
+  const checkPendingInvitation = async () => {
+    try {
+      const { data, error } = await supabase.auth.resend({
+        type: "signup",
+        email: email,
+      });
+
+      if (error && error.message.includes("already registered")) {
+        showAlert(
+          "warning",
+          "Email Already Registered",
+          "This email is already registered but not confirmed. Would you like to resend the confirmation email?"
+        );
+        return true; // Has pending invitation
+      }
+      return false;
+    } catch (err) {
+      return false;
+    }
+  };
+
+  const resendConfirmation = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: email,
+      });
+
+      if (error) {
+        showAlert("error", "Resend Failed", error.message);
+      } else {
+        showAlert(
+          "success",
+          "Email Sent",
+          `Confirmation email resent to ${email}. Please check your inbox.`
+        );
+      }
+    } catch (err) {
+      showAlert("error", "Error", "Failed to resend confirmation email.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [items, setItems] = useState([
     { label: "Agree to the terms and use and privacy", checked: false },
@@ -35,19 +101,58 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
 
   async function signUpWithEmail() {
     setLoading(true);
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email: email,
-      phone: phone,
-      password: password,
-    });
 
-    if (error) Alert.alert(error.message);
-    if (!session)
-      Alert.alert("Please check your inbox for email verification!");
-    setLoading(false);
+    try {
+      const {
+        data: { session, user },
+        error,
+      } = await supabase.auth.signUp({
+        email: email,
+        phone: phone,
+        password: password,
+      });
+
+      if (error) {
+        // Check if it's a "user already registered" error
+        if (
+          error.message.includes("already registered") ||
+          error.message.includes("User already registered")
+        ) {
+          showAlert(
+            "warning",
+            "Email Already Registered",
+            "This email is already registered but not confirmed. Would you like to resend the confirmation email?",
+            resendConfirmation,
+            "Resend Email"
+          );
+        } else {
+          showAlert("error", "Registration Failed", error.message);
+        }
+        console.error("Signup error:", error);
+      } else if (user && !session) {
+        // User created but needs email confirmation
+        console.log("User created, email confirmation sent:", user);
+
+        showAlert(
+          "success",
+          "Check Your Email",
+          `We've sent a confirmation email to ${email}. Please check your inbox and click the verification link to complete your registration.`
+        );
+      } else if (session) {
+        // User created and already confirmed (rare)
+        showAlert(
+          "success",
+          "Account Created",
+          "Your account has been created successfully!"
+        );
+        console.log("User created and confirmed:", user);
+      }
+    } catch (err) {
+      Alert.alert("Error", "An unexpected error occurred. Please try again.");
+      console.error("Unexpected error:", err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleToggle = (index: number) => {
@@ -92,20 +197,35 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
             Please complete all information to create your account on Map
             Wellness
           </AppText>
+          <AppText style={tailwind("text-sm font-semibold mb-2 text-gray-700")}>
+            Email Address
+          </AppText>
           <TextInput
             style={styles.input}
             placeholder="Enter your email"
             keyboardType="email-address"
             value={email}
             onChangeText={setEmail}
+            id="register-email"
+            name="register-email"
+            aria-label="Email Address"
           />
+          <AppText style={tailwind("text-sm font-semibold mb-2 text-gray-700")}>
+            Phone Number
+          </AppText>
           <TextInput
             style={styles.input}
             placeholder="Enter your phone number"
             keyboardType="phone-pad"
             value={phone}
             onChangeText={setPhone}
+            id="phone"
+            name="phone"
+            aria-label="Phone Number"
           />
+          <AppText style={tailwind("text-sm font-semibold mb-2 text-gray-700")}>
+            Password
+          </AppText>
           <View style={{ position: "relative" }}>
             <TextInput
               style={styles.input}
@@ -113,10 +233,21 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
               secureTextEntry={!isPasswordVisible}
               value={password}
               onChangeText={setPassword}
+              id="register-password"
+              name="register-password"
+              aria-label="Password"
             />
             <TouchableOpacity
               onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-              style={{ position: "absolute", right: 10, top: 15 }}
+              style={{
+                position: "absolute",
+                right: 10,
+                top: 15,
+                height: 24,
+                width: 24,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
               <MaterialIcons
                 name={isPasswordVisible ? "visibility" : "visibility-off"}
@@ -125,15 +256,31 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
               />
             </TouchableOpacity>
           </View>
+          <AppText style={tailwind("text-sm font-semibold mb-2 text-gray-700")}>
+            Confirm Password
+          </AppText>
           <View style={{ position: "relative" }}>
             <TextInput
               style={styles.input}
               placeholder="Confirm your password"
               secureTextEntry={!isPasswordVisible}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              id="confirm-password"
+              name="confirm-password"
+              aria-label="Confirm Password"
             />
             <TouchableOpacity
               onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-              style={{ position: "absolute", right: 10, top: 15 }}
+              style={{
+                position: "absolute",
+                right: 10,
+                top: 15,
+                height: 24,
+                width: 24,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
               <MaterialIcons
                 name={isPasswordVisible ? "visibility" : "visibility-off"}
@@ -158,6 +305,16 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
           />
         </View>
       </ScrollView>
+
+      <CustomAlert
+        visible={alertVisible}
+        type={alertConfig.type}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        onClose={() => setAlertVisible(false)}
+        onAction={alertConfig.onAction}
+        actionText={alertConfig.actionText}
+      />
     </SafeAreaView>
   );
 }
@@ -179,8 +336,21 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderWidth: 2,
     borderRadius: 5,
-    marginBottom: 15,
+    marginBottom: 25,
     paddingHorizontal: 10,
+  },
+  inputContainer: {
+    position: "relative",
+    marginBottom: 25,
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 15,
+    top: 13,
+    height: 24,
+    width: 24,
+    justifyContent: "center",
+    alignItems: "center",
   },
   createAccountButton: {
     backgroundColor: "#F9CF67",

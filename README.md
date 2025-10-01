@@ -1,139 +1,149 @@
-# MapW3
+# MAP-W3 - Wellness Platform
 
-A modern web application built with Next.js, TypeScript, and Tailwind CSS.
+A comprehensive React Native wellness platform designed to ignite the potency of women through holistic wellness, mindful coaching, and economic empowerment.
 
-## 🚀 Tech Stack
+## 🌟 Features
 
-- **Framework:** Next.js
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **Architecture:** App Router (Next.js 13+)
+### Core Sections
+- **Wellness**: Health and wellness resources, treatments, and consultations
+- **Wisdom**: Educational content and coaching services
+- **Wealth**: Economic empowerment and financial wellness tools
 
-## 📁 Project Structure
+### Key Functionality
+- **User Authentication**: Secure login/signup with Supabase
+- **Profile Management**: Avatar upload, profile updates, and personalization
+- **Onboarding Flow**: Personalized journey setup for each section
+- **Card-based Navigation**: Interactive cards for easy content discovery
+- **Real-time Updates**: Dynamic content loading and state management
+- **Cross-platform**: iOS and Android support via React Native
 
-```
-├── app/
-│   └── _layout.tsx       # Root layout component
+## 🚀 Getting Started
 
-├── assets/
-│   └── images/
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
+- Expo CLI
+- React Native development environment
 
-├── components/
-│   ├── Home.tsx
-
-└── tailwind.config.js    # Tailwind CSS configuration
-```
-
-## 🛠️ Setup & Installation
+### Installation
 
 1. **Clone the repository**
-
    ```bash
-   git clone https://github.com/ProcoderSA/mapw3.git
-   cd mapw3
+   git clone https://github.com/KodeKenobi/map.git
+   cd map
    ```
 
 2. **Install dependencies**
-
    ```bash
    npm install
-   # or
-   yarn install
    ```
 
-3. **Run the development server**
+3. **Set up environment variables**
+   Create a `.env` file in the root directory:
+   ```env
+   EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
+   EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
 
+4. **Start the development server**
    ```bash
-   npx expo start -c
-   # or
-   eas build --profile development --platform android
-   # or
-   yarn dev
+   npx expo start
    ```
 
-4. **Open your browser**
-   Navigate to `http://localhost:3000`
+## 🏗️ Project Structure
 
-## 🎨 Styling
+```
+mapw3/
+├── app/                    # App configuration and layout
+├── components/            # Reusable React components
+│   ├── Home.tsx          # Main home screen
+│   ├── WellnessHome.tsx  # Wellness section home
+│   ├── WisdomHome.tsx    # Wisdom section home
+│   ├── WealthHome.tsx    # Wealth section home
+│   └── ...               # Other components
+├── lib/                  # Utility libraries
+│   └── supabase.ts      # Supabase client configuration
+├── store/                # Redux store and slices
+├── assets/               # Images, fonts, and static assets
+├── constants/            # App constants and colors
+└── hooks/                # Custom React hooks
+```
 
-This project uses Tailwind CSS for styling. The configuration can be found in `tailwind.config.js`. The project supports styling for the following file types:
+## 🛠️ Tech Stack
 
-- JavaScript (.js)
-- TypeScript (.ts)
-- JSX (.jsx)
-- TSX (.tsx)
-- MDX (.mdx)
+- **Frontend**: React Native, Expo
+- **State Management**: Redux Toolkit
+- **Backend**: Supabase (Database, Authentication, Storage)
+- **Styling**: Tailwind CSS (tailwind-rn)
+- **Navigation**: React Navigation
+- **Image Handling**: Expo ImagePicker
+- **Notifications**: Expo Notifications
 
-## 📦 Components
+## 📱 App Flow
 
-### Layout
+1. **Authentication**: Login/Signup with email
+2. **Profile Setup**: Update profile information and upload avatar
+3. **Home Onboarding**: Personalize journey preferences
+4. **Section Navigation**: Access Wellness, Wisdom, and Wealth sections
+5. **Section-specific Onboarding**: Complete onboarding for each section
+6. **Content Discovery**: Browse cards and access resources
 
-- `_layout.tsx`: Root layout component that wraps the entire application
+## 🔧 Configuration
 
-### Main Components
+### Supabase Setup
+1. Create a Supabase project
+2. Set up the following tables:
+   - `profiles` (user profiles)
+   - `wellness_cards`, `wisdom_cards`, `wealth_cards` (content cards)
+3. Configure Row Level Security (RLS) policies
+4. Set up storage buckets for avatars and images
 
-- `WealthHome.tsx`: Main component for wealth management interface
-- `LogoCard.tsx`: Component for displaying individual logos
-- `BrandsComponent.tsx`: Component for displaying brand information
-- `QuickAccessCardComponent.tsx`: Component for quick access cards
-- `WisdomHome.tsx`: Main component for wisdom-related features
-- `HomeCardComponent.tsx`: Component for displaying home cards
-- `WealthOnboarding.tsx`: Component for onboarding in wealth management
-- `Notifications.tsx`: Component for displaying notifications
-- `ProfileComponent.tsx`: Component for user profile
-- `CheckboxComponent.tsx`: Component for checkbox functionality
-- `BottomCTASection.tsx`: Component for the bottom call-to-action section
-- `HorizontalCardScroll.tsx`: Component for horizontal scrolling of cards
-- `LogoCardScroll.tsx`: Component for scrolling logo cards
-- `CoachingPicksCards.tsx`: Component for displaying coaching picks
-- `HorizontalQuickAccessCardScroll.tsx`: Component for horizontal quick access cards
-- `RecommendationsCard.tsx`: Component for displaying recommendations
-- `ButtonComponent.tsx`: Reusable button component
-- `SearchComponent.tsx`: Component for search functionality
-- `Referrals.tsx`: Component for displaying referral information
-- `ConsultScreen.tsx`: Component for consultation features
-- `ResetPasswordComponent.tsx`: Component for resetting passwords
-- `OTPCodeComponent.tsx`: Component for OTP code input
-- `CoachingCardComponent.tsx`: Component for coaching cards
-- `WisdomNavMenu.tsx`: Navigation menu for wisdom features
-- `WealthNavMenu.tsx`: Navigation menu for wealth features
-- `BottomNav.tsx`: Bottom navigation component
+### Database Schema
+Key tables include:
+- `profiles`: User information and onboarding status
+- `wellness_cards`, `wisdom_cards`, `wealth_cards`: Content cards
+- Storage buckets for user avatars and images
 
-## Configuration
+## 🚀 Deployment
 
-### Tailwind CSS
+### Android
+```bash
+npx expo build:android
+```
 
-The project uses a standard Tailwind CSS configuration with content paths set up for both the `app` and `components` directories.
+### iOS
+```bash
+npx expo build:ios
+```
 
-```javascript
-module.exports = {
-  content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-};
+### Web
+```bash
+npx expo build:web
 ```
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
+## 📄 License
 
-[Add your license information here]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👥 Authors
+## 📞 Support
 
-[Add author information here]
+For support and questions, please contact the development team or create an issue in this repository.
 
 ## 🙏 Acknowledgments
 
-[Add any acknowledgments here]
+- Built with React Native and Expo
+- Powered by Supabase
+- Styled with Tailwind CSS
+- Icons and assets from various sources
+
+---
+
+**MAP-W3** - Empowering women through holistic wellness, mindful coaching, and economic empowerment.

@@ -45,9 +45,13 @@ export default function HomeOnboardingScreen({
 
   async function saveOnboardingStatus() {
     try {
+      console.log("🚀 Starting saveOnboardingStatus...");
       setLoading(true);
 
       const selectedItems = items.filter((item) => item.checked);
+      console.log("📋 Selected items:", selectedItems);
+      console.log("👤 User ID:", session.user.id);
+
       const updates = {
         id: session.user.id,
         hascompletedhomeonboarding: true,
@@ -55,11 +59,16 @@ export default function HomeOnboardingScreen({
         updated_at: new Date(),
       };
 
+      console.log("💾 Updates to save:", updates);
+
       const { error } = await supabase.from("profiles").upsert(updates);
 
       if (error) {
+        console.error("❌ Supabase error:", error);
         throw error;
       }
+
+      console.log("✅ Profile updated successfully");
 
       Toast.show({
         type: "success",
@@ -67,12 +76,16 @@ export default function HomeOnboardingScreen({
         position: "bottom",
       });
 
-      navigation.replace("Home", { animation: "slide" });
+      console.log("🧭 Navigating to Home...");
+      navigation.navigate("Home");
+      console.log("✅ Navigation completed");
     } catch (error) {
+      console.error("💥 Error in saveOnboardingStatus:", error);
       if (error instanceof Error) {
         Alert.alert(error.message);
       }
     } finally {
+      console.log("🏁 Setting loading to false");
       setLoading(false);
     }
   }
@@ -130,6 +143,7 @@ export default function HomeOnboardingScreen({
             alignItems: "center",
             justifyContent: "center",
           }}
+          onPress={() => navigation.navigate("Home")}
         >
           <AppText
             style={{

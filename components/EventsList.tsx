@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, FlatList, ActivityIndicator } from "react-native";
 import EventsCardComponent from "./EventsCardComponent";
+import { useTailwind } from "tailwind-rn";
+import { decode } from "he";
 
 // Define the interface for the event data
 interface Event {
@@ -18,6 +20,7 @@ interface Event {
 const EventsList: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const tailwind = useTailwind();
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -46,18 +49,22 @@ const EventsList: React.FC = () => {
     <FlatList
       data={events}
       keyExtractor={(item) => item.id.toString()}
+      style={tailwind("")}
+      contentContainerStyle={tailwind("space-y-4")}
       renderItem={({ item }) => (
-        <EventsCardComponent
-          id={item.id}
-          title={item.title.rendered}
-          subtitle={item.slug} // Assuming slug is used as a subtitle
-          date={item.date}
-          tagline={item.excerpt.rendered} // Assuming excerpt is used as a tagline
-          tag={item.type} // Assuming type is used as a tag
-          description={item.content.rendered}
-          image_url={item.yoast_head_json.og_image[0].url}
-          meta={item.meta}
-        />
+        <View style={tailwind("mb-4")}>
+          <EventsCardComponent
+            id={item.id}
+            title={decode(item.title.rendered)}
+            subtitle={item.slug} // Assuming slug is used as a subtitle
+            date={item.date}
+            tagline={decode(item.excerpt.rendered)} // Use decode from he
+            tag={item.type} // Assuming type is used as a tag
+            description={decode(item.content.rendered)} // Use decode from he
+            image_url={item.yoast_head_json.og_image[0].url}
+            meta={item.meta}
+          />
+        </View>
       )}
     />
   );

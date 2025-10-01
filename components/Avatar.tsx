@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
-import { StyleSheet, View, Alert, Image, Button } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import ButtonComponent from "./ButtonComponent";
 import { useTailwind } from "tailwind-rn";
+import CustomAlert from "./CustomAlert";
 
 interface Props {
   size: number;
@@ -14,8 +15,23 @@ interface Props {
 export default function Avatar({ url, size = 150, onUpload }: Props) {
   const [uploading, setUploading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({
+    type: "error" as "success" | "warning" | "error" | "info",
+    title: "",
+    message: "",
+  });
   const avatarSize = { height: size, width: size };
   const tailwind = useTailwind();
+
+  const showAlert = (
+    type: "success" | "warning" | "error" | "info",
+    title: string,
+    message: string
+  ) => {
+    setAlertConfig({ type, title, message });
+    setAlertVisible(true);
+  };
 
   useEffect(() => {
     if (url) downloadImage(url);
@@ -55,6 +71,7 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
       });
 
       if (result.canceled || !result.assets || result.assets.length === 0) {
+        setUploading(false);
         return;
       }
 
@@ -63,6 +80,9 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
       if (!image.uri) {
         throw new Error("No image uri!");
       }
+
+      // Show preview immediately after image selection
+      setAvatarUrl(image.uri);
 
       const arraybuffer = await fetch(image.uri).then((res) =>
         res.arrayBuffer()
@@ -82,10 +102,16 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
 
       onUpload(data.path);
     } catch (error) {
+      // Reset preview on upload failure
+      setAvatarUrl(null);
       if (error instanceof Error) {
-        Alert.alert(error.message);
+        showAlert("error", "Upload Failed", error.message);
       } else {
-        throw error;
+        showAlert(
+          "error",
+          "Upload Failed",
+          "An unexpected error occurred. Please try again."
+        );
       }
     } finally {
       setUploading(false);
@@ -121,6 +147,13 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
           style={tailwind("border-2 border-gray-100")}
         />
       </View>
+      <CustomAlert
+        visible={alertVisible}
+        type={alertConfig.type}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        onClose={() => setAlertVisible(false)}
+      />
     </View>
   );
 }

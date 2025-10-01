@@ -38,7 +38,7 @@ const WisdomHome = () => {
       title: "Free Wellness Webinar: The Path to Cellular Health",
       cta: "Register Now >",
       subtitle: "Join us for insights",
-      date: "Dec 15th, 7 PM - Join Now",
+      date: "Dec 15th - Join Now",
       registrationText: "Register Now >",
       backgroundColor: "rgba(115, 69, 182, 0.16)",
     },

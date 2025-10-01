@@ -39,10 +39,12 @@ const WellnessHome = () => {
   const [scale] = useState(new Animated.Value(1));
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [clickedPart, setClickedPart] = useState<string | null>(null);
+  const [checkingOnboarding, setCheckingOnboarding] = useState<boolean>(true);
 
   useEffect(() => {
     const getProfile = async () => {
       try {
+        setCheckingOnboarding(true);
         const {
           data: { user },
         } = await supabase.auth.getUser();
@@ -55,9 +57,10 @@ const WellnessHome = () => {
             .single();
 
           if (profile) {
-            setFirstName(profile.firstName);
+            setFirstName(profile.first_name);
             if (!profile.hascompletedwellnessonboarding) {
               navigation.navigate("WellnessWelcome");
+              return;
             }
           }
 
@@ -68,13 +71,16 @@ const WellnessHome = () => {
             dispatch(setWellnessCards(allWellnessCards.data));
           }
           dispatch(setLoading(false));
+          setCheckingOnboarding(false);
         } else {
           dispatch(setLoading(false));
+          setCheckingOnboarding(false);
           navigation.navigate("Login");
         }
       } catch (error) {
         console.error("Error:", error);
         dispatch(setLoading(false));
+        setCheckingOnboarding(false);
         navigation.navigate("Login");
       }
     };
@@ -155,7 +161,7 @@ const WellnessHome = () => {
     setModalVisible(true);
   };
 
-  if (loading) {
+  if (loading || checkingOnboarding) {
     return (
       <View style={styles.loadingContainer}>
         <Animated.Image
@@ -172,7 +178,7 @@ const WellnessHome = () => {
         <Greeting
           userName={firstName ? `${firstName}` : ""}
           notificationCount={8}
-        />{" "}
+        />
       </View>
       <ScrollView contentContainerStyle={[styles.scrollContainer]}>
         <View>

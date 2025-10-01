@@ -54,13 +54,14 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
   async function signInWithEmail() {
     try {
       setLoading(true);
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email,
         password: password,
       });
 
       if (error) {
-        Alert.alert(error.message);
+        Alert.alert("Error", error.message);
         return;
       }
 
@@ -72,13 +73,13 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         type: "success",
       });
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", data.user.id)
-        .single();
+      // const { data: profile } = await supabase
+      //   .from("profiles")
+      //   .select("*")
+      //   .eq("id", data.user.id)
+      //   .single();
     } catch (error) {
-      Alert.alert((error as Error).message);
+      Alert.alert("Error", (error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -131,32 +132,48 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         <AppText style={tailwind("text-2xl font-bold mb-6 mt-6 text-center")}>
           <Text>{isForgotPassword ? "Reset Password" : "Welcome"}</Text>
         </AppText>
+        <AppText style={tailwind("text-sm font-semibold mb-2 text-gray-700")}>
+          Email Address
+        </AppText>
         <TextInput
           style={styles.input}
           placeholder="Email"
           keyboardType="email-address"
           value={email}
           onChangeText={setEmail}
+          id="email"
+          name="email"
+          aria-label="Email Address"
         />
         {!isForgotPassword && (
-          <View style={{ position: "relative" }}>
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              secureTextEntry={!isPasswordVisible}
-              value={password}
-              onChangeText={setPassword}
-            />
-            <TouchableOpacity
-              onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-              style={{ position: "absolute", right: 10, top: 15 }}
+          <View>
+            <AppText
+              style={tailwind("text-sm font-semibold mb-2 text-gray-700")}
             >
-              <MaterialIcons
-                name={isPasswordVisible ? "visibility" : "visibility-off"}
-                size={24}
-                color="gray"
+              Password
+            </AppText>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={[styles.input, { paddingRight: 50 }]}
+                placeholder="Password"
+                secureTextEntry={!isPasswordVisible}
+                value={password}
+                onChangeText={setPassword}
+                id="password"
+                name="password"
+                aria-label="Password"
               />
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                style={styles.eyeIcon}
+              >
+                <MaterialIcons
+                  name={isPasswordVisible ? "visibility" : "visibility-off"}
+                  size={24}
+                  color="gray"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         )}
         <TouchableOpacity
@@ -182,8 +199,8 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
             loading
               ? "Loading..."
               : isForgotPassword
-              ? "Reset Password"
-              : "Login"
+                ? "Reset Password"
+                : "Login"
           }
           color="#F9CF67"
           textColor="#000"
@@ -289,6 +306,19 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 15,
     paddingHorizontal: 10,
+  },
+  inputContainer: {
+    position: "relative",
+    marginBottom: 15,
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 15,
+    top: 13,
+    height: 24,
+    width: 24,
+    justifyContent: "center",
+    alignItems: "center",
   },
   forgotPassword: {
     alignSelf: "flex-end",

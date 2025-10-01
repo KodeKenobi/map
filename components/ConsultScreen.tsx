@@ -83,7 +83,7 @@ const ConsultScreen = () => {
             </AppText>
             <View style={tailwind("w-10")} />
           </View>
-          <View style={tailwind("flex items-center justify-center w-full p-4")}>
+          <View style={tailwind("flex w-full p-4")}>
             <ConsultationsScreenCard consultation={doctors[0]} />
             <BodyTherapiesScreenCard consultation={doctors[0]} />
             <IVDripScreenCard consultation={doctors[0]} />

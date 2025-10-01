@@ -48,7 +48,7 @@ const LogoCard: React.FC<LogoCardProps> = ({
         )}
         <View style={tailwind("flex-row justify-center gap-4")}>
           <ButtonComponent
-            title="Learn More About Kwani"
+            title="Learn More"
             onPress={() => "Learn More"}
             color="bg-white"
             borderColor="#000"

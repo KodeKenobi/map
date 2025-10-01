@@ -34,7 +34,7 @@ const QuickAccessCardComponent: React.FC<QuickAccessProps> = ({
     <TouchableOpacity onPress={handlePress}>
       <View
         style={[
-          tailwind("p-3 rounded-lg mr-4 mb-6 flex-row items-center mr-24"),
+          tailwind("p-3 rounded-lg mb-6 flex-row items-center mr-24"),
           styles.card,
           { backgroundColor: backgroundColor || "#FCFCFC" },
         ]}
@@ -61,7 +61,7 @@ const QuickAccessCardComponent: React.FC<QuickAccessProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    width: 260,
+    // width: 260,
     height: 100,
   },
   iconContainer: {

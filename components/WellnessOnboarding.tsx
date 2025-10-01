@@ -72,7 +72,7 @@ export default function WellnessOnboarding({
           .eq("id", user.id)
           .single();
 
-        if (profile && !profile.hasWellnessOnboarding) {
+        if (profile && !profile.hascompletedwellnessonboarding) {
           navigation.navigate("WellnessWelcome");
         } else {
           navigation.navigate("WellnessHome");
@@ -89,7 +89,7 @@ export default function WellnessOnboarding({
         <View style={tailwind("absolute mt-12 top-4 left-4")}>
           <TouchableOpacity
             style={tailwind("absolute left-2 top-2 p-2")}
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate("Home")}
           >
             <Ionicons name="arrow-back" size={24} color="#000" />
           </TouchableOpacity>

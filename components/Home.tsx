@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { View, StyleSheet, Animated, ScrollView } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { setHomeCards, setLoading } from "../store/slices/homeCardsSlice";
-import { supabase } from "../lib/supabase";
-import { RootState } from "../store/store";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+
 import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { supabase } from "../lib/supabase";
 import Greeting from "./Greeting";
 import RecommendationsCard from "./RecommendationsCard";
 import BottomNav from "./BottomNav";
@@ -12,152 +11,113 @@ import { useTailwind } from "tailwind-rn";
 import HorizontalCardScroll from "./HorizontalCardScroll";
 import HorizontalQuickAccessCardScroll from "./HorizontalQuickAccessCardScroll";
 import AppText from "./AppText";
-import { getAllHomeCards } from "@/lib/supabase";
+
+const cards = [
+  {
+    id: 1,
+    imageUrl: require("../assets/images/vitamin-drip.png"),
+    title: "Free Wellness Webinar: The Path to Cellular Health",
+    subtitle: "Dec 15th, 7 PM - Join Now",
+    cta: "Register Now >",
+    backgroundColor: "rgba(115, 69, 182, 0.16)",
+  },
+  {
+    id: 2,
+    imageUrl: require("../assets/images/coaching.png"),
+    title: "Career Coaching: From Entry Level to C-Suite and beyond",
+    subtitle: "Make your first appointment today",
+    cta: "Explore Coaching >",
+    backgroundColor: "rgba(255, 215, 0, 0.16)",
+  },
+  {
+    id: 3,
+    imageUrl: require("../assets/images/wellness-seminar.png"),
+    title: "Free Wellness Webinar: The Path to Cellular Health",
+    subtitle: "Dec 15th, 7 PM - Join Now",
+    cta: "Register Now >",
+    backgroundColor: "rgba(115, 69, 182, 0.16)",
+  },
+];
 
 const quickAccessCards = [
   {
     iconUrl: require("../assets/images/heart-bit-icon-white.png"),
     title: "Explore Wellness Services",
-    backgroundColor: "rgba(74, 244, 170, 0.16)",
-    iconBackgroundColor: "rgba(34, 133, 101, 1)",
+    backgroundColor: "rgba(115, 69, 182, 0.16)",
+    iconBackgroundColor: "black",
   },
   {
     iconUrl: require("../assets/images/light-bulb-white.png"),
     title: "Discover Coaching and Mindfulness",
-    backgroundColor: "rgba(115, 69, 182, 0.16)",
-    iconBackgroundColor: "rgba(115, 69, 182, 1)",
+    backgroundColor: "rgba(255, 215, 0, 0.16)",
+    iconBackgroundColor: "black",
   },
 ];
 
 const Home = () => {
   const navigation = useNavigation<NavigationProp<any>>();
   const [firstName, setFirstName] = useState<string | null>(null);
-  const dispatch = useDispatch();
-  const homeCards = useSelector((state: RootState) => state.homeCards.cards);
-  const loading = useSelector((state: RootState) => state.homeCards.loading);
   const tailwind = useTailwind();
-  const [scale] = useState(new Animated.Value(1));
-
-  const fetchWordpressData = async () => {
-    const response = await fetch(
-      "https://test.mapw3.co.za/wp-json/wp/v2/posts/"
-    );
-    const data = await response.json();
-    console.log("The Wordpress Data is: ", data);
-  };
-
-  async function getImageUrl(path: string): Promise<string> {
-    try {
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("images").getPublicUrl(path);
-      return publicUrl || "";
-    } catch (error) {
-      console.error("Error getting image public URL:", error);
-      return "";
-    }
-  }
 
   useEffect(() => {
-    const getProfile = async () => {
-      dispatch(setLoading(true));
+    const getUserProfile = async () => {
       try {
         const {
           data: { user },
+          error: authError,
         } = await supabase.auth.getUser();
 
-        if (user) {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", user.id)
-            .single();
+        if (authError || !user) {
+          console.log("No authenticated user");
+          return;
+        }
 
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("first_name, hascompletedhomeonboarding")
+          .eq("id", user.id)
+          .single();
+
+        if (profileError) {
+          console.error("Error fetching profile:", profileError);
+          return;
+        }
+
+        if (profile) {
+          setFirstName(profile.first_name);
+
+          // Check if user has completed home onboarding
           if (!profile.hascompletedhomeonboarding) {
+            console.log(
+              "🧭 User hasn't completed home onboarding, navigating to Welcome"
+            );
             navigation.navigate("Welcome");
             return;
           }
-          if (!profile.hascompletedprofileupdate) {
-            navigation.navigate("UpdateProfile");
-            return;
-          }
-
-          const allHomeCards = await getAllHomeCards();
-
-          if (allHomeCards) {
-            const transformedCards = await Promise.all(
-              allHomeCards.map(async (card) => ({
-                id: card.id,
-                imageUrl: await getImageUrl(card.image_url),
-                title: card.title,
-                subtitle: card.subtitle,
-                cta: card.cta,
-                backgroundColor:
-                  card.tag === "wellness"
-                    ? "rgba(118, 184, 162, 0.14)"
-                    : card.tag === "wisdom"
-                      ? "rgba(115, 69, 182, 0.16)"
-                      : "rgba(249, 207, 103, 0.5)",
-                textColor:
-                  card.tag === "wellness"
-                    ? "rgba(32, 112, 53, 1)"
-                    : card.tag === "wisdom"
-                      ? "rgba(115, 69, 182, 1)"
-                      : "rgba(187, 132, 0, 1)",
-                description: card.description,
-                tag: card.tag,
-              }))
-            );
-            dispatch(setHomeCards(transformedCards));
-          }
-          dispatch(setLoading(false));
-        } else {
-          dispatch(setLoading(false));
-          navigation.navigate("Login");
         }
       } catch (error) {
-        console.error("Error during data fetch:", error);
-        dispatch(setLoading(false));
-        navigation.navigate("Login");
+        console.error("Error in getUserProfile:", error);
       }
     };
 
-    getProfile();
-  }, [navigation, dispatch]);
-
-  useEffect(() => {
-    const pulsate = () => {
-      scale.setValue(1);
-      Animated.timing(scale, {
-        toValue: 1.1,
-        duration: 500,
-        useNativeDriver: true,
-      }).start(() => {
-        Animated.timing(scale, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }).start(pulsate);
-      });
-    };
-
-    pulsate();
-  }, [scale]);
-
-  useEffect(() => {
-    fetchWordpressData();
+    getUserProfile();
   }, []);
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Animated.Image
-          source={require("../assets/images/faviconBig.png")}
-          style={[styles.faviconBig, { transform: [{ scale }] }]}
-        />
-      </View>
-    );
-  }
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Logout error:", error);
+        alert("An error occurred while logging out. Please try again.");
+        return;
+      }
+      console.log("User logged out");
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("An error occurred while logging out. Please try again.");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -167,36 +127,33 @@ const Home = () => {
           notificationCount={8}
         />
       </View>
-      <ScrollView contentContainerStyle={[styles.scrollContainer]}>
-        <View style={tailwind("p-2")}>
-          <HorizontalCardScroll cards={homeCards} />
-        </View>
-        <View style={tailwind("mt-0 mb-2 p-2")}>
+      <ScrollView
+        contentContainerStyle={[styles.scrollContainer, { paddingTop: 0 }]}
+      >
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          <HorizontalCardScroll cards={cards} />
+        </ScrollView>
+        <View style={[tailwind("mt-0 ml-4")]}>
           <AppText style={tailwind("text-lg font-bold")}>Quick Access</AppText>
         </View>
-        <View style={tailwind("p-2")}>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <HorizontalQuickAccessCardScroll
-              quickAccessCards={quickAccessCards}
-              navigation={navigation}
-            />
-          </ScrollView>
-        </View>
-        <View style={tailwind("mt-4 mb-2 p-2")}>
-          <AppText style={tailwind("text-lg font-bold")}>
-            Personalised Recommendations
-          </AppText>
-        </View>
-        <View style={tailwind("p-2")}>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <RecommendationsCard
-              iconUrl={require("../assets/images/wellness-seminar.png")}
-              title="IV Drip for Boosting Immunity     >"
-              description="Top pick"
-              backgroundColor="rgba(249, 207, 103, 0.5)"
-              iconBackgroundColor="transparent"
-            />
-          </ScrollView>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          <HorizontalQuickAccessCardScroll
+            quickAccessCards={quickAccessCards}
+            navigation={navigation}
+          />
+        </ScrollView>
+        <View style={tailwind("mt-0 ml-4")}>
+          <View style={[tailwind("mb-4")]}>
+            <AppText style={tailwind("text-lg font-bold")}>
+              Personalised Recommendations
+            </AppText>
+          </View>
+          <RecommendationsCard
+            iconUrl={require("../assets/images/wellness-seminar.png")}
+            title="IV Drip for Boosting Immunity >"
+            backgroundColor="rgba(115, 69, 182, 0.16)"
+            iconBackgroundColor="black"
+          />
         </View>
       </ScrollView>
       <BottomNav navigation={navigation} />
@@ -211,17 +168,6 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 12,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
-  },
-  faviconBig: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
   },
 });
 

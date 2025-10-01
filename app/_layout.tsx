@@ -75,11 +75,29 @@ const AppLayout = () => {
 
   useEffect(() => {
     const loadFonts = async () => {
-      await Font.loadAsync({
-        "SFPro-Regular": require("../assets/fonts/regular.ttf"),
-        "SFPro-Bold": require("../assets/fonts/regular.ttf"),
-      });
-      setFontLoaded(true);
+      try {
+        // For web, use system fonts as fallback
+        if (typeof window !== "undefined") {
+          setFontLoaded(true);
+          return;
+        }
+
+        // For mobile, load custom fonts with timeout
+        const fontPromise = Font.loadAsync({
+          "SFPro-Regular": require("../assets/fonts/regular.ttf"),
+          "SFPro-Bold": require("../assets/fonts/regular.ttf"),
+        });
+
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Font loading timeout")), 3000)
+        );
+
+        await Promise.race([fontPromise, timeoutPromise]);
+        setFontLoaded(true);
+      } catch (error) {
+        console.warn("Font loading failed, using fallback fonts:", error);
+        setFontLoaded(true);
+      }
     };
 
     loadFonts();

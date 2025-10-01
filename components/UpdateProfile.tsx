@@ -16,6 +16,7 @@ import { Session } from "@supabase/supabase-js";
 import ButtonComponent from "./ButtonComponent";
 import Avatar from "./Avatar";
 import Toast from "react-native-toast-message";
+import CustomAlert from "./CustomAlert";
 
 interface UpdateProfileProps {
   navigation: any;
@@ -32,6 +33,25 @@ export default function UpdateProfile({
   const [lastName, setLastName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [phone, setPhone] = useState("");
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({
+    type: "success" as "success" | "warning" | "error" | "info",
+    title: "",
+    message: "",
+    onAction: undefined as (() => void) | undefined,
+    actionText: undefined as string | undefined,
+  });
+
+  const showAlert = (
+    type: "success" | "warning" | "error" | "info",
+    title: string,
+    message: string,
+    onAction?: () => void,
+    actionText?: string
+  ) => {
+    setAlertConfig({ type, title, message, onAction, actionText });
+    setAlertVisible(true);
+  };
 
   useEffect(() => {
     if (session) {
@@ -57,8 +77,15 @@ export default function UpdateProfile({
         getProfile();
       }
     } catch (error) {
+      console.error("💥 Error in checkProfileUpdate:", error);
       if (error instanceof Error) {
-        Alert.alert(error.message);
+        showAlert("error", "Profile Check Failed", error.message);
+      } else {
+        showAlert(
+          "error",
+          "Profile Check Failed",
+          "An unexpected error occurred. Please try again."
+        );
       }
     }
   }
@@ -85,8 +112,15 @@ export default function UpdateProfile({
         setAvatarUrl(data.avatar_url);
       }
     } catch (error) {
+      console.error("💥 Error in getProfile:", error);
       if (error instanceof Error) {
-        Alert.alert(error.message);
+        showAlert("error", "Profile Load Failed", error.message);
+      } else {
+        showAlert(
+          "error",
+          "Profile Load Failed",
+          "An unexpected error occurred. Please try again."
+        );
       }
     } finally {
       setLoading(false);
@@ -105,6 +139,7 @@ export default function UpdateProfile({
     avatar_url: string;
   }) {
     try {
+      console.log("🚀 Starting profile update...");
       setLoading(true);
       if (!session?.user) throw new Error("No user on the session!");
 
@@ -118,11 +153,16 @@ export default function UpdateProfile({
         updated_at: new Date(),
       };
 
+      console.log("💾 Profile updates to save:", updates);
+
       const { error } = await supabase.from("profiles").upsert(updates);
 
       if (error) {
+        console.error("❌ Profile update error:", error);
         throw error;
       }
+
+      console.log("✅ Profile updated successfully");
 
       Toast.show({
         type: "success",
@@ -130,12 +170,22 @@ export default function UpdateProfile({
         position: "bottom",
       });
 
-      navigation.replace("Home", { animation: "slide" });
+      console.log("🧭 Navigating to Home...");
+      navigation.navigate("Home");
+      console.log("✅ Navigation completed");
     } catch (error) {
+      console.error("💥 Error in updateProfile:", error);
       if (error instanceof Error) {
-        Alert.alert(error.message);
+        showAlert("error", "Update Failed", error.message);
+      } else {
+        showAlert(
+          "error",
+          "Update Failed",
+          "An unexpected error occurred. Please try again."
+        );
       }
     } finally {
+      console.log("🏁 Setting loading to false");
       setLoading(false);
     }
   }
@@ -215,6 +265,15 @@ export default function UpdateProfile({
           />
         </View>
       </ScrollView>
+      <CustomAlert
+        visible={alertVisible}
+        type={alertConfig.type}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        onClose={() => setAlertVisible(false)}
+        onAction={alertConfig.onAction}
+        actionText={alertConfig.actionText}
+      />
     </SafeAreaView>
   );
 }

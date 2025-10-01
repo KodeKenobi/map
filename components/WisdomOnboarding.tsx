@@ -115,6 +115,7 @@ export default function WisdomOnboardingScreen({
             alignItems: "center",
             justifyContent: "center",
           }}
+          onPress={() => navigation.navigate("Wisdom")}
         >
           <AppText
             style={{

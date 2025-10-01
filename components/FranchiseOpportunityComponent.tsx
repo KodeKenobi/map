@@ -27,7 +27,7 @@ const FranchiseOpportunityComponent = () => {
         </Text>
         <View style={tailwind("flex-col space-x-4")}>
           <ButtonComponent
-            title="Get Started Now"
+            title="Get Started"
             onPress={() => {}}
             style={tailwind("bg-transparent rounded-full")}
             color="bg-w3-gold-4"
@@ -39,7 +39,7 @@ const FranchiseOpportunityComponent = () => {
         </View>
         <View style={tailwind("mt-4")}>
           <ButtonComponent
-            title="Schedule a Consultation"
+            title="Consultation"
             onPress={() => {}}
             style={tailwind("bg-w3-gold-4 rounded-full")}
             color="bg-w3-gold-4"

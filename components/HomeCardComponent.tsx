@@ -104,9 +104,9 @@ const HomeCardComponent: React.FC<HomeCardProps> = ({
           >
             {title}
           </AppText>
-          <AppText style={tailwind("text-md font-extrabold")}>
+          <Text style={tailwind("text-md mt-2")} numberOfLines={1}>
             {subtitle}
-          </AppText>
+          </Text>
           <AppText
             style={tailwind("text-md font-extrabold mt-4")}
             color={textColor}

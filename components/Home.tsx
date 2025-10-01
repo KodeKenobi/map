@@ -74,7 +74,7 @@ const Home = () => {
 
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
-          .select("first_name, hascompletedhomeonboarding")
+          .select("first_name")
           .eq("id", user.id)
           .single();
 
@@ -85,15 +85,6 @@ const Home = () => {
 
         if (profile) {
           setFirstName(profile.first_name);
-
-          // Check if user has completed home onboarding
-          if (!profile.hascompletedhomeonboarding) {
-            console.log(
-              "🧭 User hasn't completed home onboarding, navigating to Welcome"
-            );
-            navigation.navigate("Welcome");
-            return;
-          }
         }
       } catch (error) {
         console.error("Error in getUserProfile:", error);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Image, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
@@ -32,6 +32,27 @@ export default function HomeOnboardingScreen({
       checked: false,
     },
   ]);
+
+  useEffect(() => {
+    const checkOnboardingStatus = async () => {
+      try {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("hascompletedhomeonboarding")
+          .eq("id", session.user.id)
+          .single();
+
+        if (profile?.hascompletedhomeonboarding) {
+          console.log("✅ Onboarding already completed, redirecting to Home");
+          navigation.navigate("Home");
+        }
+      } catch (error) {
+        console.error("Error checking onboarding status:", error);
+      }
+    };
+
+    checkOnboardingStatus();
+  }, [session.user.id, navigation]);
 
   const handleToggle = (index: number) => {
     const item = items[index];
@@ -143,7 +164,29 @@ export default function HomeOnboardingScreen({
             alignItems: "center",
             justifyContent: "center",
           }}
-          onPress={() => navigation.navigate("Home")}
+          onPress={async () => {
+            try {
+              console.log("🚀 Skipping onboarding, saving status...");
+              const updates = {
+                id: session.user.id,
+                hascompletedhomeonboarding: true,
+                selected_home_onboarding_items: [],
+                updated_at: new Date(),
+              };
+
+              const { error } = await supabase.from("profiles").upsert(updates);
+              if (error) {
+                console.error("❌ Error saving skip status:", error);
+              } else {
+                console.log("✅ Skip status saved successfully");
+              }
+
+              navigation.navigate("Home");
+            } catch (error) {
+              console.error("💥 Error in skip onboarding:", error);
+              navigation.navigate("Home");
+            }
+          }}
         >
           <AppText
             style={{

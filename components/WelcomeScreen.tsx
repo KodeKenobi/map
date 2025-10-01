@@ -1,21 +1,64 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { View, Image, Animated } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
+import { supabase } from "@/lib/supabase";
 
 export default function WelcomeScreen({ navigation }: { navigation: any }) {
   const tailwind = useTailwind();
+  const [checkingOnboarding, setCheckingOnboarding] = useState(true);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
-  }, [fadeAnim]);
+    const checkOnboardingStatus = async () => {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("hascompletedhomeonboarding")
+            .eq("id", user.id)
+            .single();
+
+          if (profile?.hascompletedhomeonboarding) {
+            console.log("✅ Onboarding already completed, redirecting to Home");
+            navigation.navigate("Home");
+            return;
+          }
+        }
+
+        setCheckingOnboarding(false);
+      } catch (error) {
+        console.error("Error checking onboarding status:", error);
+        setCheckingOnboarding(false);
+      }
+    };
+
+    checkOnboardingStatus();
+  }, [navigation]);
+
+  useEffect(() => {
+    if (!checkingOnboarding) {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [fadeAnim, checkingOnboarding]);
+
+  if (checkingOnboarding) {
+    return (
+      <View style={tailwind("flex-1 justify-center items-center")}>
+        <AppText>Checking onboarding status...</AppText>
+      </View>
+    );
+  }
 
   return (
     <Animated.View

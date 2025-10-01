@@ -127,18 +127,27 @@ const AppLayout = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Force re-check onboarding status when session changes
+  useEffect(() => {
+    if (session) {
+      checkFirstTimeUser(session);
+    }
+  }, [session]);
+
   const checkFirstTimeUser = async (session: Session) => {
     if (session?.user) {
       const { data: profile } = await supabase
         .from("profiles")
-        .select("hascompletedprofileupdate")
+        .select("hascompletedprofileupdate, hascompletedhomeonboarding")
         .eq("id", session.user.id)
         .single();
 
-      if (profile?.hascompletedprofileupdate) {
-        setInitialRoute("Home");
-      } else {
+      if (!profile?.hascompletedprofileupdate) {
         setInitialRoute("UpdateProfile");
+      } else if (!profile?.hascompletedhomeonboarding) {
+        setInitialRoute("Welcome");
+      } else {
+        setInitialRoute("Home");
       }
     }
   };

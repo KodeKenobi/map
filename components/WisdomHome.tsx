@@ -29,6 +29,7 @@ const WisdomHome = () => {
   const loading = useSelector((state: RootState) => state.wisdomCards.loading);
   const tailwind = useTailwind();
   const [scale] = useState(new Animated.Value(1));
+  const [checkingOnboarding, setCheckingOnboarding] = useState<boolean>(true);
 
   // Existing card data
   const cards = [
@@ -58,6 +59,7 @@ const WisdomHome = () => {
   useEffect(() => {
     const getProfile = async () => {
       try {
+        setCheckingOnboarding(true);
         const {
           data: { user },
         } = await supabase.auth.getUser();
@@ -73,19 +75,23 @@ const WisdomHome = () => {
             setFirstName(profile.first_name);
             if (!profile.hascompletedwisdomonboarding) {
               navigation.navigate("WisdomWelcome");
+              return;
             }
           }
 
           // Simulate fetching wisdom cards from the database
           dispatch(setWisdomCards(cards));
           dispatch(setLoading(false));
+          setCheckingOnboarding(false);
         } else {
           dispatch(setLoading(false));
+          setCheckingOnboarding(false);
           navigation.navigate("Login");
         }
       } catch (error) {
         console.error("Error:", error);
         dispatch(setLoading(false));
+        setCheckingOnboarding(false);
         navigation.navigate("Login");
       }
     };
@@ -93,7 +99,7 @@ const WisdomHome = () => {
     getProfile();
   }, [navigation, dispatch]);
 
-  if (loading) {
+  if (loading || checkingOnboarding) {
     return (
       <View style={styles.loadingContainer}>
         <Animated.Image

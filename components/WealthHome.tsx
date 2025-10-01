@@ -32,6 +32,7 @@ interface EventCard {
   tag: string;
   description: string;
   image_url: string;
+  meta: any;
 }
 
 const WealthHome = () => {
@@ -45,6 +46,7 @@ const WealthHome = () => {
   const tailwind = useTailwind();
   const [scale] = useState(new Animated.Value(1));
   const [eventCards, setEventCards] = useState<EventCard[]>([]);
+  const [checkingOnboarding, setCheckingOnboarding] = useState<boolean>(true);
 
   const coachingCards = [
     {
@@ -66,8 +68,8 @@ const WealthHome = () => {
       id: 1,
       imageUrl: require("../assets/images/wealth-home-card-1.jpg"),
       title: "Free Wellness Webinar: The Path to Cellular Health",
+      cta: "Register Now >",
       subtitle: "Join our free webinar to learn about cellular health.",
-      cta: "Register Now",
       date: "Dec 15th - Join Now",
       registrationText: "Register Now >",
       backgroundColor: "rgba(252, 202, 102, 0.3)",
@@ -76,8 +78,8 @@ const WealthHome = () => {
       id: 2,
       imageUrl: require("../assets/images/wealth-home-card-2.jpg"),
       title: "Career Coaching: From Entry Level to C-Suite and beyond",
+      cta: "Explore Coaching >",
       subtitle: "Make an appointment today to advance your career.",
-      cta: "Explore Coaching",
       date: "Make an appointment today",
       registrationText: "Explore Coaching >",
       backgroundColor: "rgba(252, 202, 102, 0.3)",
@@ -86,8 +88,8 @@ const WealthHome = () => {
       id: 3,
       imageUrl: require("../assets/images/wealth-home-card-3.png"),
       title: "Free Wellness Webinar: The Path to Cellular Health",
+      cta: "Register Now >",
       subtitle: "Join our free webinar to learn about cellular health.",
-      cta: "Register Now",
       date: "Dec 15th - Join Now",
       registrationText: "Register Now >",
       backgroundColor: "rgba(252, 202, 102, 0.3)",
@@ -97,6 +99,7 @@ const WealthHome = () => {
   useEffect(() => {
     const getProfile = async () => {
       try {
+        setCheckingOnboarding(true);
         const {
           data: { user },
         } = await supabase.auth.getUser();
@@ -109,9 +112,10 @@ const WealthHome = () => {
             .single();
 
           if (profile) {
-            setFirstName(profile.firstName);
+            setFirstName(profile.first_name);
             if (!profile.hascompletedwealthonboarding) {
               navigation.navigate("WealthWelcome");
+              return;
             }
           }
 
@@ -127,13 +131,16 @@ const WealthHome = () => {
           console.log("Events Cards:", eventsCards);
 
           dispatch(setLoading(false));
+          setCheckingOnboarding(false);
         } else {
           dispatch(setLoading(false));
+          setCheckingOnboarding(false);
           navigation.navigate("Login");
         }
       } catch (error) {
         console.error("Error:", error);
         dispatch(setLoading(false));
+        setCheckingOnboarding(false);
         navigation.navigate("Login");
       }
     };
@@ -152,7 +159,7 @@ const WealthHome = () => {
     fetchEventCards();
   }, []);
 
-  if (loading) {
+  if (loading || checkingOnboarding) {
     return (
       <View style={styles.loadingContainer}>
         <Animated.Image
@@ -182,8 +189,8 @@ const WealthHome = () => {
           </Text>
         </View>
         <View style={[tailwind("mb-4")]}>
-          {/* <WealthHorizontalCardScroll cards={eventCards} /> */}
-          <EventsList />
+          <HorizontalCardScroll cards={cards} />
+          {/* <EventsList /> */}
         </View>
         <View style={tailwind("mt-2 mb-8")}>
           <Text style={tailwind("text-lg font-bold")}>

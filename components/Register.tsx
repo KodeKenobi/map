@@ -103,6 +103,10 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
     setLoading(true);
 
     try {
+      const redirectTo = __DEV__
+        ? "exp://192.168.0.138:8082"
+        : "com.procoderssa.mapw3app://auth/callback";
+
       const {
         data: { session, user },
         error,
@@ -110,6 +114,9 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
         email: email,
         phone: phone,
         password: password,
+        options: {
+          emailRedirectTo: redirectTo,
+        },
       });
 
       if (error) {

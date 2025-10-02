@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, TouchableOpacity, ScrollView, Alert } from "react-native";
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  SafeAreaView,
+} from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
@@ -112,95 +119,99 @@ export default function HomeOnboardingScreen({
   }
 
   return (
-    <ScrollView>
-      <View style={tailwind("flex-1 justify-start items-center p-5")}>
-        <View style={tailwind("absolute mt-12 top-4 left-4")}>
-          <TouchableOpacity
-            style={tailwind("absolute left-2 top-2 p-2")}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="arrow-back" size={24} color="#000" />
-          </TouchableOpacity>
-        </View>
-        <View style={tailwind("mb-4 mt-16")}>
-          <Image
-            source={require("../assets/images/woman-checklist 1.png")}
-            style={{ width: 222, height: 222 }}
+    <SafeAreaView style={tailwind("flex-1")}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={tailwind("flex-1 justify-start items-center p-5")}>
+          <View style={tailwind("absolute mt-12 top-4 left-4")}>
+            <TouchableOpacity
+              style={tailwind("absolute left-2 top-2 p-2")}
+              onPress={() => navigation.goBack()}
+            >
+              <Ionicons name="arrow-back" size={24} color="#000" />
+            </TouchableOpacity>
+          </View>
+          <View style={tailwind("mb-4 mt-16")}>
+            <Image
+              source={require("../assets/images/woman-checklist 1.png")}
+              style={{ width: 222, height: 222 }}
+            />
+          </View>
+          <AppText style={tailwind("text-2xl font-bold mb-2 mt-2 ")}>
+            Personalise Your Journey
+          </AppText>
+          <AppText style={tailwind("text-center mt-2 mb-4 ")}>
+            Choose your focus areas to tailor your experience. You can select
+            one or more areas to explore
+          </AppText>
+          <CheckboxComponent
+            items={items}
+            onToggle={handleToggle}
+            checkedBackgroundColor="bg-w3-gold-1"
+            checkboxBackgroundColor="#7345B6"
+            fontColor="#000"
           />
-        </View>
-        <AppText style={tailwind("text-2xl font-bold mb-2 mt-2 ")}>
-          Personalise Your Journey
-        </AppText>
-        <AppText style={tailwind("text-center mt-2 mb-4 ")}>
-          Choose your focus areas to tailor your experience. You can select one
-          or more areas to explore
-        </AppText>
-        <CheckboxComponent
-          items={items}
-          onToggle={handleToggle}
-          checkedBackgroundColor="bg-w3-gold-1"
-          checkboxBackgroundColor="#7345B6"
-          fontColor="#000"
-        />
 
-        <ButtonComponent
-          title="Continue"
-          color="#7345B6"
-          textColor="#fff"
-          onPress={saveOnboardingStatus}
-        />
-        <TouchableOpacity
-          style={{
-            backgroundColor: "#fff",
-            width: "100%",
-            alignSelf: "center",
-            padding: 15,
-            borderRadius: 40,
-            marginTop: 20,
-            borderColor: "#7345B6",
-            borderWidth: 1,
-            marginBottom: 20,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onPress={async () => {
-            try {
-              console.log("🚀 Skipping onboarding, saving status...");
-              const updates = {
-                id: session.user.id,
-                hascompletedhomeonboarding: true,
-                selected_home_onboarding_items: [],
-                updated_at: new Date(),
-              };
-
-              const { error } = await supabase.from("profiles").upsert(updates);
-              if (error) {
-                console.error("❌ Error saving skip status:", error);
-              } else {
-                console.log("✅ Skip status saved successfully");
-              }
-
-              navigation.navigate("Home");
-            } catch (error) {
-              console.error("💥 Error in skip onboarding:", error);
-              navigation.navigate("Home");
-            }
-          }}
-        >
-          <AppText
+          <ButtonComponent
+            title="Continue"
+            color="#7345B6"
+            textColor="#fff"
+            onPress={saveOnboardingStatus}
+          />
+          <TouchableOpacity
             style={{
-              color: "#000",
-              textAlign: "center",
-              fontSize: 16,
-              fontWeight: "bold",
-              marginLeft: 10,
+              backgroundColor: "#fff",
+              width: "100%",
+              alignSelf: "center",
+              padding: 15,
+              borderRadius: 40,
+              marginTop: 20,
+              borderColor: "#7345B6",
+              borderWidth: 1,
+              marginBottom: 20,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={async () => {
+              try {
+                console.log("🚀 Skipping onboarding, saving status...");
+                const updates = {
+                  id: session.user.id,
+                  hascompletedhomeonboarding: true,
+                  selected_home_onboarding_items: [],
+                  updated_at: new Date(),
+                };
+
+                const { error } = await supabase
+                  .from("profiles")
+                  .upsert(updates);
+                if (error) {
+                  console.error("❌ Error saving skip status:", error);
+                } else {
+                  console.log("✅ Skip status saved successfully");
+                }
+
+                navigation.navigate("Home");
+              } catch (error) {
+                console.error("💥 Error in skip onboarding:", error);
+                navigation.navigate("Home");
+              }
             }}
           >
-            Skip Personalisation
-          </AppText>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+            <AppText
+              style={{
+                color: "#000",
+                textAlign: "center",
+                fontSize: 16,
+                fontWeight: "bold",
+                marginLeft: 10,
+              }}
+            >
+              Skip Personalisation
+            </AppText>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

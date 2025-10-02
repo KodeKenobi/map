@@ -20,12 +20,21 @@ const getRedirectUrl = () => {
   if (isDev) {
     return "exp://192.168.0.138:8082"; // Your development server
   } else {
-    return "yourapp://auth/callback"; // Your production deep link scheme
+    return "com.procoderssa.mapw3app://auth/callback"; // Your production deep link scheme
   }
 };
 
-// Create Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Create Supabase client with proper configuration
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    // Enable automatic session refresh
+    autoRefreshToken: true,
+    // Persist session in storage
+    persistSession: true,
+    // Detect session from URL (for email confirmation)
+    detectSessionInUrl: true,
+  },
+});
 
 export const getAllProfiles = async () => {
   const { data, error } = await supabase

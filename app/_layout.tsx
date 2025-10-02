@@ -11,7 +11,7 @@ import {
   StackScreenProps,
 } from "@react-navigation/stack";
 import LoginScreen from "@/components/LoginScreen";
-import { StatusBar, LogBox } from "react-native";
+import { StatusBar, LogBox, Linking } from "react-native";
 import RegisterScreen from "@/components/Register";
 import UpdateProfile from "@/components/UpdateProfile";
 import { TailwindProvider } from "tailwind-rn";
@@ -68,6 +68,8 @@ const AppLayout = () => {
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [initialRoute, setInitialRoute] = useState("Welcome");
   const [session, setSession] = useState<Session | null>(null);
+  const [isEmailConfirmed, setIsEmailConfirmed] = useState(false);
+  const [isDeepLinkHandled, setIsDeepLinkHandled] = useState(false);
 
   const handleSplashFinish = () => {
     setSplashFinished(true);
@@ -103,6 +105,44 @@ const AppLayout = () => {
     loadFonts();
   }, []);
 
+  // Handle deep links for email confirmation
+  useEffect(() => {
+    const handleDeepLink = (url: string) => {
+      console.log("🔗 Deep link received:", url);
+
+      // Check if this is an email confirmation link
+      if (url.includes("auth/callback") || url.includes("confirm")) {
+        console.log("📧 Email confirmation deep link detected");
+        setIsEmailConfirmed(true);
+        setInitialRoute("Login");
+        setIsDeepLinkHandled(true);
+
+        // Show success message
+        Toast.show({
+          type: "success",
+          text1: "Email Confirmed!",
+          text2: "Your account has been verified. Please sign in.",
+          position: "top",
+          visibilityTime: 4000,
+        });
+      }
+    };
+
+    // Handle initial deep link if app was opened via deep link
+    Linking.getInitialURL().then((url) => {
+      if (url) {
+        handleDeepLink(url);
+      }
+    });
+
+    // Handle deep links while app is running
+    const subscription = Linking.addEventListener("url", ({ url }) => {
+      handleDeepLink(url);
+    });
+
+    return () => subscription?.remove();
+  }, []);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -115,17 +155,37 @@ const AppLayout = () => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state change:", event, session?.user?.email);
+
+      // Handle email confirmation specifically
+      if (event === "SIGNED_IN" && session?.user?.email_confirmed_at) {
+        console.log("✅ Email confirmed, user signed in:", session.user.email);
+        setIsEmailConfirmed(true);
+        setSession(session);
+        checkFirstTimeUser(session);
+        return;
+      }
+
+      // Handle other auth events
       setSession(session);
       if (session) {
         checkFirstTimeUser(session);
       } else {
-        setInitialRoute("Login");
+        // If user just confirmed email via deep link, redirect to Login
+        if (isDeepLinkHandled || isEmailConfirmed) {
+          console.log("📧 Email confirmed via deep link, redirecting to Login");
+          setInitialRoute("Login");
+          setIsEmailConfirmed(false);
+          setIsDeepLinkHandled(false);
+        } else {
+          setInitialRoute("Login");
+        }
       }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [isEmailConfirmed, isDeepLinkHandled]);
 
   // Force re-check onboarding status when session changes
   useEffect(() => {

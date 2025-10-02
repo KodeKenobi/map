@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { View, Image, Animated } from "react-native";
+import { View, Image, Animated, ScrollView, SafeAreaView } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
@@ -54,19 +54,23 @@ export default function WelcomeScreen({ navigation }: { navigation: any }) {
 
   if (checkingOnboarding) {
     return (
-      <View style={tailwind("flex-1 justify-center items-center")}>
-        <AppText>Checking onboarding status...</AppText>
-      </View>
+      <SafeAreaView style={tailwind("flex-1")}>
+        <View style={tailwind("flex-1 justify-center items-center")}>
+          <AppText>Checking onboarding status...</AppText>
+        </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <Animated.View
-      style={[
-        tailwind("flex-1 justify-start items-center p-5"),
-        { opacity: fadeAnim },
-      ]}
-    >
+    <SafeAreaView style={tailwind("flex-1")}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <Animated.View
+          style={[
+            tailwind("flex-1 justify-start items-center p-5"),
+            { opacity: fadeAnim },
+          ]}
+        >
       <View style={tailwind("mb-4 mt-14")}>
         <Image
           source={require("../assets/images/happy-african-woman.png")}
@@ -89,7 +93,8 @@ export default function WelcomeScreen({ navigation }: { navigation: any }) {
           textColor="#ffffff"
           onPress={() => navigation.navigate("HomeOnboarding")}
         />
-      </View>
-    </Animated.View>
+        </Animated.View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

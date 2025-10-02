@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Image, TouchableOpacity, ScrollView, Alert } from "react-native";
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  SafeAreaView,
+} from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
@@ -56,71 +63,73 @@ export default function WealthOnboarding({ navigation }: { navigation: any }) {
   };
 
   return (
-    <ScrollView>
-      <View style={tailwind("flex-1 justify-start items-center p-5")}>
-        <View style={tailwind("absolute mt-12 top-4 left-4")}>
+    <SafeAreaView style={tailwind("flex-1")}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={tailwind("flex-1 justify-start items-center p-5")}>
+          <View style={tailwind("absolute mt-12 top-4 left-4")}>
+            <TouchableOpacity
+              style={tailwind("absolute left-2 top-2 p-2")}
+              onPress={() => navigation.goBack()}
+            >
+              <Ionicons name="arrow-back" size={24} color="#000" />
+            </TouchableOpacity>
+          </View>
+          <View style={tailwind("mb-4 mt-16")}>
+            <Image
+              source={require("../assets/images/wealth-checklist.png")}
+              style={{ width: 300, height: 300 }}
+            />
+          </View>
+          <AppText style={tailwind("text-2xl font-bold mb-2 mt-2 ")}>
+            Personalize Your Journey
+          </AppText>
+          <AppText style={tailwind("text-center mt-2 mb-4 ")}>
+            Choose your focus areas to tailor your wellness experience. You can
+            select one or more areas to explore.
+          </AppText>
+          <CheckboxComponent
+            items={items}
+            onToggle={handleToggle}
+            checkedBackgroundColor="bg-w3-gold-opacity"
+            checkboxBackgroundColor="#E5A500"
+          />
+          <ButtonComponent
+            title="Continue"
+            color="#E5A500"
+            textColor="#fff"
+            onPress={handleCompleteOnboarding}
+          />
           <TouchableOpacity
-            style={tailwind("absolute left-2 top-2 p-2")}
-            onPress={() => navigation.goBack()}
+            style={{
+              backgroundColor: "#fff",
+              width: "100%",
+              alignSelf: "center",
+              padding: 15,
+              borderRadius: 40,
+              marginTop: 20,
+              borderColor: "#E5A500",
+              borderWidth: 1,
+              marginBottom: 20,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={() => navigation.navigate("Wealth")}
           >
-            <Ionicons name="arrow-back" size={24} color="#000" />
+            <AppText
+              style={{
+                color: "#000",
+                textAlign: "center",
+                fontSize: 16,
+                fontWeight: "bold",
+                marginLeft: 10,
+              }}
+            >
+              Skip Personalization
+            </AppText>
           </TouchableOpacity>
         </View>
-        <View style={tailwind("mb-4 mt-16")}>
-          <Image
-            source={require("../assets/images/wealth-checklist.png")}
-            style={{ width: 300, height: 300 }}
-          />
-        </View>
-        <AppText style={tailwind("text-2xl font-bold mb-2 mt-2 ")}>
-          Personalize Your Journey
-        </AppText>
-        <AppText style={tailwind("text-center mt-2 mb-4 ")}>
-          Choose your focus areas to tailor your wellness experience. You can
-          select one or more areas to explore.
-        </AppText>
-        <CheckboxComponent
-          items={items}
-          onToggle={handleToggle}
-          checkedBackgroundColor="bg-w3-gold-opacity"
-          checkboxBackgroundColor="#E5A500"
-        />
-        <ButtonComponent
-          title="Continue"
-          color="#E5A500"
-          textColor="#fff"
-          onPress={handleCompleteOnboarding}
-        />
-        <TouchableOpacity
-          style={{
-            backgroundColor: "#fff",
-            width: "100%",
-            alignSelf: "center",
-            padding: 15,
-            borderRadius: 40,
-            marginTop: 20,
-            borderColor: "#E5A500",
-            borderWidth: 1,
-            marginBottom: 20,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onPress={() => navigation.navigate("Wealth")}
-        >
-          <AppText
-            style={{
-              color: "#000",
-              textAlign: "center",
-              fontSize: 16,
-              fontWeight: "bold",
-              marginLeft: 10,
-            }}
-          >
-            Skip Personalization
-          </AppText>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

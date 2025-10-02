@@ -8,6 +8,8 @@ import {
   Alert,
   StyleSheet,
   AppState,
+  ScrollView,
+  SafeAreaView,
 } from "react-native";
 import AppText from "./AppText";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
@@ -24,13 +26,29 @@ AppState.addEventListener("change", (state) => {
   }
 });
 
-export default function LoginScreen({ navigation }: { navigation: any }) {
+export default function LoginScreen({
+  navigation,
+  route,
+}: {
+  navigation: any;
+  route?: any;
+}) {
   const tailwind = useTailwind();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [showEmailConfirmedMessage, setShowEmailConfirmedMessage] =
+    useState(false);
+
+  useEffect(() => {
+    // Check if user came from email confirmation
+    if (route?.params?.emailConfirmed) {
+      setShowEmailConfirmedMessage(true);
+      setTimeout(() => setShowEmailConfirmedMessage(false), 5000);
+    }
+  }, [route?.params]);
 
   useEffect(() => {
     supabase.auth.onAuthStateChange(async (event, session) => {
@@ -120,8 +138,8 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
   useEffect(() => {}, []);
 
   return (
-    <>
-      <View style={styles.container}>
+    <SafeAreaView style={tailwind("flex-1")}>
+      <ScrollView contentContainerStyle={styles.container}>
         <View style={tailwind("mb-4 mt-14 items-center")}>
           <Image
             source={require("../assets/images/logo.png")}
@@ -132,6 +150,20 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         <AppText style={tailwind("text-2xl font-bold mb-6 mt-6 text-center")}>
           <Text>{isForgotPassword ? "Reset Password" : "Welcome"}</Text>
         </AppText>
+
+        {showEmailConfirmedMessage && (
+          <View
+            style={tailwind(
+              "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
+            )}
+          >
+            <AppText
+              style={tailwind("text-green-700 text-center font-semibold")}
+            >
+              ✅ Email Confirmed! Your account is ready. Please sign in below.
+            </AppText>
+          </View>
+        )}
         <AppText style={tailwind("text-sm font-semibold mb-2 text-gray-700")}>
           Email Address
         </AppText>
@@ -287,15 +319,15 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
             </AppText>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
       <Toast />
-    </>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: "center",
     padding: 20,
   },

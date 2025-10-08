@@ -65,16 +65,21 @@ export default function UpdateProfile({
 
       const { data, error } = await supabase
         .from("profiles")
-        .select("hascompletedprofileupdate")
+        .select("hascompletedprofileupdate, hascompletedhomeonboarding")
         .eq("id", session.user.id)
         .single();
 
       if (error) throw error;
 
       if (data?.hascompletedprofileupdate) {
-        navigation.replace("Home", { animation: "slide" });
+        // Profile is completed, check home onboarding status
+        if (data?.hascompletedhomeonboarding) {
+          navigation.replace("Home", { animation: "slide" });
+        } else {
+          navigation.replace("Welcome", { animation: "slide" }); // Go to Welcome first
+        }
       } else {
-        getProfile();
+        getProfile(); // If profile not completed, get profile data to display form
       }
     } catch (error) {
       console.error("💥 Error in checkProfileUpdate:", error);
@@ -196,8 +201,8 @@ export default function UpdateProfile({
 
   return (
     <SafeAreaView style={tailwind("flex-1")}>
-      <ScrollView>
-        <View style={tailwind("flex-1 justify-center items-center mt-14")}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={tailwind("justify-center items-center mt-14")}>
           <View
             style={tailwind("flex-row items-center w-full p-4 justify-between")}
           >

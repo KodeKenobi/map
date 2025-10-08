@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirm Your Email - MAP W3</title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      font-family:
+        &quot;SF Pro Display&quot;,
+        -apple-system,
+        BlinkMacSystemFont,
+        &quot;Segoe UI&quot;,
+        Roboto,
+        sans-serif;
+      background-color: #f9f9f9;
+    "
+  >
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff">
+      <!-- Header with App Logo -->
+      <div
+        style="
+          background-color: #ffffff;
+          padding: 40px 30px 30px 30px;
+          text-align: center;
+          border-bottom: 1px solid #e5e7eb;
+        "
+      >
+        <img
+          src="https://behgffwegnpbjuhepstg.supabase.co/storage/v1/object/public/images/logo.png"
+          alt="MAP W3"
+          style="max-width: 200px; height: auto; margin-bottom: 20px"
+        />
+      </div>
+
+      <!-- Main Content -->
+      <div style="padding: 40px 30px">
+        <!-- Welcome Message -->
+        <div style="text-align: center; margin-bottom: 40px">
+          <h1
+            style="
+              color: #228565;
+              margin: 0 0 15px 0;
+              font-size: 28px;
+              font-weight: 700;
+              letter-spacing: -0.5px;
+            "
+          >
+            Welcome to MAP W3
+          </h1>
+          <p
+            style="color: #4a5568; margin: 0; font-size: 16px; line-height: 1.6"
+          >
+            Your wellness journey starts here
+          </p>
+        </div>
+
+        <!-- Confirmation Card -->
+        <div
+          style="
+            background-color: #f9f9f9;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+          "
+        >
+          <div style="text-align: center">
+            <div
+              style="
+                width: 60px;
+                height: 60px;
+                background-color: #228565;
+                border-radius: 50%;
+                margin: 0 auto 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <svg
+                width="30"
+                height="30"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <h2
+              style="
+                color: #1a202c;
+                margin: 0 0 15px 0;
+                font-size: 22px;
+                font-weight: 600;
+              "
+            >
+              Confirm Your Email Address
+            </h2>
+            <p
+              style="
+                color: #4a5568;
+                margin: 0 0 25px 0;
+                font-size: 15px;
+                line-height: 1.6;
+              "
+            >
+              Thank you for joining MAP W3! Please confirm your email address to
+              complete your registration and start your wellness journey.
+            </p>
+
+            <!-- CTA Button -->
+            <a
+              href="{{ .ConfirmationURL }}"
+              style="
+                display: inline-block;
+                background-color: #228565;
+                color: #ffffff;
+                text-decoration: none;
+                padding: 14px 32px;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+              "
+            >
+              Confirm Email Address
+            </a>
+          </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div style="margin: 30px 0">
+          <h3
+            style="
+              color: #1a202c;
+              margin: 0 0 20px 0;
+              font-size: 18px;
+              font-weight: 600;
+              text-align: center;
+            "
+          >
+            What's Next?
+          </h3>
+          <div style="display: flex; flex-direction: column; gap: 15px">
+            <div style="display: flex; align-items: center; gap: 15px">
+              <div
+                style="
+                  width: 32px;
+                  height: 32px;
+                  background-color: #228565;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  flex-shrink: 0;
+                "
+              >
+                <span style="color: white; font-size: 14px; font-weight: bold"
+                  >1</span
+                >
+              </div>
+              <p
+                style="
+                  color: #4a5568;
+                  margin: 0;
+                  font-size: 14px;
+                  line-height: 1.5;
+                "
+              >
+                Complete your profile setup with name, phone, and avatar
+              </p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px">
+              <div
+                style="
+                  width: 32px;
+                  height: 32px;
+                  background-color: #228565;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  flex-shrink: 0;
+                "
+              >
+                <span style="color: white; font-size: 14px; font-weight: bold"
+                  >2</span
+                >
+              </div>
+              <p
+                style="
+                  color: #4a5568;
+                  margin: 0;
+                  font-size: 14px;
+                  line-height: 1.5;
+                "
+              >
+                Explore our wellness, wealth, and wisdom programs
+              </p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px">
+              <div
+                style="
+                  width: 32px;
+                  height: 32px;
+                  background-color: #228565;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  flex-shrink: 0;
+                "
+              >
+                <span style="color: white; font-size: 14px; font-weight: bold"
+                  >3</span
+                >
+              </div>
+              <p
+                style="
+                  color: #4a5568;
+                  margin: 0;
+                  font-size: 14px;
+                  line-height: 1.5;
+                "
+              >
+                Start your personalized wellness journey
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div
+        style="
+          background-color: #f9f9f9;
+          padding: 30px;
+          text-align: center;
+          border-top: 1px solid #e5e7eb;
+        "
+      >
+        <p style="color: #718096; margin: 0 0 15px 0; font-size: 14px">
+          This email was sent to confirm your registration with MAP W3.
+        </p>
+        <p style="color: #a0aec0; margin: 0; font-size: 12px">
+          If you didn't create an account, you can safely ignore this email.
+        </p>
+        <div
+          style="
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+          "
+        >
+          <p style="color: #a0aec0; margin: 0; font-size: 11px">
+            © MAP W3. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

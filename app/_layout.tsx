@@ -69,25 +69,9 @@ const AppContent = () => {
 
   const [isSplashFinished, setSplashFinished] = useState(false);
   const [isFontLoaded, setFontLoaded] = useState(false);
-  const [initialRoute, setInitialRoute] = useState("Welcome");
+  const [initialRoute, setInitialRoute] = useState("Login");
   const [isProfileChecked, setIsProfileChecked] = useState(false);
-  
-  // Debug initial route changes
-  useEffect(() => {
-    console.log("🚀 Initial route changed to:", initialRoute);
-  }, [initialRoute]);
-  
-  // Navigate to the correct screen after profile check
-  useEffect(() => {
-    if (isProfileChecked && navigationRef.current && session) {
-      console.log("🧭 Navigating to:", initialRoute);
-      navigationRef.current.reset({
-        index: 0,
-        routes: [{ name: initialRoute }],
-      });
-    }
-  }, [isProfileChecked, initialRoute, session]);
-  
+
   const [session, setSession] = useState<Session | null>(null);
   const [isEmailConfirmed, setIsEmailConfirmed] = useState(false);
   const [isDeepLinkHandled, setIsDeepLinkHandled] = useState(false);
@@ -215,6 +199,17 @@ const AppContent = () => {
     }
   }, [session]);
 
+  // Navigate to the correct screen after profile check
+  useEffect(() => {
+    if (isProfileChecked && navigationRef.current && session) {
+      console.log("🧭 Navigating to:", initialRoute);
+      navigationRef.current.reset({
+        index: 0,
+        routes: [{ name: initialRoute }],
+      });
+    }
+  }, [isProfileChecked, initialRoute, session]);
+
   const fetchUserProfile = async (session: Session) => {
     if (session?.user) {
       try {
@@ -239,17 +234,17 @@ const AppContent = () => {
           );
         }
       } catch (error) {
-        console.log("Error in fetchUserProfile (expected for first-time users):", error);
+        console.log(
+          "Error in fetchUserProfile (expected for first-time users):",
+          error
+        );
       }
     }
   };
 
   const checkFirstTimeUser = async (session: Session) => {
     if (session?.user) {
-      console.log("🔍 Checking first time user for:", session.user.email);
-      
-      // First fetch the profile data
-      await fetchUserProfile(session);
+      await fetchUserProfile(session); // Ensure profile data is fetched/attempted
 
       const { data: profile, error } = await supabase
         .from("profiles")
@@ -257,26 +252,23 @@ const AppContent = () => {
         .eq("id", session.user.id)
         .single();
 
-      console.log("📊 Profile check result:", { profile, error: error?.code });
-
       // If no profile exists (first-time user), go to UpdateProfile
       if (error && error.code === "PGRST116") {
-        console.log("✅ No profile found - first-time user, going to UpdateProfile");
+        console.log(
+          "No profile found - first-time user, going to UpdateProfile"
+        );
         setInitialRoute("UpdateProfile");
       } else if (error) {
-        console.error("❌ Error checking profile:", error);
-        setInitialRoute("UpdateProfile"); // Default to UpdateProfile on error
+        console.error("Error checking profile:", error);
+        setInitialRoute("UpdateProfile"); // Default to UpdateProfile on other errors
       } else if (!profile?.hascompletedprofileupdate) {
-        console.log("📝 Profile exists but not completed, going to UpdateProfile");
         setInitialRoute("UpdateProfile");
       } else if (!profile?.hascompletedhomeonboarding) {
-        console.log("🏠 Profile completed but not home onboarding, going to Welcome");
         setInitialRoute("Welcome");
       } else {
-        console.log("🏡 Everything completed, going to Home");
         setInitialRoute("Home");
       }
-      
+
       setIsProfileChecked(true);
     }
   };

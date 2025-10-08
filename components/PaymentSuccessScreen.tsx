@@ -14,20 +14,22 @@ const PaymentSuccessScreen: React.FC<PaymentSuccessScreenProps> = ({
   const tailwind = useTailwind();
 
   return (
-    <View style={tailwind("flex-1 justify-center items-center bg-white")}>
+    <View style={tailwind("flex-1 justify-center items-center bg-white px-4")}>
       <View style={styles.circle}>
         <Text style={styles.checkmark}>✓</Text>
       </View>
-      <Text style={tailwind("text-2xl font-bold mt-4")}>Congratulations</Text>
-      <Text style={tailwind("text-lg text-gray-600 mt-2")}>
+      <Text style={tailwind("text-3xl font-bold mt-6 text-w3-green")}>
+        Congratulations
+      </Text>
+      <Text style={tailwind("text-lg text-gray-600 mt-2 text-center")}>
         Your payment was successfully
       </Text>
-      <View style={tailwind("mt-8 p-4 rounded mb-6")}>
+      <View style={tailwind("w-full mt-8")}>
         <ButtonComponent
           title="Back"
           onPress={() => navigation.goBack()}
-          style={tailwind("mt-8 p-4 rounded mb-6")}
-          color="bg-w3-green"
+          style={tailwind("py-4 rounded-lg")}
+          color="#228564"
           textColor="#fff"
         />
       </View>
@@ -37,16 +39,17 @@ const PaymentSuccessScreen: React.FC<PaymentSuccessScreenProps> = ({
 
 const styles = StyleSheet.create({
   circle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: "#E0F7E0",
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: "#228564",
     justifyContent: "center",
     alignItems: "center",
   },
   checkmark: {
-    fontSize: 40,
-    color: "#4CAF50",
+    fontSize: 50,
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 

@@ -1,8 +1,15 @@
 import React, { useRef, useEffect } from "react";
-import { View, Image, Animated, ScrollView } from "react-native";
+import {
+  View,
+  Image,
+  Animated,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { useTailwind } from "tailwind-rn";
 import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
+import Ionicons from "@expo/vector-icons/build/Ionicons";
 
 export default function WeathWelcomeScreen({
   navigation,
@@ -10,6 +17,8 @@ export default function WeathWelcomeScreen({
   navigation: any;
 }) {
   const tailwind = useTailwind();
+
+  console.log("📍 CURRENT SCREEN: WeathWelcomeScreen");
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -29,6 +38,36 @@ export default function WeathWelcomeScreen({
           { opacity: fadeAnim },
         ]}
       >
+        <View
+          style={[tailwind("absolute"), { top: 50, left: 20, zIndex: 1000 }]}
+        >
+          <TouchableOpacity
+            style={[
+              tailwind("p-3 rounded-full"),
+              {
+                backgroundColor: "rgba(255, 255, 255, 0.9)",
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 5,
+                minWidth: 44,
+                minHeight: 44,
+                justifyContent: "center",
+                alignItems: "center",
+              },
+            ]}
+            onPress={() => {
+              console.log(
+                "⬅️ WeathWelcomeScreen: Back button pressed, navigating to Home"
+              );
+              navigation.navigate("Home");
+            }}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
+        </View>
         <View style={tailwind("mb-4 mt-14")}>
           <Image
             source={require("../assets/images/onboarding-wealth-welcome-icon.png")}

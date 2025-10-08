@@ -53,6 +53,8 @@ const WealthHome = () => {
   const [eventCards, setEventCards] = useState<EventCard[]>([]);
   const [checkingOnboarding, setCheckingOnboarding] = useState<boolean>(true);
 
+  console.log("📍 CURRENT SCREEN: WealthHome");
+
   const coachingCards = [
     {
       imageUrl: require("../assets/images/kwani-logo.png"),
@@ -104,7 +106,6 @@ const WealthHome = () => {
   // Reset loading state when screen comes into focus
   useFocusEffect(
     useCallback(() => {
-      setCheckingOnboarding(false);
       dispatch(setLoading(false));
     }, [dispatch])
   );

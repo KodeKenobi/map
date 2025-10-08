@@ -88,20 +88,19 @@ const DoctorProfileCard = ({ doctor }: { doctor: any }) => {
               />
             </TouchableOpacity>
           </View>
-          <Text style={tailwind("text-w3-green text-md mt-2")}>
+          <Text style={tailwind("text-w3-green text-md mt-2 font-bold")}>
             <Text>{doctor.job_title}</Text>
           </Text>
           <View style={tailwind("flex-row justify-between mt-2")}>
-            <Text style={tailwind("text-gray-500 text-md font-normal")}>
+            <Text
+              style={tailwind("text-gray-500 text-md font-normal font-bold")}
+            >
               <Text>Consultation Fee</Text>
             </Text>
-            <Text style={tailwind("text-gray-500 text-md font-normal")}>
+            <Text
+              style={tailwind("text-gray-500 text-md font-normal font-bold")}
+            >
               <Text>R{doctor.consultation_fee.toLocaleString()}</Text>
-            </Text>
-          </View>
-          <View style={tailwind("mt-4")}>
-            <Text style={tailwind("text-gray-500 text-md font-semibold")}>
-              Specializations
             </Text>
           </View>
 
@@ -149,16 +148,13 @@ const DoctorProfileCard = ({ doctor }: { doctor: any }) => {
           </Text>
         </View>
       </View>
-      <View style={tailwind("flex-row justify-between items-center mt-4")}>
-        <View style={tailwind("h-2 bg-blue-500 w-full")} />
-      </View>
-      <View style={tailwind("flex-row justify-between items-center mt-4")}>
+      {/* <View style={tailwind("flex-row justify-between items-center mt-4")}>
         <View style={tailwind("")}>
           <Text style={tailwind("text-md font-normal")}>
             <Text>{doctor.job_description}</Text>
           </Text>
         </View>
-      </View>
+      </View> */}
     </View>
   );
 };

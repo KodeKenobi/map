@@ -46,10 +46,11 @@ const WellnessHome = () => {
   const [clickedPart, setClickedPart] = useState<string | null>(null);
   const [checkingOnboarding, setCheckingOnboarding] = useState<boolean>(true);
 
+  console.log("📍 CURRENT SCREEN: WellnessHome");
+
   // Reset loading state when screen comes into focus
   useFocusEffect(
     useCallback(() => {
-      setCheckingOnboarding(false);
       dispatch(setLoading(false));
     }, [dispatch])
   );
@@ -57,10 +58,13 @@ const WellnessHome = () => {
   useEffect(() => {
     const checkOnboarding = async () => {
       try {
+        console.log("🔍 WellnessHome: Starting onboarding check...");
         setCheckingOnboarding(true);
         const {
           data: { user },
         } = await supabase.auth.getUser();
+
+        console.log("👤 WellnessHome: User found:", user?.email);
 
         if (user) {
           const { data: profileData } = await supabase
@@ -69,9 +73,18 @@ const WellnessHome = () => {
             .eq("id", user.id)
             .single();
 
+          console.log("📊 WellnessHome: Profile data:", {
+            hasProfile: !!profileData,
+            hasCompletedWellnessOnboarding:
+              profileData?.hascompletedwellnessonboarding,
+            firstName: profileData?.first_name,
+            lastName: profileData?.last_name,
+          });
+
           if (profileData) {
             // Update Redux profile state if not already set
             if (!profile.firstName || !profile.lastName) {
+              console.log("🔄 WellnessHome: Updating Redux profile state");
               dispatch(
                 setProfile({
                   firstName: profileData.first_name,
@@ -82,32 +95,58 @@ const WellnessHome = () => {
             }
 
             if (!profileData.hascompletedwellnessonboarding) {
+              console.log(
+                "🚀 WellnessHome: Redirecting to WellnessWelcome - onboarding not completed"
+              );
               navigation.navigate("WellnessWelcome");
               return;
+            } else {
+              console.log(
+                "✅ WellnessHome: Onboarding completed, staying on WellnessHome"
+              );
             }
+          } else {
+            console.log(
+              "❌ WellnessHome: No profile data found, redirecting to WellnessWelcome"
+            );
+            navigation.navigate("WellnessWelcome");
+            return;
           }
 
+          console.log("📋 WellnessHome: Fetching wellness cards...");
           const allWellnessCards = await supabase
             .from("wellness_cards")
             .select("*");
           if (allWellnessCards.data) {
+            console.log(
+              "✅ WellnessHome: Loaded",
+              allWellnessCards.data.length,
+              "wellness cards"
+            );
             dispatch(setWellnessCards(allWellnessCards.data));
           }
           dispatch(setLoading(false));
           setCheckingOnboarding(false);
+          console.log(
+            "🏁 WellnessHome: Onboarding check completed successfully"
+          );
         } else {
+          console.log("❌ WellnessHome: No user found, redirecting to Login");
           dispatch(setLoading(false));
           setCheckingOnboarding(false);
           navigation.navigate("Login");
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error("💥 WellnessHome: Error in checkOnboarding:", error);
         dispatch(setLoading(false));
         setCheckingOnboarding(false);
         navigation.navigate("Login");
       }
     };
 
+    console.log(
+      "🚀 WellnessHome: useEffect triggered, calling checkOnboarding"
+    );
     checkOnboarding();
   }, [navigation, dispatch, profile.firstName, profile.lastName]);
 

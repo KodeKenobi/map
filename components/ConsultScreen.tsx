@@ -39,14 +39,14 @@ const ConsultScreen = () => {
   // Hardcoded doctor data as fallback
   const hardcodedDoctor: Doctor = {
     id: 1,
-    fullname: "Dr. Sarah Johnson",
+    fullname: "Dr. S Ndou",
     job_title: "General Practitioner",
     experience: 8,
     rating: 4.8,
     consultation_fee: 150,
     job_description:
       "Experienced general practitioner specializing in preventive care and wellness consultations.",
-    avatar_url: "doctor-avatar.jpg",
+    avatar_url: "doctor.png",
   };
 
   useEffect(() => {
@@ -101,7 +101,7 @@ const ConsultScreen = () => {
             </AppText>
             <View style={tailwind("w-10")} />
           </View>
-          <View style={tailwind("flex w-full p-4")}>
+          {/* <View style={tailwind("flex w-full p-4")}>
             {doctors.length > 0 && (
               <>
                 <ConsultationsScreenCard consultation={doctors[0]} />
@@ -110,12 +110,12 @@ const ConsultScreen = () => {
                 <CoachingConsultationScreenCard consultation={doctors[0]} />
               </>
             )}
-          </View>
-          {/* <View style={tailwind("flex items-center justify-center w-full p-4")}>
+          </View> */}
+          <View style={tailwind("flex items-center justify-center w-full p-4")}>
             {doctors.map((doctor) => (
               <DoctorCard key={doctor.id} doctor={doctor} />
             ))}
-          </View> */}
+          </View>
         </View>
         <View style={tailwind("mt-0 p-4 mb-16")}>
           <Referrals />

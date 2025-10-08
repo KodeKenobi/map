@@ -36,6 +36,8 @@ const WisdomHome = () => {
   const [scale] = useState(new Animated.Value(1));
   const [checkingOnboarding, setCheckingOnboarding] = useState<boolean>(true);
 
+  console.log("📍 CURRENT SCREEN: WisdomHome");
+
   // Existing card data
   const cards = [
     {
@@ -64,7 +66,6 @@ const WisdomHome = () => {
   // Reset loading state when screen comes into focus
   useFocusEffect(
     useCallback(() => {
-      setCheckingOnboarding(false);
       dispatch(setLoading(false));
     }, [dispatch])
   );

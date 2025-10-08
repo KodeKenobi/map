@@ -54,6 +54,9 @@ const BottomNav = ({ navigation }: { navigation: any }) => {
           activeTab === "WellnessHome" && styles.activeNavItem,
         ]}
         onPress={() => {
+          console.log(
+            "🏠 BottomNav: Wellness tab pressed, navigating to WellnessHome"
+          );
           setActiveTab("WellnessHome");
           navigation.navigate("WellnessHome");
         }}

@@ -18,6 +18,7 @@ import BackButton from "./BackButton";
 import DoctorProfileCard from "./DoctorProfileCard";
 import ButtonComponent from "./ButtonComponent";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import Ionicons from "@expo/vector-icons/build/Ionicons";
 import * as MailComposer from "expo-mail-composer";
 import { Resend } from "resend";
 import {
@@ -164,230 +165,178 @@ const DoctorProfileScreen: React.FC<Props> = ({ route }) => {
   }
 
   return (
-    <SafeAreaView style={tailwind("flex-1")}>
+    <SafeAreaView style={tailwind("flex-1 bg-white")}>
       <ScrollView>
-        <View style={tailwind("flex-1 justify-center items-center mt-10")}>
-          <View
-            style={tailwind("flex-row items-center w-full p-4 justify-between")}
-          >
-            <BackButton navigation={navigation as NavigationProp<any>} />
-            <View style={tailwind("flex-row items-center")}>
-              <Text style={tailwind("text-xl font-bold text-center")}>
-                Doctor Details
-              </Text>
-            </View>
-
-            <View style={tailwind("w-10")} />
-          </View>
+        {/* Header */}
+        <View
+          style={tailwind(
+            "flex-row items-center w-full p-4 justify-between mt-10"
+          )}
+        >
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
+          <Text style={tailwind("text-xl font-bold text-center")}>
+            {route.params.fullname}
+          </Text>
+          <View style={tailwind("w-6")} />
         </View>
-        <View style={tailwind("flex-1 justify-center items-center p-2")}>
+
+        {/* Doctor Profile Card */}
+        <View style={tailwind("p-4")}>
           <DoctorProfileCard doctor={route.params} />
         </View>
-        <View style={tailwind("flex-row justify-between items-center p-4")}>
-          <Text style={tailwind("text-lg font-bold text-gray-800")}>
-            <Text>Working Hours</Text>
+
+        {/* Details Section */}
+        <View style={tailwind("px-4")}>
+          <Text style={tailwind("px-4 text-lg font-bold text-gray-800 mb-2")}>
+            Details
           </Text>
-          <TouchableOpacity onPress={showTimePicker}>
-            <Text style={tailwind("text-lg underline")}>
-              Book Your Time &gt;
-            </Text>
-          </TouchableOpacity>
-          <DateTimePickerModal
-            isVisible={isTimePickerVisible}
-            mode="time"
-            onConfirm={handleTimeConfirm}
-            onCancel={hideTimePicker}
-          />
+          <Text style={tailwind("px-4 py-2 text-gray-600 text-sm leading-8")}>
+            Worem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
+            vulputate libero et velit interdum, ac aliquet odio mattis. Class
+            aptent taciti sociosqu ad litora torquent per conubia nostra, per
+            inceptos himenaeos.
+            {"\n\n"}
+            Curabitur tempus urna at turpis condimentum lobortis. Ut commodo
+            efficitur neque. Ut diam quam, semper iaculis condimentum ac,
+            vestibulum eu nisl.
+          </Text>
         </View>
-        <View style={tailwind("p-4 mb-4")}>
-          <View style={tailwind("flex-row justify-between")}>
+
+        {/* Working Hours Section */}
+        <View style={tailwind("px-6 py-8")}>
+          <View style={tailwind("flex-row justify-between items-center")}>
+            <Text style={tailwind("py-2 px-2 text-lg font-bold text-gray-800")}>
+              Working Hours
+            </Text>
+            <TouchableOpacity onPress={showTimePicker}>
+              <Text style={tailwind("text-gray-500 text-sm")}>
+                See All &gt;
+              </Text>
+            </TouchableOpacity>
+            <DateTimePickerModal
+              isVisible={isTimePickerVisible}
+              mode="time"
+              onConfirm={handleTimeConfirm}
+              onCancel={hideTimePicker}
+            />
+          </View>
+          <View style={tailwind("px-2 flex-row justify-start mt-2")}>
             {selectedTime ? (
-              <Text
-                key={selectedTime.toDateString()}
-                style={tailwind(
-                  "bg-w3-green-grad-1 p-2 rounded-md w-30 font-semibold text-center"
-                )}
+              <TouchableOpacity
+                style={tailwind("bg-w3-green-grad-1 px-4 py-2 rounded-lg mr-2")}
               >
-                <Text>
+                <Text style={tailwind("text-white font-semibold")}>
                   {selectedTime.toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
+                    hour12: true,
                   })}
                 </Text>
-              </Text>
+              </TouchableOpacity>
             ) : (
               <>
-                <Text
-                  key="10am"
+                <TouchableOpacity
+                  style={tailwind("bg-gray-200 px-4 py-2 rounded-lg mr-22")}
+                >
+                  <Text style={tailwind("text-gray-700 font-semibold")}>
+                    10.00 AM
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
                   style={tailwind(
-                    "bg-gray-400 p-2 rounded-md w-30 font-semibold text-center"
+                    "bg-w3-green-grad-1 px-4 py-2 rounded-lg mr-22"
                   )}
                 >
-                  <Text>10:00 AM</Text>
-                </Text>
-                <Text
-                  key="11am"
-                  style={tailwind(
-                    "bg-w3-green-grad-1 p-2 rounded-md w-30 font-semibold text-center"
-                  )}
+                  <Text style={tailwind("text-white font-semibold")}>
+                    11.00 AM
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={tailwind("bg-gray-200 px-4 py-2 rounded-lg mr-22")}
                 >
-                  <Text>11:00 AM</Text>
-                </Text>
-                <Text
-                  key="12pm"
-                  style={tailwind(
-                    "bg-gray-400 p-2 rounded-md w-30 font-semibold text-center"
-                  )}
-                >
-                  <Text>12:00 PM</Text>
-                </Text>
+                  <Text style={tailwind("text-gray-700 font-semibold")}>
+                    12.00 PM
+                  </Text>
+                </TouchableOpacity>
               </>
             )}
           </View>
         </View>
 
-        <View style={tailwind("flex-row justify-between items-center p-4")}>
-          <Text style={tailwind("text-lg font-bold text-gray-800")}>
-            <Text>Date</Text>
-          </Text>
-          <TouchableOpacity onPress={showDatePicker}>
-            <Text style={tailwind("text-lg underline")}>
-              Book Your Date &gt;
+        {/* Date Section */}
+        <View style={tailwind("px-4 py-2")}>
+          <View
+            style={tailwind("px-4 py-2 flex-row justify-between items-center")}
+          >
+            <Text style={tailwind("text-lg font-bold text-gray-800")}>
+              Date
             </Text>
-          </TouchableOpacity>
-          <DateTimePickerModal
-            isVisible={isDatePickerVisible}
-            mode="date"
-            onConfirm={handleConfirm}
-            onCancel={hideDatePicker}
-          />
-        </View>
-        <View style={tailwind("p-4")}>
-          <View style={tailwind("flex-row justify-between")}>
-            {selectedDate ? (
-              <Text
-                key={selectedDate.toDateString()}
-                style={tailwind(
-                  "bg-w3-green-grad-1 p-2 rounded-md w-30 font-semibold text-center"
-                )}
-              >
-                <Text>{selectedDate.toLocaleDateString()}</Text>
+            <TouchableOpacity onPress={showDatePicker}>
+              <Text style={tailwind("text-gray-500 text-sm")}>
+                See All &gt;
               </Text>
+            </TouchableOpacity>
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode="date"
+              onConfirm={handleConfirm}
+              onCancel={hideDatePicker}
+            />
+          </View>
+          <View style={tailwind("px-4 flex-row justify-start mt-2")}>
+            {selectedDate ? (
+              <TouchableOpacity
+                style={tailwind("bg-w3-green-grad-1 rounded-lg mr-22")}
+              >
+                <Text style={tailwind("text-white font-semibold")}>
+                  {selectedDate.toLocaleDateString("en-US", {
+                    weekday: "short",
+                    day: "numeric",
+                  })}
+                </Text>
+              </TouchableOpacity>
             ) : (
-              Array.from({ length: 3 }).map((_, index) => {
-                const date = new Date();
-                date.setDate(date.getDate() + index);
-                const options: Intl.DateTimeFormatOptions = {
-                  weekday: "short" as "short",
-                  day: "numeric",
-                };
-                const weekday = date
-                  .toLocaleDateString("en-US", { weekday: "short" })
-                  .toUpperCase();
-                const day = date.getDate();
-                const formattedDate = `${weekday} ${day}`;
-
-                return (
-                  <Text
-                    key={date.toDateString()}
-                    style={tailwind(
-                      index === 2
-                        ? "bg-w3-green-grad-1 p-2 rounded-md w-30 font-semibold text-center"
-                        : "bg-gray-400 p-2 rounded-md w-30 font-semibold text-center"
-                    )}
-                  >
-                    <Text>{formattedDate}</Text>
+              <>
+                <TouchableOpacity
+                  style={tailwind(
+                    "bg-w3-green-grad-1 px-4 py-2 rounded-lg mr-22"
+                  )}
+                >
+                  <Text style={tailwind("text-white font-semibold")}>
+                    Sun 4
                   </Text>
-                );
-              })
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={tailwind("bg-gray-200 px-4 py-2 rounded-lg mr-22")}
+                >
+                  <Text style={tailwind("text-gray-700 font-semibold")}>
+                    Mon 5
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={tailwind("bg-gray-200 px-4 py-2 rounded-lg mr-2")}
+                >
+                  <Text style={tailwind("text-gray-700 font-semibold")}>
+                    Tue 6
+                  </Text>
+                </TouchableOpacity>
+              </>
             )}
           </View>
         </View>
 
-        <View style={tailwind("p-4 rounded mb-6 ")}>
-          {selectedDate && selectedTime ? (
-            <>
-              <Text style={tailwind("text-lg mb-2 font-bold")}>
-                Confirm your Appointment
-              </Text>
-              <Text style={tailwind("mt-2 font-semibold text-md")}>
-                Date:{" "}
-                {selectedDate
-                  ? selectedDate.toLocaleDateString("en-US", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                  : "Not selected"}
-              </Text>
-              <Text style={tailwind("mt-2 font-semibold text-md")}>
-                Time:{" "}
-                {selectedTime
-                  ? selectedTime.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: true,
-                    })
-                  : "Not selected"}
-              </Text>
-              <View style={tailwind("flex-col justify-between mt-4")}>
-                {/* <ButtonComponent
-                  title="Confirm"
-                  size="small"
-                  onPress={() => {
-                    // Handle confirmation logic here
-                    console.warn(
-                      "Appointment confirmed for:",
-                      selectedDate,
-                      selectedTime
-                    );
-                  }}
-                  style={tailwind("p-2 rounded")}
-                  color="#228564"
-                  textColor="#fff"
-                /> */}
-                {/* <ButtonComponent
-                  title="Cancel"
-                  size="small"
-                  onPress={() => {
-                    // Reset selected date and time
-                    setSelectedDate(null);
-                    setSelectedTime(null);
-                    console.warn("Appointment canceled");
-                  }}
-                  style={tailwind("p-2 rounded bg-red-500 mt-2")}
-                  color="#ff0000"
-                  textColor="#fff"
-                /> */}
-              </View>
-            </>
-          ) : null}
+        {/* Book Appointment Button */}
+        <View style={tailwind("p-4")}>
+          <ButtonComponent
+            title="Book an Appointment"
+            onPress={() => navigation.navigate("PaymentScreen" as never)}
+            style={tailwind("w-full py-4 rounded-lg")}
+            color="#228564"
+            textColor="#fff"
+          />
         </View>
-
-        {selectedDate && selectedTime ? (
-          <View style={tailwind("p-4 rounded mb-6")}>
-            <ButtonComponent
-              title="Book an Appointment"
-              onPress={handleBookAppointment}
-              style={tailwind("mt-2 p-4 rounded mb-2")}
-              color="#228564"
-              textColor="#fff"
-            />
-            <ButtonComponent
-              title="Cancel"
-              onPress={() => {
-                // Reset selected date and time
-                setSelectedDate(null);
-                setSelectedTime(null);
-                console.warn("Appointment canceled");
-              }}
-              style={tailwind("p-2 rounded bg-red-500 mt-2")}
-              color="#ff0000"
-              textColor="#fff"
-            />
-          </View>
-        ) : null}
       </ScrollView>
 
       {/* Modal for Confirmation */}

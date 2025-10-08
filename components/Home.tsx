@@ -59,6 +59,8 @@ const Home = () => {
   const [firstName, setFirstName] = useState<string | null>(null);
   const tailwind = useTailwind();
 
+  console.log("📍 CURRENT SCREEN: Home");
+
   useEffect(() => {
     const getUserProfile = async () => {
       try {

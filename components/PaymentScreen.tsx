@@ -13,6 +13,7 @@ import { useTailwind } from "tailwind-rn";
 import BackButton from "./BackButton";
 import AppText from "./AppText";
 import ButtonComponent from "./ButtonComponent";
+import Ionicons from "@expo/vector-icons/build/Ionicons";
 
 const PaymentScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
   const tailwind = useTailwind();
@@ -22,90 +23,79 @@ const PaymentScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
   const [name, setName] = useState("");
 
   return (
-    <SafeAreaView style={tailwind("flex-1 bg-w3-green")}>
-      <View style={tailwind("flex-1 justify-center items-center mt-10")}>
-        <View
-          style={tailwind("flex-row items-center w-full p-4 justify-between")}
-        >
-          <BackButton navigation={navigation as NavigationProp<any>} />
-          <View style={tailwind("flex-row items-center")}>
-            <Text style={tailwind("text-white text-2xl font-bold text-center")}>
-              Payment
-            </Text>
-          </View>
-          <View style={tailwind("w-10")} />
-        </View>
+    <SafeAreaView style={tailwind("flex-1 bg-white")}>
+      {/* Header */}
+      <View
+        style={tailwind(
+          "flex-row items-center w-full p-4 justify-between mt-10"
+        )}
+      >
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color="#000" />
+        </TouchableOpacity>
+        <Text style={tailwind("text-xl font-bold text-center")}>Payment</Text>
+        <View style={tailwind("w-6")} />
       </View>
-      <View style={tailwind("flex-1 justify-center items-center p-4")}>
-        <Text
-          style={tailwind("text-white text-3xl font-bold text-center mt-4")}
-        >
+
+      {/* Amount Display */}
+      <View style={tailwind("bg-w3-green mx-4 mt-4 rounded-lg p-6")}>
+        <Text style={tailwind("text-white text-4xl font-bold text-center")}>
           R1,220
         </Text>
       </View>
 
-      <View
-        style={[
-          tailwind("mt-8 bg-white p-4"),
-          { borderTopLeftRadius: 20, borderTopRightRadius: 20, flexGrow: 0 },
-        ]}
-      >
+      {/* Payment Method Selection */}
+      <View style={tailwind("px-4 py-4")}>
         <View style={tailwind("flex-row justify-between")}>
-          <TouchableOpacity style={tailwind("rounded-full p-4 w-48 h-48")}>
-            <Text
-              style={tailwind(
-                "text-gray-800 rounded-full p-4 bg-w3-green font-semibold text-white"
-              )}
-            >
+          <TouchableOpacity
+            style={tailwind("bg-w3-green px-6 py-3 rounded-lg flex-1 mr-2")}
+          >
+            <Text style={tailwind("text-white font-semibold text-center")}>
               Card Payment
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={tailwind("rounded-full p-4 w-48 h-48")}>
-            <Text
-              style={tailwind(
-                "text-gray-800 rounded-full p-4 bg-w3-green font-semibold text-white"
-              )}
-            >
+          <TouchableOpacity
+            style={tailwind("bg-gray-200 px-6 py-3 rounded-lg flex-1 ml-2")}
+          >
+            <Text style={tailwind("text-w3-green font-semibold text-center")}>
               Cash Payment
             </Text>
           </TouchableOpacity>
         </View>
-        <Text style={tailwind("text-gray-500 mt-4 font-semibold text-lg")}>
+      </View>
+
+      {/* Card Details Form */}
+      <View style={tailwind("px-4")}>
+        <Text style={tailwind("text-gray-500 font-semibold text-lg")}>
           Card Number
         </Text>
-        <View style={tailwind("flex-row w-full mt-4")}>
-          <TextInput
-            style={[styles.input, { flex: 1 }]}
-            placeholder="1234 8896 1145 0896"
-            placeholderTextColor="#ccc"
-            value={cardNumber}
-            onChangeText={setCardNumber}
-          />
-        </View>
+        <TextInput
+          style={[styles.input, tailwind("mt-2")]}
+          placeholder="1234 8896 1145 0896"
+          placeholderTextColor="#ccc"
+          value={cardNumber}
+          onChangeText={setCardNumber}
+        />
 
-        <View style={tailwind("flex-row justify-between")}>
-          <View style={tailwind("flex-1 mr-24")}>
-            <Text
-              style={tailwind("text-gray-500 mt-4 font-semibold text-lg mb-4")}
-            >
+        <View style={tailwind("flex-row justify-between mt-4")}>
+          <View style={tailwind("flex-1 mr-2")}>
+            <Text style={tailwind("text-gray-500 font-semibold text-lg")}>
               Expiry Date
             </Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, tailwind("mt-2")]}
               placeholder="10/02/2022"
               placeholderTextColor="#ccc"
               value={expiryDate}
               onChangeText={setExpiryDate}
             />
           </View>
-          <View style={tailwind("flex-1 ml-24")}>
-            <Text
-              style={tailwind("text-gray-500 mt-4 font-semibold text-lg mb-4")}
-            >
+          <View style={tailwind("flex-1 ml-2")}>
+            <Text style={tailwind("text-gray-500 font-semibold text-lg")}>
               CVV
             </Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, tailwind("mt-2")]}
               placeholder="204"
               placeholderTextColor="#ccc"
               value={cvv}
@@ -114,20 +104,21 @@ const PaymentScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
           </View>
         </View>
 
-        <Text style={tailwind("text-gray-500 mt-4 font-semibold text-lg mb-4")}>
+        <Text style={tailwind("text-gray-500 font-semibold text-lg mt-4")}>
           Name
         </Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, tailwind("mt-2")]}
           placeholder="Lindiwe"
           placeholderTextColor="#ccc"
           value={name}
           onChangeText={setName}
         />
+
         <ButtonComponent
           title="Pay Now"
           onPress={() => navigation.navigate("PaymentSuccessScreen" as never)}
-          style={tailwind("mt-8 p-4 rounded mb-6")}
+          style={tailwind("mt-8 py-4 rounded-lg")}
           color="#228564"
           textColor="#fff"
         />

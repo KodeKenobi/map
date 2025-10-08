@@ -299,7 +299,6 @@ const AppContent = () => {
           translucent={true}
         />
         <Stack.Navigator
-          ref={navigationRef}
           initialRouteName={initialRoute}
           screenOptions={{ headerShown: false }}
         >
@@ -349,7 +348,7 @@ const AppContent = () => {
               <Stack.Screen name="Consult" component={ConsultScreen} />
               <Stack.Screen
                 name="DoctorProfile"
-                component={DoctorProfileScreen}
+                component={DoctorProfileScreen as any}
               />
               <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
               <Stack.Screen
@@ -378,7 +377,7 @@ const AppContent = () => {
                 component={WealthOnboardingScreen}
               />
               <Stack.Screen name="Brands" component={BrandsComponent} />
-              <Stack.Screen name="BlogRead" component={BlogRead} />
+              <Stack.Screen name="BlogRead" component={BlogRead as any} />
               <Stack.Screen
                 name="UserUpdate"
                 component={UserUpdate}
@@ -387,7 +386,7 @@ const AppContent = () => {
               <Stack.Screen name="Products" component={ProductsScreen} />
               <Stack.Screen name="CartScreen" component={CartScreen} />
               <Stack.Screen name="WishlistScreen" component={WishlistScreen} />
-              <Stack.Screen name="EventRead" component={EventRead} />
+              <Stack.Screen name="EventRead" component={EventRead as any} />
               <Stack.Screen name="Treatments" component={Treatments} />
             </>
           )}

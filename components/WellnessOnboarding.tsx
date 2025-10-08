@@ -21,6 +21,9 @@ export default function WellnessOnboarding({
 }) {
   const tailwind = useTailwind();
   const [loading, setLoading] = useState(false);
+
+  console.log("📍 CURRENT SCREEN: WellnessOnboarding");
+  console.log("🎯 WellnessOnboarding: Component rendered");
   const [items, setItems] = useState([
     { label: "Wellness: Heal, rejuvenate, and thrive", checked: false },
     { label: "Nutrition: Eat well for a better life", checked: false },
@@ -40,13 +43,21 @@ export default function WellnessOnboarding({
 
   const handleCompleteOnboarding = async () => {
     try {
+      console.log("🚀 WellnessOnboarding: Starting onboarding completion...");
       setLoading(true);
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
+      console.log("👤 WellnessOnboarding: User found:", user?.email);
+
       if (user) {
         const selectedItems = items.filter((item) => item.checked);
+        console.log(
+          "📋 WellnessOnboarding: Selected items:",
+          selectedItems.length
+        );
+
         const { error } = await supabase.from("profiles").upsert({
           id: user.id,
           hascompletedwellnessonboarding: true,
@@ -55,11 +66,21 @@ export default function WellnessOnboarding({
           updated_at: new Date(),
         });
 
-        if (error) throw error;
+        if (error) {
+          console.error("❌ WellnessOnboarding: Database error:", error);
+          throw error;
+        }
+
+        console.log("✅ WellnessOnboarding: Profile updated successfully");
       }
+
+      console.log("🏠 WellnessOnboarding: Navigating to WellnessHome");
       navigation.navigate("WellnessHome");
     } catch (error) {
-      console.error("Error:", error);
+      console.error(
+        "💥 WellnessOnboarding: Error in handleCompleteOnboarding:",
+        error
+      );
       Alert.alert((error as Error).message);
     } finally {
       setLoading(false);
@@ -94,10 +115,32 @@ export default function WellnessOnboarding({
     <SafeAreaView style={tailwind("flex-1")}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={tailwind("flex-1 justify-start items-center p-5")}>
-          <View style={tailwind("absolute mt-12 top-4 left-4")}>
+          <View
+            style={[tailwind("absolute"), { top: 50, left: 20, zIndex: 1000 }]}
+          >
             <TouchableOpacity
-              style={tailwind("absolute left-2 top-2 p-2")}
-              onPress={() => navigation.navigate("Home")}
+              style={[
+                tailwind("p-3 rounded-full"),
+                {
+                  backgroundColor: "rgba(255, 255, 255, 0.9)",
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 3.84,
+                  elevation: 5,
+                  minWidth: 44,
+                  minHeight: 44,
+                  justifyContent: "center",
+                  alignItems: "center",
+                },
+              ]}
+              onPress={() => {
+                console.log(
+                  "⬅️ WellnessOnboarding: Back button pressed, going back"
+                );
+                navigation.goBack();
+              }}
+              activeOpacity={0.7}
             >
               <Ionicons name="arrow-back" size={24} color="#000" />
             </TouchableOpacity>
@@ -142,7 +185,12 @@ export default function WellnessOnboarding({
               alignItems: "center",
               justifyContent: "center",
             }}
-            onPress={() => navigation.navigate("WellnessHome")} // Option to skip
+            onPress={() => {
+              console.log(
+                "⏭️ WellnessOnboarding: Skip Personalization pressed, navigating to WellnessHome"
+              );
+              navigation.navigate("WellnessHome");
+            }} // Option to skip
           >
             <AppText
               style={{

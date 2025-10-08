@@ -22,10 +22,19 @@ const QuickAccessCardComponent: React.FC<QuickAccessProps> = ({
 
   const handlePress = () => {
     if (backgroundColor === "rgba(74, 244, 170, 0.16)") {
+      console.log(
+        "🏠 QuickAccessCard: Wellness card pressed, navigating to WellnessHome"
+      );
       navigation.navigate("WellnessHome");
     } else if (backgroundColor === "rgba(115, 69, 182, 0.16)") {
+      console.log(
+        "🏠 QuickAccessCard: Wisdom card pressed, navigating to WisdomHome"
+      );
       navigation.navigate("WisdomHome");
     } else if (backgroundColor === "rgba(252, 202, 102, 0.3)") {
+      console.log(
+        "🏠 QuickAccessCard: Wealth card pressed, navigating to WealthHome"
+      );
       navigation.navigate("WealthHome");
     }
   };

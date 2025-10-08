@@ -228,13 +228,22 @@ const AppContent = () => {
       // First fetch the profile data
       await fetchUserProfile(session);
 
-      const { data: profile } = await supabase
+      const { data: profile, error } = await supabase
         .from("profiles")
         .select("hascompletedprofileupdate, hascompletedhomeonboarding")
         .eq("id", session.user.id)
         .single();
 
-      if (!profile?.hascompletedprofileupdate) {
+      // If no profile exists (first-time user), go to UpdateProfile
+      if (error && error.code === "PGRST116") {
+        console.log(
+          "No profile found - first-time user, going to UpdateProfile"
+        );
+        setInitialRoute("UpdateProfile");
+      } else if (error) {
+        console.error("Error checking profile:", error);
+        setInitialRoute("UpdateProfile"); // Default to UpdateProfile on error
+      } else if (!profile?.hascompletedprofileupdate) {
         setInitialRoute("UpdateProfile");
       } else if (!profile?.hascompletedhomeonboarding) {
         setInitialRoute("Welcome");

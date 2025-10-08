@@ -321,10 +321,11 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
           />
 
           <ButtonComponent
-            title="Create Account"
+            title={loading ? "Creating Account..." : "Create Account"}
             color="#F9CF67"
             textColor="#000"
             onPress={signUpWithEmail}
+            disabled={loading}
           />
         </View>
       </ScrollView>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -7,7 +7,11 @@ import {
   Animated,
   ScrollView,
 } from "react-native";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
+import {
+  useNavigation,
+  NavigationProp,
+  useFocusEffect,
+} from "@react-navigation/native";
 import Greeting from "./Greeting";
 import BottomNav from "./BottomNav";
 import { useTailwind } from "tailwind-rn";
@@ -18,15 +22,16 @@ import { supabase } from "@/lib/supabase";
 import { useDispatch, useSelector } from "react-redux";
 import { setWisdomCards, setLoading } from "../store/slices/wisdomCardsSlice";
 import { RootState } from "../store/store";
+import { setProfile } from "../store/slices/profileSlice";
 
 const WisdomHome = () => {
   const navigation = useNavigation<NavigationProp<any>>();
-  const [firstName, setFirstName] = useState<string | null>(null);
   const dispatch = useDispatch();
   const wisdomCards = useSelector(
     (state: RootState) => state.wisdomCards.cards
   );
   const loading = useSelector((state: RootState) => state.wisdomCards.loading);
+  const profile = useSelector((state: RootState) => state.profile);
   const tailwind = useTailwind();
   const [scale] = useState(new Animated.Value(1));
   const [checkingOnboarding, setCheckingOnboarding] = useState<boolean>(true);
@@ -56,8 +61,16 @@ const WisdomHome = () => {
     // Add other cards as needed...
   ];
 
+  // Reset loading state when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      setCheckingOnboarding(false);
+      dispatch(setLoading(false));
+    }, [dispatch])
+  );
+
   useEffect(() => {
-    const getProfile = async () => {
+    const checkOnboarding = async () => {
       try {
         setCheckingOnboarding(true);
         const {
@@ -65,15 +78,25 @@ const WisdomHome = () => {
         } = await supabase.auth.getUser();
 
         if (user) {
-          const { data: profile } = await supabase
+          const { data: profileData } = await supabase
             .from("profiles")
             .select("*")
             .eq("id", user.id)
             .single();
 
-          if (profile) {
-            setFirstName(profile.first_name);
-            if (!profile.hascompletedwisdomonboarding) {
+          if (profileData) {
+            // Update Redux profile state if not already set
+            if (!profile.firstName || !profile.lastName) {
+              dispatch(
+                setProfile({
+                  firstName: profileData.first_name,
+                  lastName: profileData.last_name,
+                  avatarUrl: profileData.avatar_url,
+                })
+              );
+            }
+
+            if (!profileData.hascompletedwisdomonboarding) {
               navigation.navigate("WisdomWelcome");
               return;
             }
@@ -96,8 +119,8 @@ const WisdomHome = () => {
       }
     };
 
-    getProfile();
-  }, [navigation, dispatch]);
+    checkOnboarding();
+  }, [navigation, dispatch, profile.firstName, profile.lastName]);
 
   if (loading || checkingOnboarding) {
     return (
@@ -114,7 +137,7 @@ const WisdomHome = () => {
     <View style={styles.container}>
       <View style={tailwind("mt-10")}>
         <Greeting
-          userName={firstName ? `${firstName}` : ""}
+          userName={profile.firstName ? `${profile.firstName}` : ""}
           notificationCount={8}
         />
       </View>
@@ -126,9 +149,7 @@ const WisdomHome = () => {
           <Text style={tailwind("text-lg font-bold")}> What's Happening</Text>
         </View>
         <View style={tailwind("p-4")}>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <HorizontalCardScroll cards={wisdomCards} />
-          </ScrollView>
+          <HorizontalCardScroll cards={wisdomCards} />
         </View>
 
         <View style={tailwind("mb-4 flex items-center justify-center p-4")}>

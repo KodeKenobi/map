@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -10,7 +10,11 @@ import {
   GestureResponderEvent,
   ScrollView,
 } from "react-native";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
+import {
+  useNavigation,
+  NavigationProp,
+  useFocusEffect,
+} from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setWellnessCards,
@@ -18,6 +22,7 @@ import {
 } from "../store/slices/wellnessCardsSlice";
 import { supabase } from "../lib/supabase";
 import { RootState } from "../store/store";
+import { setProfile } from "../store/slices/profileSlice";
 import Greeting from "./Greeting";
 import BottomNav from "./BottomNav";
 import { useTailwind } from "tailwind-rn";
@@ -27,7 +32,6 @@ import HorizontalCardScroll from "./HorizontalCardScroll";
 
 const WellnessHome = () => {
   const navigation = useNavigation<NavigationProp<any>>();
-  const [firstName, setFirstName] = useState<string | null>(null);
   const dispatch = useDispatch();
   const wellnessCards = useSelector(
     (state: RootState) => state.wellnessCards.cards
@@ -35,14 +39,23 @@ const WellnessHome = () => {
   const loading = useSelector(
     (state: RootState) => state.wellnessCards.loading
   );
+  const profile = useSelector((state: RootState) => state.profile);
   const tailwind = useTailwind();
   const [scale] = useState(new Animated.Value(1));
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [clickedPart, setClickedPart] = useState<string | null>(null);
   const [checkingOnboarding, setCheckingOnboarding] = useState<boolean>(true);
 
+  // Reset loading state when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      setCheckingOnboarding(false);
+      dispatch(setLoading(false));
+    }, [dispatch])
+  );
+
   useEffect(() => {
-    const getProfile = async () => {
+    const checkOnboarding = async () => {
       try {
         setCheckingOnboarding(true);
         const {
@@ -50,15 +63,25 @@ const WellnessHome = () => {
         } = await supabase.auth.getUser();
 
         if (user) {
-          const { data: profile } = await supabase
+          const { data: profileData } = await supabase
             .from("profiles")
             .select("*")
             .eq("id", user.id)
             .single();
 
-          if (profile) {
-            setFirstName(profile.first_name);
-            if (!profile.hascompletedwellnessonboarding) {
+          if (profileData) {
+            // Update Redux profile state if not already set
+            if (!profile.firstName || !profile.lastName) {
+              dispatch(
+                setProfile({
+                  firstName: profileData.first_name,
+                  lastName: profileData.last_name,
+                  avatarUrl: profileData.avatar_url,
+                })
+              );
+            }
+
+            if (!profileData.hascompletedwellnessonboarding) {
               navigation.navigate("WellnessWelcome");
               return;
             }
@@ -85,8 +108,8 @@ const WellnessHome = () => {
       }
     };
 
-    getProfile();
-  }, [navigation, dispatch]);
+    checkOnboarding();
+  }, [navigation, dispatch, profile.firstName, profile.lastName]);
 
   const handleHeadClick = (event: GestureResponderEvent) => {
     const { locationX, locationY } = event.nativeEvent;
@@ -176,7 +199,7 @@ const WellnessHome = () => {
     <View style={styles.container}>
       <View style={tailwind("mt-10")}>
         <Greeting
-          userName={firstName ? `${firstName}` : ""}
+          userName={profile.firstName ? `${profile.firstName}` : ""}
           notificationCount={8}
         />
       </View>

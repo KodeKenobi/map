@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -11,7 +11,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setWealthCards, setLoading } from "../store/slices/wealthCardsSlice";
 import { supabase, getAllEventsCards } from "../lib/supabase";
 import { RootState } from "../store/store";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { setProfile } from "../store/slices/profileSlice";
+import {
+  useNavigation,
+  NavigationProp,
+  useFocusEffect,
+} from "@react-navigation/native";
 import Greeting from "./Greeting";
 import BottomNav from "./BottomNav";
 import { useTailwind } from "tailwind-rn";
@@ -37,12 +42,12 @@ interface EventCard {
 
 const WealthHome = () => {
   const navigation = useNavigation<NavigationProp<any>>();
-  const [firstName, setFirstName] = useState<string | null>(null);
   const dispatch = useDispatch();
   const wealthCards = useSelector(
     (state: RootState) => state.wealthCards.cards
   );
   const loading = useSelector((state: RootState) => state.wealthCards.loading);
+  const profile = useSelector((state: RootState) => state.profile);
   const tailwind = useTailwind();
   const [scale] = useState(new Animated.Value(1));
   const [eventCards, setEventCards] = useState<EventCard[]>([]);
@@ -96,8 +101,16 @@ const WealthHome = () => {
     },
   ];
 
+  // Reset loading state when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      setCheckingOnboarding(false);
+      dispatch(setLoading(false));
+    }, [dispatch])
+  );
+
   useEffect(() => {
-    const getProfile = async () => {
+    const checkOnboarding = async () => {
       try {
         setCheckingOnboarding(true);
         const {
@@ -105,15 +118,25 @@ const WealthHome = () => {
         } = await supabase.auth.getUser();
 
         if (user) {
-          const { data: profile } = await supabase
+          const { data: profileData } = await supabase
             .from("profiles")
             .select("*")
             .eq("id", user.id)
             .single();
 
-          if (profile) {
-            setFirstName(profile.first_name);
-            if (!profile.hascompletedwealthonboarding) {
+          if (profileData) {
+            // Update Redux profile state if not already set
+            if (!profile.firstName || !profile.lastName) {
+              dispatch(
+                setProfile({
+                  firstName: profileData.first_name,
+                  lastName: profileData.last_name,
+                  avatarUrl: profileData.avatar_url,
+                })
+              );
+            }
+
+            if (!profileData.hascompletedwealthonboarding) {
               navigation.navigate("WealthWelcome");
               return;
             }
@@ -145,8 +168,8 @@ const WealthHome = () => {
       }
     };
 
-    getProfile();
-  }, [navigation, dispatch]);
+    checkOnboarding();
+  }, [navigation, dispatch, profile.firstName, profile.lastName]);
 
   useEffect(() => {
     const fetchEventCards = async () => {
@@ -174,7 +197,7 @@ const WealthHome = () => {
     <View style={styles.container}>
       <View style={tailwind("mt-10")}>
         <Greeting
-          userName={firstName ? `${firstName}` : ""}
+          userName={profile.firstName ? `${profile.firstName}` : ""}
           notificationCount={8}
         />
       </View>
@@ -213,6 +236,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   scrollContainer: {
+    flexGrow: 1,
     padding: 12,
   },
   loadingContainer: {

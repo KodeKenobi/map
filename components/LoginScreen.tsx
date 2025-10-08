@@ -91,11 +91,8 @@ export default function LoginScreen({
         type: "success",
       });
 
-      // const { data: profile } = await supabase
-      //   .from("profiles")
-      //   .select("*")
-      //   .eq("id", data.user.id)
-      //   .single();
+      // Profile data will be fetched automatically by the auth state change listener
+      // in the main app layout, so no need to fetch it here
     } catch (error) {
       Alert.alert("Error", (error as Error).message);
     } finally {

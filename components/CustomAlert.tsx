@@ -19,6 +19,7 @@ interface CustomAlertProps {
   showCloseButton?: boolean;
   onAction?: () => void;
   actionText?: string;
+  onCloseAction?: () => void; // New prop for custom close action
 }
 
 const { width } = Dimensions.get("window");
@@ -32,6 +33,7 @@ export default function CustomAlert({
   showCloseButton = true,
   onAction,
   actionText,
+  onCloseAction,
 }: CustomAlertProps) {
   const getTypeConfig = () => {
     switch (type) {
@@ -129,7 +131,7 @@ export default function CustomAlert({
             {showCloseButton && (
               <TouchableOpacity
                 style={[styles.button, { backgroundColor: config.iconColor }]}
-                onPress={onClose}
+                onPress={onCloseAction || onClose}
               >
                 <Text style={styles.buttonText}>
                   {onAction && actionText ? "Cancel" : "Got it"}

@@ -45,8 +45,9 @@ import Home from "@/components/Home";
 import HomeOnboardingScreen from "@/components/HomeOnboarding";
 import BlogRead from "@/components/BlogRead";
 import UserUpdate from "@/components/UserUpdate";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { store } from "../store/store";
+import { setProfile } from "../store/slices/profileSlice";
 import ProductsScreen from "@/components/ProductsScreen";
 import CartScreen from "@/components/CartScreen";
 import WishlistScreen from "@/components/WishlistScreen";
@@ -61,8 +62,9 @@ const TailwindProviderFix = TailwindProvider as any;
 
 const Stack = createStackNavigator();
 
-const AppLayout = () => {
+const AppContent = () => {
   const colorScheme = useColorScheme();
+  const dispatch = useDispatch();
 
   const [isSplashFinished, setSplashFinished] = useState(false);
   const [isFontLoaded, setFontLoaded] = useState(false);
@@ -194,8 +196,38 @@ const AppLayout = () => {
     }
   }, [session]);
 
+  const fetchUserProfile = async (session: Session) => {
+    if (session?.user) {
+      try {
+        const { data: profile, error } = await supabase
+          .from("profiles")
+          .select("first_name, last_name, avatar_url")
+          .eq("id", session.user.id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching user profile:", error);
+        } else if (profile) {
+          // Store profile data in Redux
+          dispatch(
+            setProfile({
+              firstName: profile.first_name,
+              lastName: profile.last_name,
+              avatarUrl: profile.avatar_url,
+            })
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    }
+  };
+
   const checkFirstTimeUser = async (session: Session) => {
     if (session?.user) {
+      // First fetch the profile data
+      await fetchUserProfile(session);
+
       const { data: profile } = await supabase
         .from("profiles")
         .select("hascompletedprofileupdate, hascompletedhomeonboarding")
@@ -227,119 +259,119 @@ const AppLayout = () => {
   }
 
   return (
+    <ThemeProvider
+      value={colorScheme === "light" ? DefaultTheme : DefaultTheme}
+    >
+      <TailwindProviderFix utilities={utilities}>
+        <StatusBar
+          hidden={false}
+          backgroundColor={"white"}
+          barStyle={colorScheme === "dark" ? "dark-content" : "light-content"}
+          translucent={true}
+        />
+        <Stack.Navigator
+          initialRouteName={initialRoute}
+          screenOptions={{ headerShown: false }}
+        >
+          {!session ? (
+            <>
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="Register" component={RegisterScreen} />
+              <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+              <Stack.Screen name="OTPCode" component={OTPCodeComponent} />
+              <Stack.Screen
+                name="ResetPassword"
+                component={ResetPasswordComponent}
+              />
+            </>
+          ) : (
+            <>
+              <Stack.Screen name="Welcome" component={WelcomeScreen} />
+              <Stack.Screen
+                name="UpdateProfile"
+                component={UpdateProfileWrapper}
+                options={{
+                  gestureEnabled: false,
+                }}
+              />
+              <Stack.Screen
+                name="Home"
+                component={Home}
+                options={{
+                  gestureEnabled: false,
+                }}
+              />
+              <Stack.Screen
+                name="HomeOnboarding"
+                component={HomeOnboardingWrapper}
+              />
+              <Stack.Screen name="Profile" component={ProfileComponent} />
+              <Stack.Screen name="Notifications" component={Notifications} />
+              <Stack.Screen
+                name="WellnessWelcome"
+                component={WellnessWelcomeScreen}
+              />
+              <Stack.Screen
+                name="WellnessOnboarding"
+                component={WellnessOnboardingComponent}
+              />
+              <Stack.Screen name="WellnessHome" component={WellnessHome} />
+              <Stack.Screen name="Consult" component={ConsultScreen} />
+              <Stack.Screen
+                name="DoctorProfile"
+                component={DoctorProfileScreen}
+              />
+              <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+              <Stack.Screen
+                name="PaymentSuccessScreen"
+                component={PaymentSuccessScreen}
+              />
+              <Stack.Screen name="Message" component={MessageComponent} />
+              <Stack.Screen name="CallScreen" component={CallScreen} />
+              <Stack.Screen
+                name="WisdomWelcome"
+                component={WisdomWelcomeScreen}
+              />
+              <Stack.Screen name="WisdomHome" component={WisdomHome} />
+              <Stack.Screen
+                name="WisdomOnboarding"
+                component={WisdomOnboardingScreen}
+              />
+              <Stack.Screen name="Coaching" component={CoachingScreen} />
+              <Stack.Screen
+                name="WealthWelcome"
+                component={WealthWelcomeScreen}
+              />
+              <Stack.Screen name="Wealth" component={WealthHome} />
+              <Stack.Screen
+                name="WealthOnboarding"
+                component={WealthOnboardingScreen}
+              />
+              <Stack.Screen name="Brands" component={BrandsComponent} />
+              <Stack.Screen name="BlogRead" component={BlogRead} />
+              <Stack.Screen
+                name="UserUpdate"
+                component={UserUpdate}
+                initialParams={{ session: session }}
+              />
+              <Stack.Screen name="Products" component={ProductsScreen} />
+              <Stack.Screen name="CartScreen" component={CartScreen} />
+              <Stack.Screen name="WishlistScreen" component={WishlistScreen} />
+              <Stack.Screen name="EventRead" component={EventRead} />
+              <Stack.Screen name="Treatments" component={Treatments} />
+            </>
+          )}
+        </Stack.Navigator>
+        <Toast />
+      </TailwindProviderFix>
+    </ThemeProvider>
+  );
+};
+
+const AppLayout = () => {
+  return (
     <Provider store={store}>
-      <ThemeProvider
-        value={colorScheme === "light" ? DefaultTheme : DefaultTheme}
-      >
-        <TailwindProviderFix utilities={utilities}>
-          <StatusBar
-            hidden={false}
-            backgroundColor={"white"}
-            barStyle={colorScheme === "dark" ? "dark-content" : "light-content"}
-            translucent={true}
-          />
-          <Stack.Navigator
-            initialRouteName={initialRoute}
-            screenOptions={{ headerShown: false }}
-          >
-            {!session ? (
-              <>
-                <Stack.Screen name="Login" component={LoginScreen} />
-                <Stack.Screen name="Register" component={RegisterScreen} />
-                <Stack.Screen
-                  name="ForgotPassword"
-                  component={ForgotPassword}
-                />
-                <Stack.Screen name="OTPCode" component={OTPCodeComponent} />
-                <Stack.Screen
-                  name="ResetPassword"
-                  component={ResetPasswordComponent}
-                />
-              </>
-            ) : (
-              <>
-                <Stack.Screen name="Welcome" component={WelcomeScreen} />
-                <Stack.Screen
-                  name="UpdateProfile"
-                  component={UpdateProfileWrapper}
-                  options={{
-                    gestureEnabled: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="Home"
-                  component={Home}
-                  options={{
-                    gestureEnabled: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="HomeOnboarding"
-                  component={HomeOnboardingWrapper}
-                />
-                <Stack.Screen name="Profile" component={ProfileComponent} />
-                <Stack.Screen name="Notifications" component={Notifications} />
-                <Stack.Screen
-                  name="WellnessWelcome"
-                  component={WellnessWelcomeScreen}
-                />
-                <Stack.Screen
-                  name="WellnessOnboarding"
-                  component={WellnessOnboardingComponent}
-                />
-                <Stack.Screen name="WellnessHome" component={WellnessHome} />
-                <Stack.Screen name="Consult" component={ConsultScreen} />
-                <Stack.Screen
-                  name="DoctorProfile"
-                  component={DoctorProfileScreen}
-                />
-                <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
-                <Stack.Screen
-                  name="PaymentSuccessScreen"
-                  component={PaymentSuccessScreen}
-                />
-                <Stack.Screen name="Message" component={MessageComponent} />
-                <Stack.Screen name="CallScreen" component={CallScreen} />
-                <Stack.Screen
-                  name="WisdomWelcome"
-                  component={WisdomWelcomeScreen}
-                />
-                <Stack.Screen name="WisdomHome" component={WisdomHome} />
-                <Stack.Screen
-                  name="WisdomOnboarding"
-                  component={WisdomOnboardingScreen}
-                />
-                <Stack.Screen name="Coaching" component={CoachingScreen} />
-                <Stack.Screen
-                  name="WealthWelcome"
-                  component={WealthWelcomeScreen}
-                />
-                <Stack.Screen name="Wealth" component={WealthHome} />
-                <Stack.Screen
-                  name="WealthOnboarding"
-                  component={WealthOnboardingScreen}
-                />
-                <Stack.Screen name="Brands" component={BrandsComponent} />
-                <Stack.Screen name="BlogRead" component={BlogRead} />
-                <Stack.Screen
-                  name="UserUpdate"
-                  component={UserUpdate}
-                  initialParams={{ session: session }}
-                />
-                <Stack.Screen name="Products" component={ProductsScreen} />
-                <Stack.Screen name="CartScreen" component={CartScreen} />
-                <Stack.Screen
-                  name="WishlistScreen"
-                  component={WishlistScreen}
-                />
-                <Stack.Screen name="EventRead" component={EventRead} />
-                <Stack.Screen name="Treatments" component={Treatments} />
-              </>
-            )}
-          </Stack.Navigator>
-          <Toast />
-        </TailwindProviderFix>
-      </ThemeProvider>
+      <AppContent />
     </Provider>
   );
 };

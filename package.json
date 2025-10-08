@@ -17,6 +17,7 @@
     "create:tailwind": "create-tailwind-rn"
   },
   "dependencies": {
+    "@expo/config-plugins": "^54.0.2",
     "@expo/vector-icons": "^14.0.2",
     "@react-email/components": "^0.0.33",
     "@react-native-async-storage/async-storage": "^1.23.1",
@@ -32,6 +33,7 @@
     "axios": "^1.8.1",
     "cors": "^2.8.5",
     "expo": "~52.0.25",
+    "expo-build-properties": "^1.0.9",
     "expo-checkbox": "~4.0.1",
     "expo-dev-client": "~5.0.20",
     "expo-font": "~13.0.3",

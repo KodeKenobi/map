@@ -35,6 +35,7 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
     message: "",
     onAction: undefined as (() => void) | undefined,
     actionText: undefined as string | undefined,
+    onCloseAction: undefined as (() => void) | undefined,
   });
 
   const tailwind = useTailwind();
@@ -44,9 +45,17 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
     title: string,
     message: string,
     onAction?: () => void,
-    actionText?: string
+    actionText?: string,
+    onCloseAction?: () => void
   ) => {
-    setAlertConfig({ type, title, message, onAction, actionText });
+    setAlertConfig({
+      type,
+      title,
+      message,
+      onAction,
+      actionText,
+      onCloseAction,
+    });
     setAlertVisible(true);
   };
 
@@ -143,7 +152,14 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
         showAlert(
           "success",
           "Check Your Email",
-          `We've sent a confirmation email to ${email}. Please check your inbox and click the verification link to complete your registration.`
+          `We've sent a confirmation email to ${email}. Please check your inbox and click the verification link to complete your registration.`,
+          undefined,
+          undefined,
+          () => {
+            // Navigate to sign-in screen when user clicks "Got it"
+            setAlertVisible(false);
+            navigation.navigate("Login");
+          }
         );
       } else if (session) {
         // User created and already confirmed (rare)
@@ -321,6 +337,7 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
         onClose={() => setAlertVisible(false)}
         onAction={alertConfig.onAction}
         actionText={alertConfig.actionText}
+        onCloseAction={alertConfig.onCloseAction}
       />
     </SafeAreaView>
   );

@@ -35,13 +35,22 @@ const ProfileComponent = () => {
       if (user) {
         const cachedAvatarUrl = await AsyncStorage.getItem(`avatar-${user.id}`);
         if (cachedAvatarUrl) {
-          dispatch(
-            setProfile({
-              firstName: profile.firstName,
-              lastName: profile.lastName,
-              avatarUrl: cachedAvatarUrl,
-            })
-          );
+          // Use cached avatar but still fetch fresh profile data
+          const { data, error } = await supabase
+            .from("profiles")
+            .select("first_name, last_name, avatar_url")
+            .eq("id", user.id)
+            .single();
+
+          if (!error && data) {
+            dispatch(
+              setProfile({
+                firstName: data.first_name,
+                lastName: data.last_name,
+                avatarUrl: cachedAvatarUrl, // Use cached avatar
+              })
+            );
+          }
         } else {
           const { data, error } = await supabase
             .from("profiles")

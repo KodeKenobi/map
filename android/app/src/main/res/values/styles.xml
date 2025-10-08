@@ -1,0 +1,13 @@
+<resources>
+    <!-- Theme applied to the Android Window while the process is starting when the OS is able to show a UI. -->
+    <style name="Theme.App.SplashScreen" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Set the splash screen background. -->
+        <item name="android:windowBackground">@drawable/splashscreen_background</item>
+        <item name="android:statusBarColor">@color/splashscreen_statusbar_color</item>
+    </style>
+    <!-- Theme applied to the Android Window as soon as the process has started.
+         This theme is only used when your app is not using a splash screen. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+    </style>
+</resources>

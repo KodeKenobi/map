@@ -7,7 +7,6 @@ import {
   Text,
   Alert,
   StyleSheet,
-  AppState,
   ScrollView,
   SafeAreaView,
 } from "react-native";
@@ -18,14 +17,6 @@ import Toast from "react-native-toast-message";
 import ButtonComponent from "./ButtonComponent";
 import { supabase } from "../lib/supabase";
 
-AppState.addEventListener("change", (state) => {
-  if (state === "active") {
-    supabase.auth.startAutoRefresh();
-  } else {
-    supabase.auth.stopAutoRefresh();
-  }
-});
-
 export default function LoginScreen({
   navigation,
   route,
@@ -33,6 +24,13 @@ export default function LoginScreen({
   navigation: any;
   route?: any;
 }) {
+  console.log("🔐 LoginScreen rendered");
+  console.log("🔐 LoginScreen props:", {
+    navigation: !!navigation,
+    route: !!route,
+  });
+  console.log("🔐 LoginScreen timestamp:", new Date().toISOString());
+
   const tailwind = useTailwind();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,47 +40,90 @@ export default function LoginScreen({
   const [showEmailConfirmedMessage, setShowEmailConfirmedMessage] =
     useState(false);
 
+  // Log state changes
+  console.log("🔐 LoginScreen state:", {
+    email: email ? `${email.substring(0, 3)}***` : "empty",
+    password: password ? "***" : "empty",
+    isPasswordVisible,
+    loading,
+    isForgotPassword,
+    showEmailConfirmedMessage,
+  });
+
   useEffect(() => {
+    console.log("🔐 LoginScreen useEffect - checking email confirmation");
+    console.log("🔐 Route params:", route?.params);
     // Check if user came from email confirmation
     if (route?.params?.emailConfirmed) {
+      console.log("🔐 Email confirmed message will be shown");
       setShowEmailConfirmedMessage(true);
-      setTimeout(() => setShowEmailConfirmedMessage(false), 5000);
+      setTimeout(() => {
+        console.log("🔐 Hiding email confirmed message after 5 seconds");
+        setShowEmailConfirmedMessage(false);
+      }, 5000);
+    } else {
+      console.log("🔐 No email confirmation detected");
     }
   }, [route?.params]);
 
   useEffect(() => {
+    console.log("🔐 LoginScreen setting up auth state change listener");
     supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log(
+        "🔐 Auth state change in LoginScreen:",
+        event,
+        session?.user?.email
+      );
       if (event === "PASSWORD_RECOVERY") {
+        console.log("🔐 Password recovery event detected");
         const newPassword = prompt(
           "What would you like your new password to be?"
         );
 
         if (newPassword) {
+          console.log("🔐 Updating password");
           const { data, error } = await supabase.auth.updateUser({
             password: newPassword,
           });
 
-          if (data) alert("Password updated successfully!");
-          if (error) alert("There was an error updating your password.");
+          if (data) {
+            console.log("🔐 Password updated successfully");
+            alert("Password updated successfully!");
+          }
+          if (error) {
+            console.log("🔐 Error updating password:", error);
+            alert("There was an error updating your password.");
+          }
+        } else {
+          console.log("🔐 No new password provided");
         }
       }
     });
   }, []);
 
   async function signInWithEmail() {
+    console.log("🔐 signInWithEmail called");
+    console.log("🔐 Email:", email ? `${email.substring(0, 3)}***` : "empty");
+    console.log("🔐 Password provided:", !!password);
+    console.log("🔐 Setting loading to true");
+
     try {
       setLoading(true);
 
+      console.log("🔐 Attempting to sign in with Supabase");
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email,
         password: password,
       });
 
+      console.log("🔐 Sign in response:", { data: !!data, error: !!error });
       if (error) {
+        console.log("🔐 Sign in error:", error.message);
         Alert.alert("Error", error.message);
         return;
       }
 
+      console.log("🔐 Sign in successful, showing toast");
       Toast.show({
         text1: "Login successful",
         position: "bottom",
@@ -91,34 +132,52 @@ export default function LoginScreen({
         type: "success",
       });
 
+      console.log(
+        "🔐 Profile data will be fetched automatically by the auth state change listener"
+      );
       // Profile data will be fetched automatically by the auth state change listener
       // in the main app layout, so no need to fetch it here
     } catch (error) {
+      console.error("🔐 Login error:", error);
       Alert.alert("Error", (error as Error).message);
     } finally {
+      console.log("🔐 Setting loading to false");
       setLoading(false);
     }
   }
 
   async function handleResetPassword() {
+    console.log("🔐 handleResetPassword called");
+    console.log("🔐 Email:", email ? `${email.substring(0, 3)}***` : "empty");
+
     if (!email) {
+      console.log("🔐 No email provided for password reset");
       Alert.alert("Error", "Please enter your email address");
       return;
     }
 
     try {
+      console.log("🔐 Setting loading to true for password reset");
       setLoading(true);
       const redirectTo = __DEV__
         ? "exp://localhost:19000/--/reset-password"
         : "com.supabase://auth/callback";
 
+      console.log("🔐 Redirect URL for password reset:", redirectTo);
+      console.log("🔐 Sending password reset email");
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo,
       });
 
+      console.log("🔐 Password reset response:", {
+        data: !!data,
+        error: !!error,
+      });
       if (error) {
+        console.log("🔐 Password reset error:", error.message);
         Alert.alert("Error", error.message);
       } else {
+        console.log("🔐 Password reset email sent successfully");
         Alert.alert(
           "Password Reset",
           "Check your email for the password reset link"
@@ -126,11 +185,42 @@ export default function LoginScreen({
         setIsForgotPassword(false);
       }
     } catch (error) {
+      console.error("🔐 Password reset error:", error);
       Alert.alert("Error", (error as Error).message);
     } finally {
+      console.log("🔐 Setting loading to false for password reset");
       setLoading(false);
     }
   }
+
+  // Input change handlers with logging
+  const handleEmailChange = (text: string) => {
+    console.log(
+      "🔐 Email input changed:",
+      text ? `${text.substring(0, 3)}***` : "empty"
+    );
+    setEmail(text);
+  };
+
+  const handlePasswordChange = (text: string) => {
+    console.log("🔐 Password input changed:", text ? "***" : "empty");
+    setPassword(text);
+  };
+
+  const handlePasswordVisibilityToggle = () => {
+    console.log("🔐 Password visibility toggled:", !isPasswordVisible);
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
+  const handleForgotPasswordToggle = () => {
+    console.log("🔐 Forgot password toggled:", !isForgotPassword);
+    if (isForgotPassword) {
+      setIsForgotPassword(false);
+    } else {
+      setIsForgotPassword(true);
+      setPassword("");
+    }
+  };
 
   useEffect(() => {}, []);
 
@@ -169,7 +259,7 @@ export default function LoginScreen({
           placeholder="Email"
           keyboardType="email-address"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={handleEmailChange}
           id="email"
           name="email"
           aria-label="Email Address"
@@ -187,13 +277,13 @@ export default function LoginScreen({
                 placeholder="Password"
                 secureTextEntry={!isPasswordVisible}
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={handlePasswordChange}
                 id="password"
                 name="password"
                 aria-label="Password"
               />
               <TouchableOpacity
-                onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                onPress={handlePasswordVisibilityToggle}
                 style={styles.eyeIcon}
               >
                 <MaterialIcons
@@ -207,14 +297,7 @@ export default function LoginScreen({
         )}
         <TouchableOpacity
           style={styles.forgotPassword}
-          onPress={() => {
-            if (isForgotPassword) {
-              setIsForgotPassword(false);
-            } else {
-              setIsForgotPassword(true);
-              setPassword("");
-            }
-          }}
+          onPress={handleForgotPasswordToggle}
         >
           <AppText style={tailwind("text-md font-semibold")}>
             <Text>

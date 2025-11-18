@@ -6,7 +6,6 @@ import {
   ScrollView,
   SafeAreaView,
   Alert,
-  AppState,
 } from "react-native";
 import { StyleSheet } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";

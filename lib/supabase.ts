@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import "react-native-url-polyfill/auto";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Get your Supabase URL and anon key from your Supabase project settings
 const supabaseUrl = "https://behgffwegnpbjuhepstg.supabase.co";
@@ -24,7 +25,7 @@ const getRedirectUrl = () => {
   }
 };
 
-// Create Supabase client with proper configuration
+// Create Supabase client with proper configuration for React Native
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     // Enable automatic session refresh
@@ -33,6 +34,10 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     persistSession: true,
     // Detect session from URL (for email confirmation)
     detectSessionInUrl: true,
+    // Explicitly use AsyncStorage for React Native
+    storage: AsyncStorage,
+    // Storage key for the session
+    storageKey: "supabase.auth.token",
   },
 });
 

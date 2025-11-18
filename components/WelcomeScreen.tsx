@@ -9,6 +9,12 @@ export default function WelcomeScreen({ navigation }: { navigation: any }) {
   const tailwind = useTailwind();
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
 
+  console.log("🎯 WELCOME SCREEN RENDERED");
+  console.log("🎯 WelcomeScreen: Component rendered");
+  console.log("🎯 WelcomeScreen: Component props:", {
+    navigation: !!navigation,
+  });
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {

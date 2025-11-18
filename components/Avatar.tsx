@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import ButtonComponent from "./ButtonComponent";
 import { useTailwind } from "tailwind-rn";
@@ -22,6 +22,7 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
     message: "",
   });
   const avatarSize = { height: size, width: size };
+  const circleRadius = size / 2;
   const tailwind = useTailwind();
 
   const showAlert = (
@@ -41,36 +42,16 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
     try {
       console.log("🔄 Downloading image from path:", path);
 
-      const { data, error } = await supabase.storage
-        .from("avatars")
-        .download(path);
+      // Get the public URL for the image
+      const { data } = supabase.storage.from("avatars").getPublicUrl(path);
 
-      if (error) {
-        console.error("❌ Supabase storage download error:", error);
-        throw error;
+      if (data?.publicUrl) {
+        console.log("✅ Got public URL for image:", data.publicUrl);
+        setAvatarUrl(data.publicUrl);
+      } else {
+        console.error("❌ Failed to get public URL for image");
+        showAlert("error", "Download Failed", "Could not get image URL");
       }
-
-      console.log(
-        "✅ Image downloaded successfully, size:",
-        data?.size || "unknown"
-      );
-
-      const fr = new FileReader();
-      fr.readAsDataURL(data);
-      fr.onload = () => {
-        console.log("✅ Image converted to data URL successfully");
-        setAvatarUrl(fr.result as string);
-        try {
-          // Cache the avatar URL
-          localStorage.setItem(`avatar-${path}`, fr.result as string);
-        } catch (error) {
-          console.error("Error saving avatar URL to storage:", error);
-        }
-      };
-      fr.onerror = (error) => {
-        console.error("❌ FileReader error:", error);
-        showAlert("error", "Download Failed", "Failed to process the image");
-      };
     } catch (error) {
       console.error("❌ Download image error:", error);
       if (error instanceof Error) {
@@ -89,6 +70,7 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
     try {
       setUploading(true);
       console.log("🔄 Starting avatar upload process...");
+      console.log("🖼️ Avatar clicked - opening image picker");
 
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -133,71 +115,13 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
         throw new Error("No image uri!");
       }
 
-      // Automatically resize image if it's too large
-      const maxDimension = 512; // Resize to max 512x512 for profile pictures
+      // For now, just proceed with the original image
+      // Image resizing can be handled by the ImagePicker quality setting
+      console.log("📊 Image dimensions:", image.width, "x", image.height);
+      console.log("📊 Image file size:", image.fileSize, "bytes");
 
-      if (image.width > maxDimension || image.height > maxDimension) {
-        console.log(
-          "🔄 Image too large, resizing from",
-          image.width,
-          "x",
-          image.height,
-          "to max",
-          maxDimension,
-          "x",
-          maxDimension
-        );
-
-        // Create a canvas to resize the image
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-
-        // Calculate new dimensions maintaining aspect ratio
-        const aspectRatio = image.width / image.height;
-        let newWidth, newHeight;
-
-        if (aspectRatio > 1) {
-          // Landscape
-          newWidth = maxDimension;
-          newHeight = maxDimension / aspectRatio;
-        } else {
-          // Portrait or square
-          newHeight = maxDimension;
-          newWidth = maxDimension * aspectRatio;
-        }
-
-        canvas.width = newWidth;
-        canvas.height = newHeight;
-
-        // Create HTML image element and draw resized image
-        const img = new (window as any).Image();
-        img.onload = () => {
-          ctx?.drawImage(img, 0, 0, newWidth, newHeight);
-          const resizedDataUrl = canvas.toDataURL("image/jpeg", 0.8);
-
-          console.log("✅ Image resized to:", newWidth, "x", newHeight);
-          console.log(
-            "📊 New URI length:",
-            resizedDataUrl.length,
-            "characters"
-          );
-
-          // Continue with upload using resized image
-          uploadResizedImage({
-            ...image,
-            uri: resizedDataUrl,
-            width: newWidth,
-            height: newHeight,
-            fileSize: Math.round(resizedDataUrl.length * 0.75),
-          });
-        };
-
-        img.src = image.uri;
-        return; // Exit early, will continue in img.onload
-      } else {
-        // Image is already small enough, proceed normally
-        uploadResizedImage(image);
-      }
+      // Proceed with upload using the original image
+      uploadResizedImage(image);
     } catch (error) {
       console.error("❌ Upload avatar error:", error);
       setAvatarUrl(null);
@@ -273,31 +197,48 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
 
   return (
     <View style={tailwind("flex-col items-center justify-center")}>
-      <View
+      <TouchableOpacity
+        onPress={uploadAvatar}
+        disabled={uploading}
         style={{
+          width: size,
+          height: size,
           borderWidth: 4,
-          borderColor: "#999",
-          borderRadius: 160,
+          borderColor: uploading ? "#ccc" : "#F9CF67",
+          borderRadius: circleRadius, // Perfect circle
+          backgroundColor: "#FFFFFF", // White background
           overflow: "hidden",
+          opacity: uploading ? 0.7 : 1,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
         }}
+        activeOpacity={0.8}
       >
         {avatarUrl ? (
           <Image
             source={{ uri: avatarUrl }}
-            accessibilityLabel="Avatar"
+            accessibilityLabel="Avatar - Tap to change"
             style={[avatarSize, styles.avatar, styles.image]}
           />
         ) : (
-          <Image
-            source={require("../assets/images/faviconBig.png")}
-            accessibilityLabel="Default Avatar"
-            style={[avatarSize, styles.avatar, styles.image]}
-          />
+          <View style={[avatarSize, styles.avatar, styles.noImage]}>
+            <Image
+              source={require("../assets/images/faviconBig.png")}
+              accessibilityLabel="Default Avatar - Tap to select image"
+              style={styles.image}
+            />
+          </View>
         )}
-      </View>
+      </TouchableOpacity>
       <View style={tailwind("mt-2")}>
         <ButtonComponent
-          title={uploading ? "Uploading ..." : "Upload Image"}
+          title={uploading ? "Uploading ..." : "Select Image"}
           onPress={uploadAvatar}
           disabled={uploading}
           color="transparent"
@@ -317,19 +258,17 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
 
 const styles = StyleSheet.create({
   avatar: {
-    borderRadius: 5,
+    borderRadius: 0, // Let the parent handle the border radius
     overflow: "hidden",
-    width: 180,
-    height: 180,
   },
   image: {
-    objectFit: "contain",
-    paddingTop: 0,
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover", // Ensure image covers the entire circle
   },
   noImage: {
-    backgroundColor: "#333",
-    borderWidth: 5,
-    borderColor: "#ccc",
-    borderRadius: 5,
+    backgroundColor: "#FFFFFF", // White background for default image
+    borderWidth: 0,
+    borderRadius: 0,
   },
 });

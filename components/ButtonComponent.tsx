@@ -27,6 +27,18 @@ export default function ButtonComponent({
 }) {
   const tailwind = useTailwind();
 
+  const handlePress = () => {
+    console.log("🔘 Button pressed:", title);
+    console.log("🔘 Button disabled:", disabled);
+    console.log("🔘 Button timestamp:", new Date().toISOString());
+    if (!disabled) {
+      console.log("🔘 Executing button onPress function");
+      onPress();
+    } else {
+      console.log("🔘 Button is disabled, ignoring press");
+    }
+  };
+
   const sizeStyles = {
     small: "p-2 text-sm",
     medium: "p-4 text-base w-full",
@@ -43,7 +55,7 @@ export default function ButtonComponent({
         tailwind(sizeStyles[size]),
         disabled && { opacity: 0.5 },
       ]}
-      onPress={disabled ? undefined : onPress}
+      onPress={handlePress}
       disabled={disabled}
     >
       <View style={tailwind("flex-row items-center justify-center w-full")}>

@@ -29,6 +29,14 @@ export default function UpdateProfile({
 }: UpdateProfileProps) {
   const tailwind = useTailwind();
   const [loading, setLoading] = useState(true);
+
+  console.log("📝 UPDATE PROFILE SCREEN RENDERED");
+  console.log("📝 UpdateProfile: Component rendered");
+  console.log("📝 UpdateProfile: Component props:", {
+    navigation: !!navigation,
+    session: !!session,
+    userEmail: session?.user?.email,
+  });
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
@@ -72,13 +80,19 @@ export default function UpdateProfile({
       if (error) throw error;
 
       if (data?.hascompletedprofileupdate) {
+        console.log(
+          "✅ Profile already completed, redirecting based on onboarding status"
+        );
         // Profile is completed, check home onboarding status
         if (data?.hascompletedhomeonboarding) {
+          console.log("🏠 Home onboarding completed, going to Home");
           navigation.replace("Home", { animation: "slide" });
         } else {
+          console.log("🏠 Home onboarding not completed, going to Welcome");
           navigation.replace("Welcome", { animation: "slide" }); // Go to Welcome first
         }
       } else {
+        console.log("📝 Profile not completed, showing update form");
         getProfile(); // If profile not completed, get profile data to display form
       }
     } catch (error) {

@@ -36,27 +36,51 @@ const ConsultScreen = () => {
   const [loading, setLoading] = useState(true);
   const [scale] = useState(new Animated.Value(1));
 
-  // Hardcoded doctor data as fallback
-  const hardcodedDoctor: Doctor = {
-    id: 1,
-    fullname: "Dr. S Ndou",
-    job_title: "General Practitioner",
-    experience: 8,
-    rating: 4.8,
-    consultation_fee: 150,
-    job_description:
-      "Experienced general practitioner specializing in preventive care and wellness consultations.",
-    avatar_url: "doctor.png",
-  };
+  // Hardcoded doctors data
+  const hardcodedDoctors: Doctor[] = [
+    {
+      id: 1,
+      fullname: "Coach Mpho",
+      job_title: "Life & Wellness Coach",
+      experience: 5,
+      rating: 4.9,
+      consultation_fee: 200,
+      job_description:
+        "Empowering women through the QueenPower Program, guiding life transitions and helping unlock true potential.",
+      avatar_url: "doctor.png",
+    },
+    {
+      id: 2,
+      fullname: "Dr. Awelani",
+      job_title: "Medical Doctor",
+      experience: 10,
+      rating: 4.7,
+      consultation_fee: 180,
+      job_description:
+        "Specializing in Baby and Mommy care, Immunisations & Vaccinations, Medical Check-ups, Health Screenings, Chronic Management, and Sick Visits.",
+      avatar_url: "doctor.png",
+    },
+    {
+      id: 3,
+      fullname: "Lerato",
+      job_title: "Wellness Practitioner",
+      experience: 6,
+      rating: 4.8,
+      consultation_fee: 250,
+      job_description:
+        "Offering Ozone Therapy, Lymph Therapy, Infrared Sauna, Float Therapy, and Ice Bath treatments for holistic wellness.",
+      avatar_url: "doctor.png",
+    },
+  ];
 
   useEffect(() => {
     const fetchDoctors = async () => {
       const doctorsData = await getAllDoctors();
-      // Use hardcoded doctor if no doctors from database
+      // Use hardcoded doctors if no doctors from database
       if (doctorsData && doctorsData.length > 0) {
         setDoctors(doctorsData);
       } else {
-        setDoctors([hardcodedDoctor]);
+        setDoctors(hardcodedDoctors);
       }
       setLoading(false);
     };

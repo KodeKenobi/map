@@ -1,23 +1,44 @@
 import React from "react";
-import { View, Image } from "react-native";
+import { View, Image, TouchableOpacity } from "react-native";
 import AppText from "./AppText";
 import { useTailwind } from "tailwind-rn";
+import { useNavigation } from "@react-navigation/native";
+
+interface Service {
+  title: string;
+  description: string;
+}
 
 interface CoachingCardProps {
   imageUrl: any;
   title?: string;
   backgroundColor?: string;
+  services?: Service[];
 }
 
 const CoachingCardComponent: React.FC<CoachingCardProps> = ({
   imageUrl,
   title,
   backgroundColor,
+  services,
 }) => {
   const tailwind = useTailwind();
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    if (services && services.length > 0) {
+      (navigation as any).navigate("CoachingServicesDetail", {
+        title,
+        services,
+        backgroundColor,
+        imageUrl,
+      });
+    }
+  };
 
   return (
-    <View
+    <TouchableOpacity
+      onPress={handlePress}
       style={[
         tailwind("p-3 rounded-lg mr-4 border-2"),
         {
@@ -43,7 +64,7 @@ const CoachingCardComponent: React.FC<CoachingCardProps> = ({
           {title}
         </AppText>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

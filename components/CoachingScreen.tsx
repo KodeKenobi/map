@@ -14,6 +14,7 @@ import Ionicons from "@expo/vector-icons/build/Ionicons";
 import WisdomNavMenu from "./WisdomNavMenu";
 import HorizontalCardScroll from "./HorizontalCardScroll";
 import CoachingPicksCards from "./CoachingPicksCards";
+import CoachingCardComponent from "./CoachingCardComponent";
 
 const CoachingScreen = () => {
   const tailwind = useTailwind();
@@ -108,19 +109,122 @@ const CoachingScreen = () => {
 
   const coachingCards = [
     {
-      imageUrl: require("../assets/images/career-icon.png"),
-      title: "Career Coaching",
-      backgroundColor: "rgba(115, 69, 182, 0.16)",
-    },
-    {
       imageUrl: require("../assets/images/life-coach-icon.png"),
       title: "Life Coaching",
       backgroundColor: "rgba(115, 69, 182, 0.16)",
+      services: [
+        {
+          title: "Inner Child Healing",
+          description:
+            "Resolve childhood wounds and promote emotional well-being",
+        },
+        {
+          title: "Relationships",
+          description: "Build and maintain healthy, fulfilling relationships",
+        },
+        {
+          title: "Trauma Healing",
+          description: "Overcome past traumas and promote emotional resilience",
+        },
+        {
+          title: "Life Planning",
+          description: "Create a clear vision and plan for your life",
+        },
+        {
+          title: "Life Purpose",
+          description: "Discover and align with your life's purpose",
+        },
+        {
+          title: "Family Constellations",
+          description: "Explore and heal family dynamics",
+        },
+        {
+          title: "Generational Healing",
+          description:
+            "Address and heal intergenerational patterns and traumas",
+        },
+        {
+          title: "Wealth Planning",
+          description: "Build prosperity and financial freedom",
+        },
+      ],
+    },
+    {
+      imageUrl: require("../assets/images/career-icon.png"),
+      title: "Career Coaching",
+      backgroundColor: "rgba(115, 69, 182, 0.16)",
+      services: [
+        {
+          title: "Career Progression",
+          description:
+            "Advance in your current career or transition to a new one",
+        },
+        {
+          title: "Succession and Promotion",
+          description: "Prepare for leadership roles or promotions",
+        },
+        {
+          title: "Career Guidance",
+          description: "Explore and discover your ideal career path",
+        },
+      ],
+    },
+    {
+      imageUrl: require("../assets/images/training-icon.png"),
+      title: "Leadership Coaching",
+      backgroundColor: "rgba(115, 69, 182, 0.16)",
+      services: [
+        {
+          title: "Lead Self",
+          description:
+            "Develop self-awareness, self-leadership, and personal growth",
+        },
+        {
+          title: "Lead Teams",
+          description: "Build and lead high-performing teams",
+        },
+        {
+          title: "Lead Companies",
+          description: "Develop leadership skills for organizational success",
+        },
+        {
+          title: "Lead Society",
+          description: "Make a positive impact in your community and society",
+        },
+      ],
     },
     {
       imageUrl: require("../assets/images/business-coaching-icon.png"),
-      title: "Business Coaching",
+      title: "Entrepreneurship Coaching",
       backgroundColor: "rgba(115, 69, 182, 0.16)",
+      services: [
+        {
+          title: "Visioning",
+          description: "Create a clear and compelling vision for your business",
+        },
+        {
+          title: "Marketing",
+          description: "Develop effective marketing strategies and tactics",
+        },
+        {
+          title: "Funding",
+          description: "Explore funding options and create a financial plan",
+        },
+        {
+          title: "Financial Modeling",
+          description:
+            "Build a comprehensive financial model for your business",
+        },
+        {
+          title: "Personal Branding",
+          description: "Develop a strong personal brand and online presence",
+        },
+        {
+          title: "Sustainability",
+          description:
+            "Build a sustainable and environmentally conscious business",
+        },
+      ],
     },
   ];
 
@@ -164,26 +268,34 @@ const CoachingScreen = () => {
               </Text>
             </View>
             <View style={tailwind("p-4")}>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-              >
-                <CoachingPicksCards cards={coachingCards} />
-              </ScrollView>
-            </View>
-            <View style={tailwind("mt-4 p-4")}>
-              <Text style={tailwind("text-lg font-bold")}>
-                {" "}
-                Find Your Perfect Session
-              </Text>
-            </View>
-            <View style={tailwind("p-4")}>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-              >
-                <HorizontalCardScroll cards={sessionCards} />
-              </ScrollView>
+              <View style={tailwind("flex-row justify-between mb-4")}>
+                <CoachingCardComponent
+                  imageUrl={coachingCards[0].imageUrl}
+                  title={coachingCards[0].title}
+                  backgroundColor={coachingCards[0].backgroundColor}
+                  services={coachingCards[0].services}
+                />
+                <CoachingCardComponent
+                  imageUrl={coachingCards[1].imageUrl}
+                  title={coachingCards[1].title}
+                  backgroundColor={coachingCards[1].backgroundColor}
+                  services={coachingCards[1].services}
+                />
+              </View>
+              <View style={tailwind("flex-row justify-between")}>
+                <CoachingCardComponent
+                  imageUrl={coachingCards[2].imageUrl}
+                  title={coachingCards[2].title}
+                  backgroundColor={coachingCards[2].backgroundColor}
+                  services={coachingCards[2].services}
+                />
+                <CoachingCardComponent
+                  imageUrl={coachingCards[3].imageUrl}
+                  title={coachingCards[3].title}
+                  backgroundColor={coachingCards[3].backgroundColor}
+                  services={coachingCards[3].services}
+                />
+              </View>
             </View>
           </ScrollView>
         </View>

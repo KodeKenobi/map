@@ -18,6 +18,7 @@ import { useTailwind } from "tailwind-rn";
 import WisdomNavMenu from "./WisdomNavMenu";
 import HorizontalCardScroll from "./HorizontalCardScroll";
 import BottomCTASection from "./BottomCTASection";
+import WideHomeCard from "./WideHomeCard";
 import { supabase } from "@/lib/supabase";
 import { useDispatch, useSelector } from "react-redux";
 import { setWisdomCards, setLoading } from "../store/slices/wisdomCardsSlice";
@@ -150,8 +151,19 @@ const WisdomHome = () => {
           <Text style={tailwind("text-lg font-bold")}> What's Happening</Text>
         </View>
         <View style={tailwind("p-4")}>
-          <HorizontalCardScroll cards={wisdomCards} />
+          <WideHomeCard
+            id={3}
+            imageUrl={require("../assets/images/wellness-seminar.png")}
+            title="Map Wealth"
+            subtitle="QUEENPRENEUR"
+            description="This one's all about supporting women-led businesses in the wellness ecosystem. They're celebrating women-owned and managed businesses, and they've even got awards and recognition programs in place. It's all about building an ecosystem of support for women who are changing the game in wellness. These services seem to be all about empowering women to take control of their lives, build meaningful connections, and thrive in their personal and professional journeys. She builds. She grows. She changes the game. to build an ecosystem of support for women-led businesses that serve the well-being of their market. Focus: Celebrating women-owned and managed businesses in the wellness ecosystem. This includes products and services related to: Wellness Ecosystem Categories (entries Open annually in April 2026, Awards to be held annually in Augst 2026) Tourism Wellness: Focuses on travel and leisure activities promoting relaxation, rejuvenation, and overall well-being. Holistic Wellness: Encompasses physical, emotional, mental, and spiritual well-being, often incorporating alternative therapies. Corporate Wellness: Aims to improve employees' health, productivity, and job satisfaction through workplace initiatives. Digital Wellness: Explores the impact of technology on mental and physical health, promoting healthy digital habits. Community Wellness: Focuses on building healthy communities through social connections, support networks, and collective well-being. Education Wellness: Integrates wellness principles into educational settings, promoting students' overall well-being and academic success. Lifestyle Wellness: Encompasses various aspects of daily life, such as nutrition, physical activity, stress management, and self-care. Environmental Wellness: Focuses on the interconnectedness of human well-being and the natural environment. Financial Wellness: Aims to promote financial stability, security, and well-being. Social Wellness: Emphasizes building and maintaining healthy relationships, social connections, and community engagement. Spiritual Wellness: Explores an individual's values, purpose, and meaning in life, often incorporating mindfulness and meditation practices."
+            cta="Read More"
+            backgroundColor="rgba(115, 69, 182, 0.16)"
+          />
         </View>
+        {/* <View style={tailwind("p-4")}>
+          <HorizontalCardScroll cards={wisdomCards} />
+        </View> */}
 
         <View style={tailwind("mb-4 flex items-center justify-center p-4")}>
           <BottomCTASection />

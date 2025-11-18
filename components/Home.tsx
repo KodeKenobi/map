@@ -49,7 +49,7 @@ const quickAccessCards = [
   {
     iconUrl: require("../assets/images/heart-bit-icon-white.png"),
     title: "Explore Wellness Services",
-    backgroundColor: "rgba(115, 69, 182, 0.16)",
+    backgroundColor: "rgba(34, 133, 100, 0.16)",
     iconBackgroundColor: "black",
   },
   {
@@ -132,7 +132,7 @@ const Home = () => {
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <HorizontalCardScroll cards={cards} />
         </ScrollView>
-        <View style={[tailwind("mt-0 ml-4")]}>
+        <View style={[tailwind("mt-4 mb-4 ml-4")]}>
           <AppText style={tailwind("text-lg font-bold")}>Quick Access</AppText>
         </View>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>

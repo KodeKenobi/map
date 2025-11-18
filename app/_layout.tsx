@@ -35,6 +35,8 @@ import WisdomWelcomeScreen from "@/components/WisdomWelcome";
 import WisdomHome from "@/components/WisdomHome";
 import WisdomOnboardingScreen from "@/components/WisdomOnboarding";
 import CoachingScreen from "@/components/CoachingScreen";
+import CoachingServicesDetail from "@/components/CoachingServicesDetail";
+import ResourcesScreen from "@/components/ResourcesScreen";
 import WealthHome from "@/components/WealthHome";
 import WealthWelcomeScreen from "@/components/WeathWelcome";
 import WealthOnboardingScreen from "@/components/WealthOnboarding";
@@ -640,6 +642,11 @@ const AppContent = () => {
                 component={WisdomOnboardingScreen}
               />
               <Stack.Screen name="Coaching" component={CoachingScreen} />
+              <Stack.Screen
+                name="CoachingServicesDetail"
+                component={CoachingServicesDetail}
+              />
+              <Stack.Screen name="Resources" component={ResourcesScreen} />
               <Stack.Screen
                 name="WealthWelcome"
                 component={WealthWelcomeScreen}

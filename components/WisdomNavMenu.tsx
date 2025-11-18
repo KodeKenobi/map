@@ -16,11 +16,6 @@ export default function WisdomNavMenu() {
       icon: require("../assets/images/coaching-icon.png"),
     },
     {
-      id: "2",
-      title: "Mindfulness",
-      icon: require("../assets/images/mindfulness-icon.png"),
-    },
-    {
       id: "3",
       title: "Community",
       icon: require("../assets/images/community-icon.png"),
@@ -29,11 +24,6 @@ export default function WisdomNavMenu() {
       id: "4",
       title: "Resources",
       icon: require("../assets/images/resource-icon.png"),
-    },
-    {
-      id: "5",
-      title: "Retreats",
-      icon: require("../assets/images/retreats-icon.png"),
     },
   ];
 

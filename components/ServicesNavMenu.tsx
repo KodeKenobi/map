@@ -22,12 +22,6 @@ export default function ServicesNavMenu({
       backgroundColor: "rgba(74, 244, 170, 0.16)",
     },
     {
-      id: "2",
-      title: "Treatments",
-      icon: "checkmark-circle",
-      image: require("../assets/images/treatments-nav.png"),
-    },
-    {
       id: "3",
       title: "Appointments",
       icon: "checkmark-circle",

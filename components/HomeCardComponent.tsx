@@ -93,20 +93,29 @@ const HomeCardComponent: React.FC<HomeCardProps> = ({
               StyleSheet.flatten([
                 tailwind("text-md font-bold"),
                 {
-                  height: 44, // Fixed height for 2 lines
-                  lineHeight: 22, // Consistent line height
-                  marginBottom: 8,
+                  marginBottom: 4,
                 },
               ]) as TextStyle
             }
-            numberOfLines={2}
+            numberOfLines={1}
             ellipsizeMode="tail"
           >
             {title}
           </AppText>
-          <Text style={tailwind("text-md mt-2")} numberOfLines={1}>
+
+          <Text
+            style={tailwind("text-sm font-semibold mb-2")}
+            numberOfLines={1}
+          >
             {subtitle}
           </Text>
+
+          {description && (
+            <Text style={tailwind("text-md mt-1")} numberOfLines={2}>
+              {description}
+            </Text>
+          )}
+
           <AppText
             style={tailwind("text-md font-extrabold mt-4")}
             color={textColor}

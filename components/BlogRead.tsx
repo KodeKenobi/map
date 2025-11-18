@@ -363,12 +363,7 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
           <Text style={tailwind("text-gray-600 mb-4")}>{subtitle}</Text>
 
           {description && (
-            <Text
-              style={[
-                tailwind("text-base mb-6 text-gray-800"),
-                { lineHeight: 24 },
-              ]}
-            >
+            <Text style={[tailwind(" mb-6 text-gray-800"), { lineHeight: 24 }]}>
               {description}
             </Text>
           )}

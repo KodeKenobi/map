@@ -1,15 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
-import {
-  View,
-  StyleSheet,
-  Image,
-  Text,
-  Animated,
-  ScrollView,
-} from "react-native";
+import { View, StyleSheet, Animated, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { setWealthCards, setLoading } from "../store/slices/wealthCardsSlice";
-import { supabase, getAllEventsCards } from "../lib/supabase";
+import { supabase } from "../lib/supabase";
 import { RootState } from "../store/store";
 import { setProfile } from "../store/slices/profileSlice";
 import {
@@ -20,25 +13,7 @@ import {
 import Greeting from "./Greeting";
 import BottomNav from "./BottomNav";
 import { useTailwind } from "tailwind-rn";
-import HorizontalCardScroll from "./HorizontalCardScroll";
-import LogoNavScroll from "./LogoNavScroll";
-import WealthNavMenu from "./WealthNavMenu";
-import EventsCardComponent from "./EventsCardComponent";
-import WealthHorizontalCardScroll from "./WealthHorizontalCardScroll";
-import EventsList from "./EventsList";
-
-// Define the type for event cards
-interface EventCard {
-  id: number;
-  title: string;
-  subtitle: string;
-  date: string;
-  tagline: string;
-  tag: string;
-  description: string;
-  image_url: string;
-  meta: any;
-}
+import WideHomeCard from "./WideHomeCard";
 
 const WealthHome = () => {
   const navigation = useNavigation<NavigationProp<any>>();
@@ -50,58 +25,9 @@ const WealthHome = () => {
   const profile = useSelector((state: RootState) => state.profile);
   const tailwind = useTailwind();
   const [scale] = useState(new Animated.Value(1));
-  const [eventCards, setEventCards] = useState<EventCard[]>([]);
   const [checkingOnboarding, setCheckingOnboarding] = useState<boolean>(true);
 
   console.log("📍 CURRENT SCREEN: WealthHome");
-
-  const coachingCards = [
-    {
-      imageUrl: require("../assets/images/kwani-logo.png"),
-      backgroundColor: "hsla(0, 0.00%, 100.00%, 0.16)",
-    },
-    {
-      imageUrl: require("../assets/images/bee-ing-logo.png"),
-      backgroundColor: "hsla(0, 0.00%, 100.00%, 0.16)",
-    },
-    {
-      imageUrl: require("../assets/images/roar-logo.png"),
-      backgroundColor: "hsla(0, 0.00%, 100.00%, 0.16)",
-    },
-  ];
-
-  const cards = [
-    {
-      id: 1,
-      imageUrl: require("../assets/images/wealth-home-card-1.jpg"),
-      title: "Free Wellness Webinar: The Path to Cellular Health",
-      cta: "Register Now >",
-      subtitle: "Join our free webinar to learn about cellular health.",
-      date: "Dec 15th - Join Now",
-      registrationText: "Register Now >",
-      backgroundColor: "rgba(252, 202, 102, 0.3)",
-    },
-    {
-      id: 2,
-      imageUrl: require("../assets/images/wealth-home-card-2.jpg"),
-      title: "Career Coaching: From Entry Level to C-Suite and beyond",
-      cta: "Explore Coaching >",
-      subtitle: "Make an appointment today to advance your career.",
-      date: "Make an appointment today",
-      registrationText: "Explore Coaching >",
-      backgroundColor: "rgba(252, 202, 102, 0.3)",
-    },
-    {
-      id: 3,
-      imageUrl: require("../assets/images/wealth-home-card-3.png"),
-      title: "Free Wellness Webinar: The Path to Cellular Health",
-      cta: "Register Now >",
-      subtitle: "Join our free webinar to learn about cellular health.",
-      date: "Dec 15th - Join Now",
-      registrationText: "Register Now >",
-      backgroundColor: "rgba(252, 202, 102, 0.3)",
-    },
-  ];
 
   // Reset loading state when screen comes into focus
   useFocusEffect(
@@ -143,17 +69,6 @@ const WealthHome = () => {
             }
           }
 
-          const allWealthCards = await supabase
-            .from("wealth_cards")
-            .select("*");
-          if (allWealthCards.data) {
-            dispatch(setWealthCards(allWealthCards.data));
-          }
-
-          // Fetch and log events cards
-          const eventsCards = await getAllEventsCards();
-          console.log("Events Cards:", eventsCards);
-
           dispatch(setLoading(false));
           setCheckingOnboarding(false);
         } else {
@@ -171,17 +86,6 @@ const WealthHome = () => {
 
     checkOnboarding();
   }, [navigation, dispatch, profile.firstName, profile.lastName]);
-
-  useEffect(() => {
-    const fetchEventCards = async () => {
-      const data = await getAllEventsCards();
-      if (data) {
-        setEventCards(data);
-      }
-    };
-
-    fetchEventCards();
-  }, []);
 
   if (loading || checkingOnboarding) {
     return (
@@ -203,27 +107,16 @@ const WealthHome = () => {
         />
       </View>
       <ScrollView contentContainerStyle={[styles.scrollContainer]}>
-        <View style={tailwind("mt-0")}>
-          <WealthNavMenu />
-        </View>
-        <View style={tailwind("mt-8 mb-8")}>
-          <Text style={tailwind("text-lg font-bold")}>
-            {" "}
-            Discover Franchise Opportunities
-          </Text>
-        </View>
-        <View style={[tailwind("mb-4")]}>
-          <HorizontalCardScroll cards={cards} />
-          {/* <EventsList /> */}
-        </View>
-        <View style={tailwind("mt-2 mb-8")}>
-          <Text style={tailwind("text-lg font-bold")}>
-            {" "}
-            Our Brands at a Glance
-          </Text>
-        </View>
-        <View style={tailwind("mt-0 mb-8")}>
-          <LogoNavScroll cards={coachingCards} />
+        <View style={tailwind("p-4")}>
+          <WideHomeCard
+            id={3}
+            imageUrl={require("../assets/images/wellness-seminar.png")}
+            title="Map Wealth"
+            subtitle="QUEENPRENEUR"
+            description="This one's all about supporting women-led businesses in the wellness ecosystem. They're celebrating women-owned and managed businesses, and they've even got awards and recognition programs in place. It's all about building an ecosystem of support for women who are changing the game in wellness. These services seem to be all about empowering women to take control of their lives, build meaningful connections, and thrive in their personal and professional journeys. She builds. She grows. She changes the game. to build an ecosystem of support for women-led businesses that serve the well-being of their market. Focus: Celebrating women-owned and managed businesses in the wellness ecosystem. This includes products and services related to: Wellness Ecosystem Categories (entries Open annually in April 2026, Awards to be held annually in Augst 2026) Tourism Wellness: Focuses on travel and leisure activities promoting relaxation, rejuvenation, and overall well-being. Holistic Wellness: Encompasses physical, emotional, mental, and spiritual well-being, often incorporating alternative therapies. Corporate Wellness: Aims to improve employees' health, productivity, and job satisfaction through workplace initiatives. Digital Wellness: Explores the impact of technology on mental and physical health, promoting healthy digital habits. Community Wellness: Focuses on building healthy communities through social connections, support networks, and collective well-being. Education Wellness: Integrates wellness principles into educational settings, promoting students' overall well-being and academic success. Lifestyle Wellness: Encompasses various aspects of daily life, such as nutrition, physical activity, stress management, and self-care. Environmental Wellness: Focuses on the interconnectedness of human well-being and the natural environment. Financial Wellness: Aims to promote financial stability, security, and well-being. Social Wellness: Emphasizes building and maintaining healthy relationships, social connections, and community engagement. Spiritual Wellness: Explores an individual's values, purpose, and meaning in life, often incorporating mindfulness and meditation practices."
+            cta="Read More"
+            backgroundColor="rgba(115, 69, 182, 0.16)"
+          />
         </View>
       </ScrollView>
       <BottomNav navigation={navigation} />
@@ -238,7 +131,6 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    padding: 12,
   },
   loadingContainer: {
     flex: 1,

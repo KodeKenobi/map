@@ -55,6 +55,26 @@ const EventRead: React.FC<EventReadProps> = ({ navigation, route }) => {
   } = route.params;
   const tailwind = useTailwind();
 
+  // Determine accent color based on subtitle or tag
+  const getAccentColor = () => {
+    // Wellness (QUEENPOWER) - Green
+    if (subtitle?.includes("QUEENPOWER") || tag?.includes("Wellness")) {
+      return "#228565"; // Wellness green
+    }
+    // Wisdom (QUEENCRICLE) - Gold
+    if (subtitle?.includes("QUEENCRICLE") || tag?.includes("Wisdom")) {
+      return "#FFD700"; // Gold
+    }
+    // Wealth (QUEENPRENEUR) - Purple
+    if (subtitle?.includes("QUEENPRENEUR") || tag?.includes("Wealth")) {
+      return "#7345B6"; // Wealth purple
+    }
+    // Default to purple
+    return "#7345B6";
+  };
+
+  const accentColor = getAccentColor();
+
   // Parse the tickets list from meta
   const tickets = JSON.parse(meta._tribe_tickets_list || "[]");
 
@@ -96,7 +116,45 @@ const EventRead: React.FC<EventReadProps> = ({ navigation, route }) => {
             }}
             style={styles.image}
           />
-          <AppText style={tailwind("text-lg font-bold")}>{title}</AppText>
+          <View
+            style={[
+              tailwind("flex-row items-start justify-between mb-4"),
+              { width: "100%" },
+            ]}
+          >
+            <View style={{ flex: 1, marginRight: 12 }}>
+              <AppText style={tailwind("text-lg font-bold")}>{title}</AppText>
+              {subtitle && (
+                <AppText style={tailwind("text-md text-gray-600 mt-2")}>
+                  {subtitle}
+                </AppText>
+              )}
+            </View>
+            <TouchableOpacity
+              style={{
+                backgroundColor: accentColor,
+                paddingHorizontal: 16,
+                paddingVertical: 10,
+                borderRadius: 8,
+                alignSelf: "flex-start",
+                minWidth: 100,
+              }}
+              onPress={() => {
+                // Navigate to booking or appointment screen
+                navigation.navigate("Consult");
+              }}
+            >
+              <Text
+                style={{
+                  color: "#FFFFFF",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                Book Now
+              </Text>
+            </TouchableOpacity>
+          </View>
           <AppText style={tailwind("text-md text-gray-600 mb-2 mt-4")}>
             {isWholeDayEvent(date)
               ? "All Day"

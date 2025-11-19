@@ -1,62 +1,127 @@
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  SafeAreaView,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert,
-  Platform,
-  StyleSheet,
-} from "react-native";
+import React from "react";
+import { View, SafeAreaView, TouchableOpacity, Alert } from "react-native";
 import { useTailwind } from "tailwind-rn";
 import { useNavigation } from "@react-navigation/native";
 import AppText from "./AppText";
 import { Ionicons } from "@expo/vector-icons";
-import Pdf from "react-native-pdf";
-import { Asset } from "expo-asset";
-import * as FileSystem from "expo-file-system";
+
+// Commented out PDF functionality - Coming Soon placeholder
+// import { useState, useEffect } from "react";
+// import { ActivityIndicator, Platform, StyleSheet, Linking, Share } from "react-native";
+// import { Asset } from "expo-asset";
+// import RNBlobUtil from "react-native-blob-util";
 
 const ResourcesScreen = () => {
   const tailwind = useTailwind();
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(true);
-  const [pdfUri, setPdfUri] = useState<string | null>(null);
-  const [numberOfPages, setNumberOfPages] = useState<number>(0);
 
-  useEffect(() => {
-    const loadPdf = async () => {
-      try {
-        // Load the PDF asset
-        const asset = Asset.fromModule(
-          require("../assets/docs/queenpower.pdf")
-        );
-        await asset.downloadAsync();
+  // Commented out PDF loading and download functionality
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState<string | null>(null);
+  // const [pdfSource, setPdfSource] = useState<string | null>(null);
+  // const [downloading, setDownloading] = useState(false);
 
-        if (asset.localUri) {
-          // For Android, we need to copy to a readable location
-          if (Platform.OS === "android") {
-            const fileUri = `${FileSystem.documentDirectory}queenpower.pdf`;
-            await FileSystem.copyAsync({
-              from: asset.localUri,
-              to: fileUri,
-            });
-            setPdfUri(fileUri);
-          } else {
-            setPdfUri(asset.localUri);
-          }
-        } else {
-          Alert.alert("Error", "Failed to load PDF file");
-        }
-      } catch (error) {
-        console.error("Error loading PDF:", error);
-        Alert.alert("Error", "Failed to load PDF file");
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   // Load PDF asset and get local file URI for react-native-pdf-renderer
+  //   const loadPdf = async () => {
+  //     try {
+  //       setLoading(true);
+  //       console.log("📄 Starting PDF load process...");
 
-    loadPdf();
-  }, []);
+  //       const asset = Asset.fromModule(
+  //         require("../assets/docs/queenpower.pdf")
+  //       );
+  //       console.log("📄 Asset created, downloading...");
+
+  //       await asset.downloadAsync();
+  //       console.log("📄 Asset downloaded, localUri:", asset.localUri);
+
+  //       if (asset.localUri) {
+  //         // react-native-pdf-renderer needs a file:// URI string
+  //         console.log("✅ PDF source set to:", asset.localUri);
+  //         setPdfSource(asset.localUri);
+  //       } else {
+  //         throw new Error(
+  //           "Failed to get local URI for PDF - asset.localUri is null"
+  //         );
+  //       }
+  //       setLoading(false);
+  //     } catch (err: any) {
+  //       console.error("❌ Error loading PDF asset:", err);
+  //       console.error("❌ Error type:", typeof err);
+  //       console.error("❌ Error message:", err?.message);
+  //       console.error("❌ Error stack:", err?.stack);
+  //       setError(`Failed to load PDF: ${err?.message || "Unknown error"}`);
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   loadPdf();
+  // }, []);
+
+  // const downloadPdf = async () => {
+  //   if (!pdfSource) {
+  //     Alert.alert("Error", "PDF not loaded yet.");
+  //     return;
+  //   }
+
+  //   try {
+  //     setDownloading(true);
+  //     console.log("📥 Starting PDF download...");
+  //     console.log("📥 Source:", pdfSource);
+
+  //     // Get Downloads directory path
+  //     const downloadsPath =
+  //       Platform.OS === "android"
+  //         ? RNBlobUtil.fs.dirs.DownloadDir
+  //         : RNBlobUtil.fs.dirs.DocumentDir;
+
+  //     const fileName = "QueenPower.pdf";
+  //     const filePath = `${downloadsPath}/${fileName}`;
+
+  //     console.log("📥 Downloading to:", filePath);
+
+  //     // Copy the PDF file to Downloads folder
+  //     await RNBlobUtil.fs.cp(pdfSource, filePath);
+
+  //     console.log("✅ PDF downloaded successfully to:", filePath);
+
+  //     // On Android, we can also share it or open it
+  //     if (Platform.OS === "android") {
+  //       // Try to open the file
+  //       try {
+  //         await Linking.openURL(`file://${filePath}`);
+  //         Alert.alert(
+  //           "Success",
+  //           `PDF downloaded to Downloads folder and opened!`
+  //         );
+  //       } catch (openError) {
+  //         // If opening fails, just show success message
+  //         Alert.alert(
+  //           "Success",
+  //           `PDF downloaded to Downloads folder: ${filePath}`
+  //         );
+  //       }
+  //     } else {
+  //       // On iOS, use Share API
+  //       await Share.share({
+  //         url: pdfSource,
+  //         title: "QueenPower PDF",
+  //       });
+  //       Alert.alert("Success", "PDF shared successfully!");
+  //     }
+  //   } catch (err: any) {
+  //     console.error("❌ Error downloading PDF:", err);
+  //     console.error("❌ Error message:", err?.message);
+  //     console.error("❌ Error stack:", err?.stack);
+  //     Alert.alert(
+  //       "Error",
+  //       `Failed to download PDF: ${err?.message || "Unknown error"}`
+  //     );
+  //   } finally {
+  //     setDownloading(false);
+  //   }
+  // };
 
   return (
     <SafeAreaView style={tailwind("flex-1")}>
@@ -84,55 +149,138 @@ const ResourcesScreen = () => {
           <View style={tailwind("w-10")} />
         </View>
 
-        <View style={tailwind("flex-1 w-full")}>
-          {loading ? (
+        <View style={tailwind("flex-1 w-full justify-center items-center p-4")}>
+          {/* Coming Soon Placeholder */}
+          <View style={tailwind("items-center")}>
+            <View
+              style={[
+                tailwind("rounded-full p-6 mb-6"),
+                { backgroundColor: "rgba(115, 69, 182, 0.16)" },
+              ]}
+            >
+              <Ionicons name="document-text" size={64} color="#7345B6" />
+            </View>
+            <AppText style={tailwind("text-2xl font-bold text-center mb-2")}>
+              Coming Soon
+            </AppText>
+            <AppText style={tailwind("text-gray-600 text-center")}>
+              Resources will be available soon
+            </AppText>
+          </View>
+        </View>
+
+        {/* Commented out PDF functionality */}
+        {/* {error ? (
+            <View style={tailwind("flex-1 justify-center items-center p-4")}>
+              <AppText style={tailwind("text-gray-600 text-center mb-4")}>
+                {error}
+              </AppText>
+              <TouchableOpacity
+                style={tailwind("bg-purple-600 px-4 py-2 rounded-lg")}
+                onPress={() => navigation.goBack()}
+              >
+                <AppText style={tailwind("text-white font-bold")}>
+                  Go Back
+                </AppText>
+              </TouchableOpacity>
+            </View>
+          ) : loading || !pdfSource ? (
             <View style={tailwind("flex-1 justify-center items-center")}>
               <ActivityIndicator size="large" color="#7345B6" />
               <AppText style={tailwind("mt-4 text-gray-600")}>
                 Loading PDF...
               </AppText>
             </View>
-          ) : pdfUri ? (
-            <Pdf
-              source={{ uri: pdfUri, cache: true }}
-              onLoadComplete={(numberOfPages) => {
-                setNumberOfPages(numberOfPages);
-                setLoading(false);
-              }}
-              onPageChanged={(page, numberOfPages) => {
-                console.log(`Page ${page} of ${numberOfPages}`);
-              }}
-              onError={(error) => {
-                console.error("PDF error:", error);
-                Alert.alert(
-                  "Error",
-                  "Failed to display PDF. Please try again."
-                );
-              }}
-              style={styles.pdf}
-              enablePaging={true}
-              horizontal={false}
-            />
           ) : (
-            <View style={tailwind("flex-1 justify-center items-center p-4")}>
-              <AppText style={tailwind("text-gray-600 text-center")}>
-                PDF not available
-              </AppText>
+            <View style={tailwind("flex-1 p-4")}>
+              <TouchableOpacity
+                style={[
+                  tailwind("bg-white rounded-lg p-6 mb-4 border-2"),
+                  { borderColor: "#E5E7EB" },
+                ]}
+                onPress={downloadPdf}
+                disabled={downloading}
+                activeOpacity={0.7}
+              >
+                <View style={tailwind("flex-row items-center mb-4")}>
+                  <View
+                    style={[
+                      tailwind("rounded-lg p-4 mr-4"),
+                      { backgroundColor: "rgba(115, 69, 182, 0.16)" },
+                    ]}
+                  >
+                    <Ionicons name="document-text" size={48} color="#7345B6" />
+                  </View>
+                  <View style={tailwind("flex-1")}>
+                    <AppText style={tailwind("text-xl font-bold mb-1")}>
+                      QueenPower PDF
+                    </AppText>
+                    <AppText style={tailwind("text-gray-600 text-sm")}>
+                      Tap to download
+                    </AppText>
+                  </View>
+                  {downloading ? (
+                    <ActivityIndicator size="small" color="#7345B6" />
+                  ) : (
+                    <Ionicons name="download" size={24} color="#7345B6" />
+                  )}
+                </View>
+                <View
+                  style={[
+                    tailwind("rounded-lg p-3"),
+                    { backgroundColor: "#F3F4F6" },
+                  ]}
+                >
+                  <AppText style={tailwind("text-gray-700 text-sm")}>
+                    This document contains the QueenPower program guide and
+                    resources.
+                  </AppText>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  tailwind("bg-purple-600 px-6 py-4 rounded-lg items-center"),
+                  downloading && tailwind("opacity-50"),
+                ]}
+                onPress={downloadPdf}
+                disabled={downloading}
+              >
+                {downloading ? (
+                  <View style={tailwind("flex-row items-center")}>
+                    <ActivityIndicator size="small" color="#FFFFFF" />
+                    <AppText
+                      style={tailwind("text-white font-bold text-lg ml-2")}
+                    >
+                      Downloading...
+                    </AppText>
+                  </View>
+                ) : (
+                  <View style={tailwind("flex-row items-center")}>
+                    <Ionicons name="download" size={24} color="#FFFFFF" />
+                    <AppText
+                      style={tailwind("text-white font-bold text-lg ml-2")}
+                    >
+                      Download PDF
+                    </AppText>
+                  </View>
+                )}
+              </TouchableOpacity>
             </View>
-          )}
-        </View>
+          )} */}
       </View>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  pdf: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#E4E4E4",
-  },
-});
+// Commented out styles
+// const styles = StyleSheet.create({
+//   pdf: {
+//     flex: 1,
+//     width: "100%",
+//     height: "100%",
+//     backgroundColor: "#E4E4E4",
+//   },
+// });
 
 export default ResourcesScreen;

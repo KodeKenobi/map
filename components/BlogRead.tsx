@@ -59,8 +59,28 @@ type Comment = {
 };
 
 const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
-  const { title, subtitle, cta, imageUrl, description, tag } = route.params;
+  const { title, subtitle, cta, imageUrl, description, tag, id } = route.params;
   const tailwind = useTailwind();
+
+  // Determine accent color based on card id or title
+  const getAccentColor = () => {
+    // Card id 1 = Wellness (QUEENPOWER) - Green
+    if (id === 1 || subtitle?.includes("QUEENPOWER")) {
+      return "#228565"; // Wellness green
+    }
+    // Card id 2 = Wisdom (QUEENCRICLE) - Gold
+    if (id === 2 || subtitle?.includes("QUEENCRICLE")) {
+      return "#FFD700"; // Gold
+    }
+    // Card id 3 = Wealth (QUEENPRENEUR) - Purple
+    if (id === 3 || subtitle?.includes("QUEENPRENEUR")) {
+      return "#7345B6"; // Wealth purple
+    }
+    // Default to purple
+    return "#7345B6";
+  };
+
+  const accentColor = getAccentColor();
   const [imageError, setImageError] = useState(false);
   const [likes, setLikes] = useState(0);
   const [userLiked, setUserLiked] = useState(false);
@@ -359,8 +379,41 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
             </View>
           )}
 
-          <Text style={tailwind("text-2xl font-bold mb-2")}>{title}</Text>
-          <Text style={tailwind("text-gray-600 mb-4")}>{subtitle}</Text>
+          <View
+            style={[
+              tailwind("flex-row items-start justify-between mb-4"),
+              { width: "100%" },
+            ]}
+          >
+            <View style={{ flex: 1, marginRight: 12 }}>
+              <Text style={tailwind("text-2xl font-bold mb-2")}>{title}</Text>
+              <Text style={tailwind("text-gray-600")}>{subtitle}</Text>
+            </View>
+            <TouchableOpacity
+              style={{
+                backgroundColor: accentColor,
+                paddingHorizontal: 16,
+                paddingVertical: 10,
+                borderRadius: 8,
+                alignSelf: "flex-start",
+                minWidth: 100,
+              }}
+              onPress={() => {
+                // Navigate to booking or appointment screen
+                navigation.navigate("Consult");
+              }}
+            >
+              <Text
+                style={{
+                  color: "#FFFFFF",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                Book Now
+              </Text>
+            </TouchableOpacity>
+          </View>
 
           {description && (
             <Text style={[tailwind(" mb-6 text-gray-800"), { lineHeight: 24 }]}>

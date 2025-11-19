@@ -37,6 +37,7 @@ import WisdomOnboardingScreen from "@/components/WisdomOnboarding";
 import CoachingScreen from "@/components/CoachingScreen";
 import CoachingServicesDetail from "@/components/CoachingServicesDetail";
 import ResourcesScreen from "@/components/ResourcesScreen";
+import CommunityScreen from "@/components/CommunityScreen";
 import WealthHome from "@/components/WealthHome";
 import WealthWelcomeScreen from "@/components/WeathWelcome";
 import WealthOnboardingScreen from "@/components/WealthOnboarding";
@@ -647,6 +648,7 @@ const AppContent = () => {
                 component={CoachingServicesDetail}
               />
               <Stack.Screen name="Resources" component={ResourcesScreen} />
+              <Stack.Screen name="Community" component={CommunityScreen} />
               <Stack.Screen
                 name="WealthWelcome"
                 component={WealthWelcomeScreen}

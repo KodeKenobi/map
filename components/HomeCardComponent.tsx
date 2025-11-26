@@ -104,7 +104,7 @@ const HomeCardComponent: React.FC<HomeCardProps> = ({
           </AppText>
 
           <Text
-            style={tailwind("text-sm font-semibold mb-2")}
+            style={[tailwind("text-base font-bold mb-2"), { letterSpacing: 1 }]}
             numberOfLines={1}
           >
             {subtitle}

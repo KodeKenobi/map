@@ -31,9 +31,8 @@ const Recommendations: React.FC<RecommendationsProps> = ({
     >
       <View
         style={[
-          tailwind("justify-center items-center mr-3 rounded-lg"),
+          tailwind("justify-center items-center mr-3 overflow-hidden"),
           styles.iconContainer,
-          { backgroundColor: iconBackgroundColor || "#E0E0E0" },
         ]}
       >
         <Image source={iconUrl} style={styles.icon} resizeMode="cover" />
@@ -59,13 +58,14 @@ const styles = StyleSheet.create({
     height: 100,
   },
   iconContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 70,
+    height: 70,
+    borderRadius: 12,
   },
   icon: {
-    width: 52,
-    height: 52,
+    width: 70,
+    height: 70,
+    borderRadius: 12,
   },
   title: {
     flexWrap: "wrap",

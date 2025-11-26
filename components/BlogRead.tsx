@@ -387,7 +387,14 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
           >
             <View style={{ flex: 1, marginRight: 12 }}>
               <Text style={tailwind("text-2xl font-bold mb-2")}>{title}</Text>
-              <Text style={tailwind("text-gray-600")}>{subtitle}</Text>
+              <Text
+                style={[
+                  tailwind("text-base font-bold text-gray-700"),
+                  { letterSpacing: 1 },
+                ]}
+              >
+                {subtitle}
+              </Text>
             </View>
             <TouchableOpacity
               style={{
@@ -416,9 +423,30 @@ const BlogRead: React.FC<BlogReadProps> = ({ route, navigation }) => {
           </View>
 
           {description && (
-            <Text style={[tailwind(" mb-6 text-gray-800"), { lineHeight: 24 }]}>
-              {description}
-            </Text>
+            <View style={tailwind("mb-6")}>
+              {description
+                .split(/(?<=[.!?])\s+(?=[A-Z])/)
+                .reduce((acc: string[][], sentence, index) => {
+                  // Group every 2-3 sentences into a paragraph
+                  const paragraphIndex = Math.floor(index / 3);
+                  if (!acc[paragraphIndex]) {
+                    acc[paragraphIndex] = [];
+                  }
+                  acc[paragraphIndex].push(sentence);
+                  return acc;
+                }, [])
+                .map((paragraph, index) => (
+                  <Text
+                    key={index}
+                    style={[
+                      tailwind("text-base text-gray-800 mb-4"),
+                      { lineHeight: 28, fontSize: 16 },
+                    ]}
+                  >
+                    {paragraph.join(" ")}
+                  </Text>
+                ))}
+            </View>
           )}
 
           {/* Comments Section */}

@@ -15,7 +15,7 @@ import AppText from "./AppText";
 const cards = [
   {
     id: 1,
-    imageUrl: require("../assets/images/vitamin-drip.png"),
+    imageUrl: require("../assets/images/queenpower.jpg"),
     title: "MAP Wellness",
     subtitle: "QUEENPOWER",
     description:
@@ -25,9 +25,9 @@ const cards = [
   },
   {
     id: 2,
-    imageUrl: require("../assets/images/coaching.png"),
+    imageUrl: require("../assets/images/queencircle.jpg"),
     title: "Map Wisdom",
-    subtitle: "QUEENCRICLE",
+    subtitle: "QUEENCIRCLE",
     description:
       "This is a women's circle club that empowers women through connection and growth. They've got a bunch of cool stuff planned, like thought leader series, workshops, and masterclasses on wellness, wisdom, and wealth. It's all about creating a supportive community where women can share knowledge, experiences, and insights. QUEECIRCLE: Empowering Women Through Connection and Growth. QUEENCRICLE is a dynamic women's circle club that brings together like-minded individuals to learn, grow, and empower one another. Our mission is to create a supportive community where women can share knowledge, experiences, and insights on wellness, wisdom, and wealth. Key Features of the event annually in November: Thought Leader Series: Invite renowned experts in wellness, wisdom, and wealth to share their experiences and insights. Trend Showcases: Highlight new and innovative trends in wellness, wisdom, and wealth, providing attendees with cutting-edge knowledge and tools. Book and Podcast Launches: Provide a platform for women authors and podcasters to launch their work and connect with like-minded individuals. Panel Discussions: Host engaging and thought-provoking discussions on topics relevant to women's empowerment. Experiential Healing Modalities: Offer hands-on experiences with various healing modalities, allowing attendees to explore new ways to nurture their mind, body, and spirit. Annual Publication: The QUEENCRICLE Booklet: A powerful collection of empowering stories, tools, and insights from women who have overcome challenges and achieved success. Mentorship Program: Pair experienced women with those just starting out, providing guidance and support. Workshops and Masterclasses: Offer in-depth training sessions on specific topics, such as mindfulness, entrepreneurship, and financial literacy. Online Platform: Create a private online community where members can access exclusive content, connect with one another, and participate in discussions. Partnerships: Collaborate with like-minded businesses and organizations to amplify the impact of QUEENCRICLE and provide exclusive benefits to members. QUEENCRICLE is a vibrant community that will inspire, motivate, and empower women to reach their full potential.",
     cta: "Read More",
@@ -35,7 +35,7 @@ const cards = [
   },
   {
     id: 3,
-    imageUrl: require("../assets/images/wellness-seminar.png"),
+    imageUrl: require("../assets/images/queenpreneur.jpg"),
     title: "Map Wealth",
     subtitle: "QUEENPRENEUR",
     description:
@@ -148,10 +148,9 @@ const Home = () => {
             </AppText>
           </View>
           <RecommendationsCard
-            iconUrl={require("../assets/images/wellness-seminar.png")}
+            iconUrl={require("../assets/images/iv-drip.jpg")}
             title="IV Drip for Boosting Immunity >"
             backgroundColor="rgba(115, 69, 182, 0.16)"
-            iconBackgroundColor="black"
           />
         </View>
       </ScrollView>
